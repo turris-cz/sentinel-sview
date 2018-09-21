@@ -1,0 +1,20 @@
+## Files for packaging
+MANIFEST
+dist
+
+## Cache files and folders
+*.pyc
+__pycache__
+*.egg-info/
+
+## Tests
+.pytest_cache
+.coverage
+
+## Logs
+*.log
+
+## Flask
+.env
+instance/*
+!instance/.placeholder
