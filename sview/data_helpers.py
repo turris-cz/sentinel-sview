@@ -17,3 +17,10 @@ def query_to_json(query):
 def get_and_store(key, query, expire=None):
     json_data = query_to_json(query)
     redis.set(key, json_data, ex=expire)
+
+
+def get_data(key):
+    data = redis.get(key)
+    if not data:
+        return None
+    return json.loads(data.decode("UTF-8"))

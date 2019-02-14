@@ -1,9 +1,20 @@
 from flask import render_template
 from flask import Blueprint
 
+from .data_helpers import get_data
+
+
 dashboard = Blueprint("dashboard", __name__)
 
 
 @dashboard.route("/")
 def index():
-    return render_template("dashboard/home.html")
+    data_keys = [
+        "top_passwords",
+        "top_usernames",
+        "top_countries",
+    ]
+
+    data = {k: get_data(k) for k in data_keys}
+
+    return render_template("dashboard/home.html", **data)
