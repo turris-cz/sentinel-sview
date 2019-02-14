@@ -4,6 +4,6 @@ from .data_helpers import get_and_store
 from .queries import QUERIES
 
 
-@rq.job
+@rq.job(result_ttl=10)
 def load_data_from_template(resource_name):
     get_and_store(resource_name, QUERIES[resource_name])
