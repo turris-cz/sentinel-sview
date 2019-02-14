@@ -12,9 +12,23 @@
 	{% endif %}
 {%- endmacro -%}
 
+{%- macro pair_data_box(name, source, data_attr1, data_attr2) -%}
+	<h1>{{ name }}</h1>
+	{% if source %}
+	<ol>
+	{% for item in source %}
+		<li><strong>{{ item[data_attr1] }} / {{ item[data_attr2] }}</strong>: {{ item.count }}
+	{% endfor %}
+	</ol>
+	{% else %}
+		{{ not_cached() }}
+	{% endif %}
+{%- endmacro -%}
+
 {% extends "layout.html" %}
 {% block body %}
 {{ data_box("Most evil countries", top_countries, "country") }}
 {{ data_box("Top passwords", top_passwords, "password") }}
 {{ data_box("Top usernames", top_usernames, "username") }}
+{{ pair_data_box("Top username / password combinations", top_combinations, "username", "password") }}
 {% endblock %}

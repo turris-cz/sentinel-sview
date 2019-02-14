@@ -13,6 +13,7 @@ def index():
         "top_passwords",
         "top_usernames",
         "top_countries",
+        "top_combinations",
     ]
 
     data = {k: get_data(k) for k in data_keys}

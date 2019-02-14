@@ -39,4 +39,19 @@ QUERIES = {
     ORDER BY count DESC
     LIMIT 10
     """,
+
+    "top_combinations":
+    """
+    SELECT
+        username, password, count(*) AS count
+    FROM minipot_telnet
+    WHERE
+        username IS NOT NULL
+        AND
+        password IS NOT NULL
+    GROUP BY username, password
+    HAVING count(*) > 5
+    ORDER BY count DESC
+    LIMIT 20
+    """,
 }
