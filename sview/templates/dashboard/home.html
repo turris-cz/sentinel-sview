@@ -1,4 +1,20 @@
+{%- from "_snippets.html" import not_cached with context -%}
+{%- macro data_box(name, source, data_attr) -%}
+	<h1>{{ name }}</h1>
+	{% if source %}
+	<ol>
+	{% for item in source %}
+		<li><strong>{{ item[data_attr] }}</strong>: {{ item.count }}
+	{% endfor %}
+	</ol>
+	{% else %}
+		{{ not_cached() }}
+	{% endif %}
+{%- endmacro -%}
+
 {% extends "layout.html" %}
 {% block body %}
-Welcome!
+{{ data_box("Most evil countries", top_countries, "country") }}
+{{ data_box("Top passwords", top_passwords, "password") }}
+{{ data_box("Top usernames", top_usernames, "username") }}
 {% endblock %}
