@@ -3,7 +3,11 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
+from .jobs import load_data_from_template
+from .queries import QUERIES
+
 from .extensions import db
+
 
 @click.command()
 @with_appcontext
@@ -20,8 +24,17 @@ def clear_cache():
     click.echo("Cache cleared")
 
 
+@click.command()
+@with_appcontext
+def queue_queries():
+    """Add all cached queries to the queue"""
+    for k in QUERIES.keys():
+        load_data_from_template.queue(k)
+
+
 def register_cli_commands(app):
     app.cli.add_command(clear_cache)
+    app.cli.add_command(queue_queries)
 
 
 def register_shell_context(app):
