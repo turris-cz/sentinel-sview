@@ -1,1 +1,16 @@
-DB_PATH = "sview.db"
+BABEL_DEFAULT_LOCALE = "en"
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = "sqlite:///gitc.db"
+
+CACHE_TYPE = "filesystem"
+CACHE_DIR = "/tmp/sview_cache"
+CACHE_THRESHOLD = 1024
+CACHE_DEFAULT_TIMEOUT = 60*60
+
+REDIS_URL = "redis://localhost:6379/0"
+RQ_REDIS_URL = "redis://localhost:6379/0"
+
+SESSION_COOKIE_HTTPONLY = True
+
+REMEMBER_COOKIE_HTTPONLY = True

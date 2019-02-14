@@ -13,6 +13,14 @@ setup(name="sview",
       ],
       install_requires=[
           "Flask",
+          "Flask-Babel",
+          "Flask-Caching",
+          "Flask-Mail",
+          "Flask-Migrate",
+          "Flask-SQLAlchemy",
+          "Flask-Redis",
+          "Flask-RQ2",
+          "psycopg2-binary",
       ],
       extras_require={
           "tests": [

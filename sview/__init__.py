@@ -23,10 +23,31 @@ def create_app(additional_config=None):
 
     setup_logging()
 
-    from .data import databp
-    app.register_blueprint(databp)
+    from .dashboard import dashboard
+    app.register_blueprint(dashboard)
+
+    from .extensions import babel
+    from .extensions import cache
+    from .extensions import mail
+    from .extensions import db
+    from .extensions import migrate
+    from .extensions import redis
+    from .extensions import rq
+
+    babel.init_app(app)
+    cache.init_app(app)
+    mail.init_app(app)
+    db.init_app(app)
+    migrate.init_app(app)
+    redis.init_app(app)
+    rq.init_app(app)
 
     from .filters import register_filters
     register_filters(app)
+
+    from .cli import register_cli_commands
+    from .cli import register_shell_context
+    register_cli_commands(app)
+    register_shell_context(app)
 
     return app
