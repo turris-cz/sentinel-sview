@@ -29,6 +29,7 @@ def clear_cache():
 def queue_queries():
     """Add all cached queries to the queue"""
     for k in QUERIES.keys():
+        click.echo("Queuing: {}".format(k))
         load_data_from_template.queue(k)
 
 
