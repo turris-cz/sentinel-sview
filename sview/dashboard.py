@@ -19,6 +19,7 @@ def index():
 
     data = {k: get_data(k) for k in data_keys}
 
-    data["map_scores"] = as_map_data(data["map_scores"], "country", "count")
+    if data["map_scores"]:
+        data["map_scores"] = as_map_data(data["map_scores"], "country", "count")
 
     return render_template("dashboard/home.html", **data)
