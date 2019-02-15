@@ -24,3 +24,7 @@ def get_data(key):
     if not data:
         return None
     return json.loads(data.decode("UTF-8"))
+
+
+def as_map_data(data, key_key, val_key):
+    return {i[key_key]: i[val_key] for i in data}

@@ -1,7 +1,7 @@
 from flask import render_template
 from flask import Blueprint
 
-from .data_helpers import get_data
+from .data_helpers import get_data, as_map_data
 
 
 dashboard = Blueprint("dashboard", __name__)
@@ -14,8 +14,11 @@ def index():
         "top_usernames",
         "top_countries",
         "top_combinations",
+        "map_scores",
     ]
 
     data = {k: get_data(k) for k in data_keys}
+
+    data["map_scores"] = as_map_data(data["map_scores"], "country", "count")
 
     return render_template("dashboard/home.html", **data)

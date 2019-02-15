@@ -68,8 +68,25 @@
 	</div>
 {%- endmacro -%}
 
+{%- macro map_box(id, name, source) -%}
+		{% if source %}
+			<div id="{{ id }}" style="position: relative; width: 900; height: 300px;"></div>
+			<script type="text/javascript">
+				let scores = {{ source|tojson|safe }};
+				draw_map("#{{ id }}", scores);
+			</script>
+		{% else %}
+			{{ data_not_cached() }}
+		{% endif %}
+{%- endmacro -%}
+
 {% extends "layout.html" %}
 {% block body %}
+<div class="row">
+	<div class="col-lg-12 pb-3" align="center">
+		{{ map_box("world_map", "Most evil countries", map_scores) }}
+	</div>
+</div>
 <div class="row">
 	<div class="col">
 		{{ data_box("Most evil countries", top_countries, "country") }}

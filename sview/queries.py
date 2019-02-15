@@ -54,4 +54,14 @@ QUERIES = {
     ORDER BY count DESC
     LIMIT 20
     """,
+
+    "map_scores":
+    """
+    SELECT
+        country, count(country) AS count
+    FROM minipot_telnet
+    WHERE
+        country IS NOT NULL
+    GROUP BY country
+    """,
 }
