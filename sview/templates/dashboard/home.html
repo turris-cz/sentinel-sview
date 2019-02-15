@@ -1,4 +1,4 @@
-{%- from "_snippets.html" import not_cached with context -%}
+{%- from "_snippets.html" import data_not_cached with context -%}
 {%- macro data_box(name, source, data_attr) -%}
 	<h1>{{ name }}</h1>
 	{% if source %}
@@ -8,7 +8,7 @@
 	{% endfor %}
 	</ol>
 	{% else %}
-		{{ not_cached() }}
+		{{ data_not_cached() }}
 	{% endif %}
 {%- endmacro -%}
 
@@ -21,7 +21,7 @@
 	{% endfor %}
 	</ol>
 	{% else %}
-		{{ not_cached() }}
+		{{ data_not_cached() }}
 	{% endif %}
 {%- endmacro -%}
 
