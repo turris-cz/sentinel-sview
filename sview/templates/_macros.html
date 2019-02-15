@@ -1,0 +1,36 @@
+{%- macro nav_link(endpoint, text, per_bp=False) -%}
+	{%- if per_bp and request.endpoint.split(".")[0] == endpoint.split(".")[0] %}
+		{%- set active = " active" %}
+	{%- elif request.endpoint.startswith(endpoint) %}
+		{%- set active = " active" %}
+	{%- else %}
+		{%- set active = "" %}
+	{%- endif %}
+						<li class="nav-item">
+							<a class="nav-link{{ active }}" href="{{ url_for(endpoint) }}">
+								{{ text }}
+							</a>
+						</li>
+{%- endmacro -%}
+{%- macro common_form(form, target, submit_caption, file=False) -%}
+<form method="post" action="{{ target }}" class="form-vertical"{% if file %} enctype="multipart/form-data"{% endif %}>
+	{% for field in form %}
+		{% if field.name == "csrf_token" -%}
+		{{ field() }}
+		{% elif field.type == "BooleanField" -%}
+		<div class="form-group form-check">
+			{{ field(class="form-check-input") }}
+			{{ field.label(class="form-check-label") }}
+		</div>
+		{%- else -%}
+		<div class="form-group">
+			{{ field.label() }}
+			{{ field(class="form-control") }}
+		</div>
+		{% endif -%}
+	{% endfor %}
+		<button type="submit" class="btn btn-primary btn-lg">
+			{{ submit_caption }}
+		</button>
+</form>
+{%- endmacro -%}

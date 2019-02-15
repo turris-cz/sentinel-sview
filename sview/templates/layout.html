@@ -1,22 +1,49 @@
+{%- from "_macros.html" import nav_link with context -%}
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Turris:Sentinel visualisation app</title>
+		<meta charset="utf-8" />
+		<title>Sentinel:view {% if title %} &mdash; {{ title }}{% endif %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="shortcut icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
+		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.min.css") }}" />
+		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/all.min.css") }}" />
+		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/sview.css")| autoversion }}" />
+		<script type="text/javascript" src="{{ url_for("static", filename="js/jquery.min.js") }}"></script>
+		<script type="text/javascript" src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>
+		<script type="text/javascript" src="{{ url_for("static", filename="js/sview.js") | autoversion }}"></script>
 	</head>
 	<body>
-		{%- with messages = get_flashed_messages(with_categories=True) %}
-			{%- if messages %}
-				{%- for category, message in messages %}
-					<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-						{{ message }}
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-				{%- endfor %}
-			{%- endif %}
-		{%- endwith %}
-		<h1>Turris:Sentinel visualisation app</h1>
+		<div class="container">
+			<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+				<a class="navbar-brand" href="{{ url_for("dashboard.index") }}">
+					Sentinel:view
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse show" id="main-menu">
+					<ul class="navbar-nav">
+						{{ nav_link("dashboard.index", _("Home")) }}
+					</ul>
+				</div>
+			</nav>
 
-		{%- block body %}{% endblock %}
+			{%- with messages = get_flashed_messages(with_categories=True) %}
+				{%- if messages %}
+					{%- for category, message in messages %}
+						<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					{%- endfor %}
+				{%- endif %}
+			{%- endwith %}
+
+			{%- block body %}{% endblock %}
+		</div> <!-- /container -->
+		{%- block body_end %}{% endblock %}
 	</body>
 </html>
