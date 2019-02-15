@@ -3,3 +3,81 @@
 	{{ _("Data source is being cached. Try it later please.") }}
 </p>
 {%- endmacro -%}
+{%- macro data_item(data) -%}
+	{%- set len_limit = 10 -%}
+	{%- if data|length > len_limit -%}
+	<abbr title="{{ data }}">
+		{{ data | truncate(len_limit, True, "...", 0) }}
+	</abbr>
+	{%- else -%}
+		{{ data }}
+	{%- endif -%}
+{%- endmacro -%}
+{%- macro data_box(name, source, data_attr) -%}
+	<div class="card mb-3 border">
+		<div class="card-header">
+			{{ name }}
+		</div>
+		<div class="card-body"></ul>
+		{% if source %}
+		<table class="table table-borderless table-sm">
+		{% for item in source %}
+			<tr>
+				<td>{{ loop.index }}.</td>
+				<td>
+					<strong>
+						{{ data_item(item[data_attr]) }}
+					</strong>
+				</td>
+				<td>{{ item.count }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		{% else %}
+			{{ data_not_cached() }}
+		{% endif %}
+		</div>
+	</div>
+{%- endmacro -%}
+{%- macro pair_data_box(name, source, data_attr1, data_attr2) -%}
+	<div class="card mb-3 border">
+		<div class="card-header">
+			{{ name }}
+		</div>
+		<div class="card-body"></ul>
+		{% if source %}
+		<table class="table table-borderless table-sm">
+		{% for item in source %}
+			<tr>
+				<td>{{ loop.index }}.</td>
+				<td>
+					<strong>
+						{{ data_item(item[data_attr1]) }}
+					</strong>
+				</td>
+				<td>
+					<strong>
+						{{ data_item(item[data_attr2]) }}
+					</strong>
+				</td>
+				<td>{{ item.count }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		{% else %}
+			{{ data_not_cached() }}
+		{% endif %}
+		</div>
+	</div>
+{%- endmacro -%}
+{%- macro map_box(id, name, source) -%}
+		{% if source %}
+			<div id="{{ id }}" style="position: relative; width: 900; height: 300px;"></div>
+			<script type="text/javascript">
+				let scores = {{ source|tojson|safe }};
+				draw_map("#{{ id }}", scores);
+			</script>
+		{% else %}
+			{{ data_not_cached() }}
+		{% endif %}
+{%- endmacro -%}
