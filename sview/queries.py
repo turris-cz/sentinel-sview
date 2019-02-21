@@ -29,6 +29,36 @@ def ts_this_year():
     return int(tr.timestamp())
 
 
+def _pp_passwords_to_multiline_data(data):
+    tmp = {}
+    result = []
+    passwords = set()
+
+    for i in data:
+        if not i["day"] in tmp:
+            tmp[i["day"]] = {}
+
+        tmp[i["day"]][i["password"]] =  i["count"]
+        passwords.add(i["password"])
+
+    # Simply make one "official" order of the passwords for the rest of function
+    passwords = [p for p in passwords]
+
+    for key in sorted(tmp):
+        d = {
+            "day": key,
+        }
+        for i, pwd in enumerate(passwords):
+            d[i] = tmp[key][pwd] if pwd in tmp[key] else 0
+        result.append(d)
+
+    return {
+        "labels": passwords,
+        "ykeys": [i for i in range(len(passwords))],
+        "data": result,
+    }
+
+
 _passwords = """
     SELECT
         password, count(password) AS count
@@ -98,7 +128,6 @@ _map_scores = """
     GROUP BY country
     """
 
-
 _attackers = """
     SELECT
         to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
@@ -107,6 +136,34 @@ _attackers = """
     WHERE
         action = 'login'
     GROUP BY day
+    ORDER BY day
+"""
+
+_top_passwords_popularity = """
+    SELECT
+        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
+        password,
+        COUNT(password) as count
+    FROM minipot_telnet
+    WHERE
+        password IN (
+            SELECT
+                password
+            FROM (
+                SELECT
+                    password,
+                    COUNT(password) AS count_inner
+                FROM minipot_telnet
+                WHERE
+                    password IS NOT NULL
+                    AND
+                    password <> ''
+                GROUP BY password
+                ORDER BY count_inner DESC
+                LIMIT 10
+            ) AS foo
+        )
+    GROUP BY day, password
     ORDER BY day
 """
 
@@ -136,5 +193,9 @@ QUERIES = {
     },
     "attackers": {
         "query": _attackers,
+    },
+    "top_passwords_popularity": {
+        "query": _top_passwords_popularity,
+        "post_process": _pp_passwords_to_multiline_data,
     },
 }

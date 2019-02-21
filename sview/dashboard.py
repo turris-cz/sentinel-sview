@@ -16,6 +16,7 @@ def index():
         "top_combinations",
         "map_scores",
         "attackers",
+        "top_passwords_popularity",
     ]
 
     data = {k: get_data(k) for k in data_keys}

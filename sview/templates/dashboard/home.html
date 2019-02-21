@@ -16,6 +16,11 @@
 </div>
 <div class="row">
 	<div class="col">
+		{{ line_box("top_passwords_popularity", "Top passwords popularity", top_passwords_popularity.data, "day", top_passwords_popularity.ykeys, top_passwords_popularity.labels) }}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
 		{{ data_box("Most evil countries", top_countries, "country") }}
 	</div>
 	<div class="col">
