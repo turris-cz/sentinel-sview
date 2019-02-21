@@ -98,6 +98,18 @@ _map_scores = """
     GROUP BY country
     """
 
+
+_attackers = """
+    SELECT
+        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
+        COUNT(DISTINCT ip) as count
+    FROM minipot_telnet
+    WHERE
+        action = 'login'
+    GROUP BY day
+    ORDER BY day
+"""
+
 _limit_dashboard = 10
 _limit_long = 30
 
@@ -121,5 +133,8 @@ QUERIES = {
     "map_scores": {
         "query": _map_scores,
         "params": lambda: {"since": 0},
+    },
+    "attackers": {
+        "query": _attackers,
     },
 }

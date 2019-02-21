@@ -15,6 +15,7 @@ def index():
         "top_countries",
         "top_combinations",
         "map_scores",
+        "attackers",
     ]
 
     data = {k: get_data(k) for k in data_keys}
