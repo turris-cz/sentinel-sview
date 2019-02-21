@@ -81,3 +81,27 @@
 			{{ data_not_cached() }}
 		{% endif %}
 {%- endmacro -%}
+{%- macro line_box(id, name, source, xkey, ykey, label) -%}
+	<div class="card mb-3 border">
+		<div class="card-header">
+			{{ name }}
+		</div>
+		<div class="card-body"></ul>
+		{% if source %}
+			<div id="{{ id }}"></div>
+			<script type="text/javascript">
+				new Morris.Line({
+					element: '{{ id }}',
+					xkey: '{{ xkey }}',
+					ykeys: ['{{ ykey }}'],
+					labels: ['{{ label }}'],
+					resize: true,
+					data: {{ source|tojson|safe }}
+				});
+			</script>
+		{% else %}
+			{{ data_not_cached() }}
+		{% endif %}
+		</div>
+	</div>
+{%- endmacro -%}
