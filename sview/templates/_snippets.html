@@ -74,7 +74,7 @@
 		{% if source %}
 			<div id="{{ id }}" style="position: relative; width: 900; height: 300px;"></div>
 			<script type="text/javascript">
-				let scores = {{ source|tojson|safe }};
+				let scores = {{ source|tojson }};
 				draw_map("#{{ id }}", scores);
 			</script>
 		{% else %}
@@ -96,15 +96,15 @@
 					{%- if ykey is string %}
 					ykeys: ['{{ ykey }}'],
 					{%- else %}
-					ykeys: {{ ykey|tojson|safe }},
+					ykeys: {{ ykey|tojson }},
 					{% endif %}
 					{%- if label is string %}
 					labels: ['{{ label }}'],
 					{%- else %}
-					labels: {{ label|tojson|safe }},
+					labels: {{ label|tojson }},
 					{% endif %}
 					resize: true,
-					data: {{ source|tojson|safe }}
+					data: {{ source|tojson }}
 				});
 			</script>
 		{% else %}
