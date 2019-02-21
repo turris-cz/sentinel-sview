@@ -4,7 +4,7 @@ from .extensions import db
 from .extensions import redis
 
 
-def query_to_json(query, params=None):
+def query_to_json(query, params=None, post_process=None):
     if not params:
         query_params = None
     elif callable(params):
@@ -18,11 +18,18 @@ def query_to_json(query, params=None):
     for row in data:
         result.append(dict(row.items()))
 
+    if post_process and callable(post_process):
+        # This is experimental feature
+        # It would be nice to have better interface
+        returned = post_process(result)
+        if returned:
+            result = returned
+
     return json.dumps(result)
 
 
-def get_and_store(key, query, params=None, expire=None):
-    json_data = query_to_json(query, params)
+def get_and_store(key, query, params=None, post_process=None, expire=None):
+    json_data = query_to_json(query, params, post_process)
     redis.set(key, json_data, ex=expire)
 
 
