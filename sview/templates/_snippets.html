@@ -93,8 +93,16 @@
 				new Morris.Line({
 					element: '{{ id }}',
 					xkey: '{{ xkey }}',
+					{%- if ykey is string %}
 					ykeys: ['{{ ykey }}'],
+					{%- else %}
+					ykeys: {{ ykey|tojson|safe }},
+					{% endif %}
+					{%- if label is string %}
 					labels: ['{{ label }}'],
+					{%- else %}
+					labels: {{ label|tojson|safe }},
+					{% endif %}
 					resize: true,
 					data: {{ source|tojson|safe }}
 				});
