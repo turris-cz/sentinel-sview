@@ -14,7 +14,7 @@
 	{%- endif -%}
 {%- endmacro -%}
 {%- macro country_code_item(data) -%}
-	<span class="flag-icon flag-icon-{{ data|lower }}"></span>&nbsp;&nbsp;{{ data }}
+	<span class="flag-icon flag-icon-{{ data|lower }}"></span>&nbsp;&nbsp;<abbr title="{{data|uncc}}">{{ data }}</abbr>
 {%- endmacro -%}
 {%- macro data_box(name, source, data_attr) -%}
 	<div class="card mb-3 border">

@@ -21,6 +21,7 @@ setup(name="sview",
           "Flask-Redis",
           "Flask-RQ2",
           "psycopg2-binary",
+          "pycountry",
       ],
       extras_require={
           "tests": [
