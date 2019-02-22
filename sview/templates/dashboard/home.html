@@ -2,6 +2,7 @@
 {%- from "_snippets.html" import pair_data_box with context -%}
 {%- from "_snippets.html" import map_box with context -%}
 {%- from "_snippets.html" import line_box with context -%}
+{%- from "_snippets.html" import country_code_item with context -%}
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
@@ -21,7 +22,9 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ data_box("Most evil countries", top_countries, "country") }}
+		{% call(data_item) data_box("Most evil countries", top_countries, "country") -%}
+			{{ country_code_item(data_item) }}
+		{%- endcall %}
 	</div>
 	<div class="col">
 		{{ data_box("Top passwords", top_passwords, "password") }}
