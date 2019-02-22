@@ -13,6 +13,9 @@
 		{{ data }}
 	{%- endif -%}
 {%- endmacro -%}
+{%- macro country_code_item(data) -%}
+	<span class="flag-icon flag-icon-{{ data|lower }}"></span>&nbsp;&nbsp;{{ data }}
+{%- endmacro -%}
 {%- macro data_box(name, source, data_attr) -%}
 	<div class="card mb-3 border">
 		<div class="card-header">
@@ -26,7 +29,7 @@
 				<td>{{ loop.index }}.</td>
 				<td>
 					<strong>
-						{{ data_item(item[data_attr]) }}
+						{% if caller %}{{ caller(item[data_attr]) }}{% else %}{{ data_item(item[data_attr]) }}{% endif %}
 					</strong>
 				</td>
 				<td>{{ item.count }}</td>
