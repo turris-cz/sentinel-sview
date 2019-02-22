@@ -59,6 +59,37 @@ def _pp_passwords_to_multiline_data(data):
     }
 
 
+def _pp_countries_to_multiline_data(data):
+    # TODO: Refactor this function and _pp_passwords_to_multiline_data
+    # to something generic and reusable
+    tmp = {}
+    result = []
+    countries = set()
+
+    for i in data:
+        if not i["day"] in tmp:
+            tmp[i["day"]] = {}
+
+        tmp[i["day"]][i["country"]] =  i["count"]
+        countries.add(i["country"])
+
+    countries = [p for p in countries]
+
+    for key in sorted(tmp):
+        d = {
+            "day": key,
+        }
+        for i, pwd in enumerate(countries):
+            d[i] = tmp[key][pwd] if pwd in tmp[key] else 0
+        result.append(d)
+
+    return {
+        "labels": countries,
+        "ykeys": [i for i in range(len(countries))],
+        "data": result,
+    }
+
+
 def _as_map_data(data, key_key, val_key):
     return {i[key_key]: i[val_key] for i in data}
 
@@ -189,7 +220,33 @@ _top_passwords_popularity = """
     ORDER BY day
 """
 
-_limit_dashboard = 10
+_top_countries_trends = """
+    SELECT
+        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
+        country,
+        COUNT(country) as count
+    FROM minipot_telnet
+    WHERE
+        country IN (
+            SELECT
+                country
+            FROM (
+                SELECT
+                    country,
+                    COUNT(country) AS count_inner
+                FROM minipot_telnet
+                WHERE
+                    country IS NOT NULL
+                GROUP BY country
+                ORDER BY count_inner DESC
+                LIMIT :top_n
+            ) AS foo
+        )
+    GROUP BY day, country
+    ORDER BY day
+"""
+
+_limit_dashboard = 15
 _limit_long = 30
 
 QUERIES = {
@@ -197,17 +254,29 @@ QUERIES = {
         "query": _passwords,
         "params": lambda: {"limit": _limit_dashboard, "since": 0},
     },
+    "top_passwords_long": {
+        "query": _passwords,
+        "params": lambda: {"limit": _limit_long, "since": 0},
+    },
     "top_usernames": {
         "query": _usernames,
         "params": lambda: {"limit": _limit_dashboard, "since": 0},
+    },
+    "top_usernames_long": {
+        "query": _usernames,
+        "params": lambda: {"limit": _limit_long, "since": 0},
     },
     "top_countries": {
         "query": _countries,
         "params": lambda: {"limit": _limit_dashboard, "since": 0},
     },
-    "top_combinations": {
+    "top_countries_long": {
+        "query": _countries,
+        "params": lambda: {"limit": _limit_long, "since": 0},
+    },
+    "top_combinations_long": {
         "query": _combinations,
-        "params": lambda: {"limit": _limit_dashboard, "since": 0},
+        "params": lambda: {"limit": _limit_long, "since": 0},
     },
     "map_scores": {
         "query": _map_scores,
@@ -216,6 +285,11 @@ QUERIES = {
     },
     "attackers": {
         "query": _attackers,
+    },
+    "attackers_trends": {
+        "query": _top_countries_trends,
+        "params": {"top_n": _limit_dashboard},
+        "post_process": _pp_countries_to_multiline_data,
     },
     "top_passwords_popularity": {
         "query": _top_passwords_popularity,
