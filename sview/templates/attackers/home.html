@@ -12,17 +12,14 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers", "All the bitches during the time", attackers, "day", "count", "Unique IP addresses") }}
+		{{ line_box("attackers_trends", "Attackers by country trends", attackers_trends.data, "day", attackers_trends.ykeys, attackers_trends.labels) }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{% call(data_item) data_box("Most evil countries", top_countries, "country") -%}
+		{% call(data_item) data_box("Most evil countries", top_countries_long, "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
-	</div>
-	<div class="col">
-		{{ data_box("Top passwords", top_passwords, "password") }}
 	</div>
 </div>
 {% endblock %}

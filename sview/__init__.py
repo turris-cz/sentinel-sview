@@ -25,8 +25,12 @@ def create_app(additional_config=None):
 
     from .dashboard import dashboard
     from .opendata import opendata
+    from .passwords import passwords
+    from .attackers import attackers
     app.register_blueprint(dashboard)
     app.register_blueprint(opendata, url_prefix="/opendata")
+    app.register_blueprint(passwords, url_prefix="/passwords")
+    app.register_blueprint(attackers, url_prefix="/attackers")
 
     from .extensions import babel
     from .extensions import cache

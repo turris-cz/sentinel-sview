@@ -6,23 +6,21 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
-	<div class="col-lg-12 pb-3" align="center">
-		{{ map_box("world_map", "Most evil countries", map_scores) }}
+	<div class="col">
+		{{ line_box("top_passwords_popularity", "Top passwords popularity", top_passwords_popularity.data, "day", top_passwords_popularity.ykeys, top_passwords_popularity.labels) }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers", "All the bitches during the time", attackers, "day", "count", "Unique IP addresses") }}
+		{{ data_box("Top passwords", top_passwords_long, "password") }}
+	</div>
+	<div class="col">
+		{{ data_box("Top usernames", top_usernames_long, "username") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{% call(data_item) data_box("Most evil countries", top_countries, "country") -%}
-			{{ country_code_item(data_item) }}
-		{%- endcall %}
-	</div>
-	<div class="col">
-		{{ data_box("Top passwords", top_passwords, "password") }}
+		{{ pair_data_box("Top username / password combinations", top_combinations_long, "username", "password") }}
 	</div>
 </div>
 {% endblock %}
