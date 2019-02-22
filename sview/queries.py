@@ -182,7 +182,7 @@ _top_passwords_popularity = """
                     password <> '\n'
                 GROUP BY password
                 ORDER BY count_inner DESC
-                LIMIT 10
+                LIMIT :top_n
             ) AS foo
         )
     GROUP BY day, password
@@ -219,6 +219,7 @@ QUERIES = {
     },
     "top_passwords_popularity": {
         "query": _top_passwords_popularity,
+        "params": {"top_n": _limit_dashboard},
         "post_process": _pp_passwords_to_multiline_data,
     },
 }
