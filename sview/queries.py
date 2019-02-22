@@ -70,6 +70,10 @@ _passwords = """
     WHERE
         password IS NOT NULL
         AND
+        password <> ''
+        AND
+        password <> '\n'
+        AND
         ts > :since
     GROUP BY password
     HAVING count(password) > 5
@@ -83,6 +87,10 @@ _usernames = """
     FROM minipot_telnet
     WHERE
         username IS NOT NULL
+        AND
+        username <> ''
+        AND
+        username <> '\n'
         AND
         ts > :since
     GROUP BY username
@@ -112,7 +120,15 @@ _combinations = """
     WHERE
         username IS NOT NULL
         AND
+        username <> ''
+        AND
+        username <> '\n'
+        AND
         password IS NOT NULL
+        AND
+        password <> ''
+        AND
+        password <> '\n'
         AND
         ts > :since
     GROUP BY username, password
@@ -162,6 +178,8 @@ _top_passwords_popularity = """
                     password IS NOT NULL
                     AND
                     password <> ''
+                    AND
+                    password <> '\n'
                 GROUP BY password
                 ORDER BY count_inner DESC
                 LIMIT 10
