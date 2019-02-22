@@ -24,7 +24,9 @@ def create_app(additional_config=None):
     setup_logging()
 
     from .dashboard import dashboard
+    from .opendata import opendata
     app.register_blueprint(dashboard)
+    app.register_blueprint(opendata, url_prefix="/opendata")
 
     from .extensions import babel
     from .extensions import cache
