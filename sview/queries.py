@@ -59,6 +59,10 @@ def _pp_passwords_to_multiline_data(data):
     }
 
 
+def _as_map_data(data, key_key, val_key):
+    return {i[key_key]: i[val_key] for i in data}
+
+
 _passwords = """
     SELECT
         password, count(password) AS count
@@ -190,6 +194,7 @@ QUERIES = {
     "map_scores": {
         "query": _map_scores,
         "params": lambda: {"since": 0},
+        "post_process": lambda d: _as_map_data(d, "country", "count"),
     },
     "attackers": {
         "query": _attackers,
