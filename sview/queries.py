@@ -193,7 +193,7 @@ _top_countries_trends = """
     SELECT
         to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
         country,
-        COUNT(country) as count
+        COUNT(DISTINCT ip) as count
     FROM minipot_telnet
     WHERE
         country IN (
