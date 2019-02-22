@@ -34,6 +34,16 @@ def queue_queries():
 
 
 @click.command()
+@click.argument("name", nargs=-1, required=True)
+@with_appcontext
+def queue_query(name):
+    """Add all cached queries to the queue"""
+    for k in name:
+        click.echo("Queuing: {}".format(k))
+        load_data_from_template.queue(k)
+
+
+@click.command()
 @with_appcontext
 def check_redis():
     """Check state of data in redis"""
@@ -72,6 +82,7 @@ def _human_readable_bytes(size):
 def register_cli_commands(app):
     app.cli.add_command(clear_cache)
     app.cli.add_command(queue_queries)
+    app.cli.add_command(queue_query)
     app.cli.add_command(check_redis)
 
 
