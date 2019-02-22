@@ -29,63 +29,32 @@ def ts_this_year():
     return int(tr.timestamp())
 
 
-def _pp_passwords_to_multiline_data(data):
+def _as_multiline_graph_data(data, time_key, val_key, group_by):
     tmp = {}
     result = []
-    passwords = set()
+    groups = set()
 
     for i in data:
-        if not i["day"] in tmp:
-            tmp[i["day"]] = {}
+        if not i[time_key] in tmp:
+            tmp[i[time_key]] = {}
 
-        tmp[i["day"]][i["password"]] =  i["count"]
-        passwords.add(i["password"])
+        tmp[i[time_key]][i[group_by]] = i[val_key]
+        groups.add(i[group_by])
 
-    # Simply make one "official" order of the passwords for the rest of function
-    passwords = [p for p in passwords]
-
-    for key in sorted(tmp):
-        d = {
-            "day": key,
-        }
-        for i, pwd in enumerate(passwords):
-            d[i] = tmp[key][pwd] if pwd in tmp[key] else 0
-        result.append(d)
-
-    return {
-        "labels": passwords,
-        "ykeys": [i for i in range(len(passwords))],
-        "data": result,
-    }
-
-
-def _pp_countries_to_multiline_data(data):
-    # TODO: Refactor this function and _pp_passwords_to_multiline_data
-    # to something generic and reusable
-    tmp = {}
-    result = []
-    countries = set()
-
-    for i in data:
-        if not i["day"] in tmp:
-            tmp[i["day"]] = {}
-
-        tmp[i["day"]][i["country"]] =  i["count"]
-        countries.add(i["country"])
-
-    countries = [p for p in countries]
+    # Simply make one "official" order of the grouped variable for the rest of function
+    groups = [g for g in groups]
 
     for key in sorted(tmp):
-        d = {
-            "day": key,
+        item_dict = {
+            time_key: key,
         }
-        for i, pwd in enumerate(countries):
-            d[i] = tmp[key][pwd] if pwd in tmp[key] else 0
-        result.append(d)
+        for i, g in enumerate(groups):
+            item_dict[i] = tmp[key][g] if g in tmp[key] else 0
+        result.append(item_dict)
 
     return {
-        "labels": countries,
-        "ykeys": [i for i in range(len(countries))],
+        "labels": groups,
+        "ykeys": [i for i in range(len(groups))],
         "data": result,
     }
 
@@ -289,11 +258,11 @@ QUERIES = {
     "attackers_trends": {
         "query": _top_countries_trends,
         "params": {"top_n": _limit_dashboard},
-        "post_process": _pp_countries_to_multiline_data,
+        "post_process": lambda d: _as_multiline_graph_data(d, "day", "count", "country"),
     },
     "top_passwords_popularity": {
         "query": _top_passwords_popularity,
         "params": {"top_n": _limit_dashboard},
-        "post_process": _pp_passwords_to_multiline_data,
+        "post_process": lambda d: _as_multiline_graph_data(d, "day", "count", "password"),
     },
 }
