@@ -241,6 +241,10 @@ QUERIES = {
         "query": _passwords,
         "params": lambda: {"limit": _limit_long, "since": 0},
     },
+    "top_passwords_today": {
+        "query": _passwords,
+        "params": lambda: {"limit": _limit_long, "since": ts_today()},
+    },
     "top_usernames": {
         "query": _usernames,
         "params": lambda: {"limit": _limit_dashboard, "since": 0},

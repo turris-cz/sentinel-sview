@@ -116,3 +116,19 @@
 		</div>
 	</div>
 {%- endmacro -%}
+{%- macro await_job(url, job_id) -%}
+	{% if job_id %}
+	<div id="await_job_alert" class="alert alert-danger d-none" role="alert"></div>
+	<div id="await_job_spinner" class="d-block">
+		<div class="spinner-border text-primary" role="status">
+			<span class="sr-only">Loading...</span>
+		</div>
+		Please, wait for data being loaded...
+	</div>
+	<script type="text/javascript">
+		await_job("{{ url }}", "{{ job_id }}");
+	</script>
+	{% else %}
+		{{ caller() }}
+	{% endif %}
+{%- endmacro -%}

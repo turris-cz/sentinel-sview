@@ -1,3 +1,4 @@
+{%- from "_snippets.html" import await_job with context -%}
 {%- from "_snippets.html" import data_box with context -%}
 {%- from "_snippets.html" import pair_data_box with context -%}
 {%- from "_snippets.html" import map_box with context -%}
@@ -6,49 +7,18 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1 class="display-4">{{ ip }}</h1>
-{% if await_job %}
-<div id="status_alert" class="alert alert-danger d-none" role="alert"></div>
-<div id="spinner" class="d-block">
-	<div class="spinner-border text-primary" role="status">
-		<span class="sr-only">Loading...</span>
+{% call await_job(url_for(".ip_details_wait"), job_id) %}
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{{ line_box("attacker_activity", "Attacker activity", data.attacker_activity, "day", "count", "Events") }}
+		</div>
 	</div>
-	Please, wait for data being loaded...
-</div>
-{% else %}
-<div class="row">
-	<div class="col-lg-12 pb-3" align="center">
-		{{ line_box("attacker_activity", "Attacker activity", data.attacker_activity, "day", "count", "Events") }}
+	{% if data.attacker_passwords %}
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{{ data_box("Attacker's passwords", data.attacker_passwords, "password") }}
+		</div>
 	</div>
-</div>
-{% if data.attacker_passwords %}
-<div class="row">
-	<div class="col-lg-12 pb-3" align="center">
-		{{ data_box("Attacker's passwords", data.attacker_passwords, "password") }}
-	</div>
-</div>
-{% endif %}
-{% endif %}
-{% endblock %}
-{%- block body_end %}
-{% if await_job %}
-<script type="text/javascript">
-function poll_success(data) {
-	if ("job_done" in data) {
-		if (data["job_done"] == true) {
-			//alert("Reloading...");
-			window.location.reload();
-		}
-	}
-}
-
-function error(data) {
-	console.log(data.responseJSON["error"]);
-	$("#status_alert").html(data.responseJSON["error"]);
-	$("#status_alert").removeClass("d-none").addClass("d-block");
-	$("#spinner").addClass("d-none").removeClass("d-block");
-}
-
-window.setInterval(check_status, 1000, "{{ url_for(".ip_details_wait") }}", {"job_id": "{{ await_job }}"}, poll_success, error);
-</script>
-{% endif %}
+	{% endif %}
+{% endcall %}
 {% endblock %}

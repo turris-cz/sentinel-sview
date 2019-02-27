@@ -1,10 +1,9 @@
-from flask import request, render_template, jsonify
+from flask import render_template
 from flask import Blueprint
 
-from .extensions import rq
-
-from .jobs import run_job, attacker_detail
 from .data_helpers import get_data
+from .job_helpers import run_job, common_await_view
+from .jobs import attacker_detail
 
 
 attackers = Blueprint("attackers", __name__)
@@ -26,23 +25,11 @@ def index():
 
 @attackers.route("/details/ip/<string:ip>")
 def ip_details(ip):
-    data, await_job = run_job("attackers:details:{}".format(ip), attacker_detail, ip=ip)
+    data, job_id = run_job("attackers:details:{}".format(ip), attacker_detail, ip=ip)
 
-    return render_template("attackers/detail.html", await_job=await_job, ip=ip, data=data)
+    return render_template("attackers/detail.html", job_id=job_id, ip=ip, data=data)
 
 
 @attackers.route("/await", methods=["POST"])
 def ip_details_wait():
-    job_id = request.form.get("job_id")
-    job = rq.get_queue().fetch_job(job_id)
-
-    if not job:
-        return jsonify({"error": "Waiting for nonexistent job"}), 404
-
-    if job.is_failed:
-        return jsonify({"error": "Server error during request processing"}), 500
-
-    if job.is_finished:
-        return jsonify({"job_done": True})
-    else:
-        return jsonify({"job_done": False})
+    return common_await_view()
