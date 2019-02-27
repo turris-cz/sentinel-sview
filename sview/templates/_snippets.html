@@ -13,8 +13,11 @@
 		{{ data }}
 	{%- endif -%}
 {%- endmacro -%}
+{%- macro country_code_flag(cc) -%}
+	<span class="flag-icon flag-icon-{{ cc|lower }}"></span>
+{%- endmacro -%}
 {%- macro country_code_item(data) -%}
-	<span class="flag-icon flag-icon-{{ data|lower }}"></span>&nbsp;&nbsp;<abbr title="{{data|uncc}}">{{ data }}</abbr>
+	{{ country_code_flag(data) }}&nbsp;&nbsp;<abbr title="{{data|uncc}}">{{ data }}</abbr>
 {%- endmacro -%}
 {%- macro data_box(name, source, data_attr) -%}
 	<div class="card mb-3 border">
