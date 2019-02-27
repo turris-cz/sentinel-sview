@@ -1,10 +1,9 @@
 import json
 
-from .extensions import db
-from .extensions import redis
+from .extensions import db, redis
 
 
-def query_to_json(query, params=None, post_process=None):
+def process_query(query, params=None, post_process=None):
     if not params:
         query_params = None
     elif callable(params):
@@ -25,6 +24,11 @@ def query_to_json(query, params=None, post_process=None):
         if returned:
             result = returned
 
+    return result
+
+
+def query_to_json(query, params=None, post_process=None):
+    result = process_query(query, params, post_process)
     return json.dumps(result)
 
 
