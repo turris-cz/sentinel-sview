@@ -1,4 +1,4 @@
-from .extensions import redis, rq
+from .extensions import rq
 
 from .queries import QUERIES
 
@@ -21,22 +21,3 @@ def attacker_detail(**kwargs):
         "attacker_activity": process_query(_attacker_activity_during_time, params=kwargs),
         "attacker_passwords": process_query(_attacker_passwords, params=kwargs),
     }
-
-
-def run_job(handler, job_function,  **kwargs):
-    def _queue_job(job_function, **kw):
-        job = job_function.queue(**kw)
-        redis.set(handler, job.id, ex=job.result_ttl)
-        return job.id
-
-    job_id = redis.get(handler)
-    if job_id:
-        job_id = job_id.decode("UTF-8")
-    else:
-        return None, _queue_job(job_function, **kwargs)
-
-    job = rq.get_queue().fetch_job(job_id)
-    if not job:
-        return None, _queue_job(job_function, **kwargs)
-
-    return job.result, None
