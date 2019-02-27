@@ -32,8 +32,8 @@
 				<div class="collapse navbar-collapse show" id="main-menu">
 					<ul class="navbar-nav">
 						{{ nav_link("dashboard.index", _("Home")) }}
-						{{ nav_link("attackers.index", _("Attackers")) }}
-						{{ nav_link("passwords.index", _("Passwords")) }}
+						{{ nav_link("attackers.index", _("Attackers"), per_bp=True) }}
+						{{ nav_link("passwords.index", _("Passwords", per_bp=True)) }}
 						{{ nav_link("opendata.index", _("Open data")) }}
 					</ul>
 				</div>
