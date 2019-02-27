@@ -13,6 +13,7 @@ def index():
         "map_scores",
         "attackers_trends",
         "top_countries_long",
+        "top_ips_long",
     ]
 
     data = {k: get_data(k) for k in data_keys}

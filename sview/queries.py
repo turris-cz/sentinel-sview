@@ -113,6 +113,20 @@ _countries = """
     LIMIT :limit
     """
 
+_attackers_ips = """
+    SELECT
+        ip, count(ip) AS count
+    FROM minipot_telnet
+    WHERE
+        ip IS NOT NULL
+        AND
+        ts > :since
+    GROUP BY ip
+    HAVING count(ip) > 5
+    ORDER BY count DESC
+    LIMIT :limit
+    """
+
 _combinations = """
     SELECT
         username, password, count(*) AS count
@@ -241,6 +255,10 @@ QUERIES = {
     },
     "top_countries_long": {
         "query": _countries,
+        "params": lambda: {"limit": _limit_long, "since": 0},
+    },
+    "top_ips_long": {
+        "query": _attackers_ips,
         "params": lambda: {"limit": _limit_long, "since": 0},
     },
     "top_combinations_long": {
