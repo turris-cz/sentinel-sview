@@ -284,3 +284,30 @@ QUERIES = {
         "post_process": lambda d: _as_multiline_graph_data(d, "day", "count", "password"),
     },
 }
+
+_attacker_activity_during_time = """
+    SELECT
+        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
+        COUNT(*) as count
+    FROM minipot_telnet
+    WHERE
+        ip = :ip
+    GROUP BY day
+    ORDER BY day
+    """
+
+_attacker_passwords = """
+    SELECT
+        password, count(password) AS count
+    FROM minipot_telnet
+    WHERE
+        password IS NOT NULL
+        AND
+        password <> ''
+        AND
+        password <> '\n'
+        AND
+        ip = :ip
+    GROUP BY password
+    ORDER BY count DESC
+    """

@@ -17,3 +17,13 @@ function draw_map(elem_handler, scores) {
 		}
 	});
 }
+
+function check_status(url, data, success, error) {
+	$.ajax({
+		method: "POST",
+		url: url,
+		data: data,
+		success: success,
+		error: error
+	});
+}
