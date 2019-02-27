@@ -24,7 +24,11 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ data_box("Most evil IP addresses", top_ips_long, "ip") }}
+		{% call(data_item) data_box("Most evil IP addresses", top_ips_long, "ip") -%}
+			<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
+				{{ data_item }}
+			</a>
+		{%- endcall %}
 	</div>
 </div>
 {% endblock %}
