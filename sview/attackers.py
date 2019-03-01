@@ -26,6 +26,9 @@ def index():
 @attackers.route("/details/ip/<string:ip>")
 def ip_details(ip):
     data, job_id = run_job("attackers:details:{}".format(ip), attacker_detail, ip=ip)
+    if data:
+        if not data["found"]:
+            return render_template("attackers/not_found.html", ip=ip)
 
     return render_template("attackers/detail.html", job_id=job_id, ip=ip, data=data)
 
