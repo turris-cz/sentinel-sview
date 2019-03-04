@@ -315,3 +315,37 @@ _attacker_passwords = """
     GROUP BY password
     ORDER BY count DESC
     """
+
+_password_during_time = """
+    SELECT
+        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
+        COUNT(*) as count
+    FROM minipot_telnet
+    WHERE
+        password = :password
+    GROUP BY day
+    ORDER BY day
+    """
+
+_password_by_attackers = """
+    SELECT
+        ip,
+        COUNT(ip) AS count
+    FROM minipot_telnet
+    WHERE
+        password = :password
+    GROUP BY ip
+    HAVING COUNT(ip) > 5
+    ORDER BY count DESC
+    """
+
+_passwords_logins = """
+    SELECT
+        username,
+        COUNT(username) AS count
+    FROM minipot_telnet
+    WHERE
+        password = :password
+    GROUP BY username
+    ORDER BY count DESC
+    """

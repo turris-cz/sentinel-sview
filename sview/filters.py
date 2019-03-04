@@ -1,4 +1,5 @@
 import os
+import base64
 
 import pycountry
 
@@ -23,6 +24,11 @@ def country_code_to_name(cc):
     return c.common_name if hasattr(c, "common_name") else c.name
 
 
+def base64_encode(s):
+    return base64.b64encode(bytes(s, "UTF-8"))
+
+
 def register_filters(app):
     app.jinja_env.filters["autoversion"] = autoversion_filter
     app.jinja_env.filters["uncc"] = country_code_to_name
+    app.jinja_env.filters["b64"] = base64_encode
