@@ -1,0 +1,31 @@
+{%- from "_snippets.html" import await_job with context -%}
+{%- from "_snippets.html" import data_box with context -%}
+{%- from "_snippets.html" import pair_data_box with context -%}
+{%- from "_snippets.html" import map_box with context -%}
+{%- from "_snippets.html" import line_box with context -%}
+{%- from "_snippets.html" import country_code_item with context -%}
+{% extends "layout.html" %}
+{% block body %}
+<h1 class="display-4">{{ password }}</h1>
+{% call await_job(url_for(".password_details_wait"), job_id) %}
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{{ line_box("password_in_time", "Password during time", data.password_during_time, "day", "count", "IPs") }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{{ data_box("Password's logins", data.passwords_logins, "username") }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{% call(data_item) data_box("Password by attackers", data.password_by_attackers, "ip") %}
+				<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
+					{{ data_item }}
+				</a>
+			{% endcall %}
+		</div>
+	</div>
+{% endcall %}
+{% endblock %}
