@@ -1,9 +1,11 @@
 from flask import jsonify, request
 
 from .extensions import redis, rq
+from .rlimit import rlimit
 
 
 def run_job(handler, job_function,  **kwargs):
+    @rlimit
     def _queue_job(job_function, **kw):
         job = job_function.queue(**kw)
         redis.set(handler, job.id, ex=job.result_ttl)
