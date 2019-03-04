@@ -1,4 +1,5 @@
 import base64
+import binascii
 
 from flask import render_template
 from flask import Blueprint
@@ -25,9 +26,18 @@ def index():
     return render_template("passwords/home.html", **data)
 
 
+def _decode_password(encoded_password):
+    try:
+        return str(base64.b64decode(encoded_password), "UTF-8")
+    except binascii.Error:
+        return None
+
+
 @passwords.route("/details/<string:encoded_password>")
 def password_details(encoded_password):
-    password = str(base64.b64decode(encoded_password), "UTF-8")
+    password = _decode_password(encoded_password)
+    if not password:
+        return "Unable to decode password", 400
 
     data, job_id = run_job("passwords:details:{}".format(encoded_password),
                            password_detail,
