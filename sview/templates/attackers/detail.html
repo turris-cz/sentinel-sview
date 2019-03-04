@@ -16,7 +16,11 @@
 	{% if data.attacker_passwords %}
 	<div class="row">
 		<div class="col-lg-12 pb-3" align="center">
-			{{ data_box("Attacker's passwords", data.attacker_passwords, "password") }}
+			{% call(data_item) data_box("Attacker's passwords", data.attacker_passwords, "password") %}
+				<a href="{{ url_for("passwords.password_details", encoded_password=data_item|b64) }}">
+					{{ data_item }}
+				</a>
+			{% endcall %}
 		</div>
 	</div>
 	{% endif %}
