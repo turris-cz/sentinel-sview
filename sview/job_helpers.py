@@ -21,19 +21,18 @@ def run_job(handler, job_function,  **kwargs):
     if not job:
         return None, _queue_job(job_function, **kwargs)
 
-    # This if solves a weird behavior of page reloads. If job fails, it is
-    # reported trough AJAX and the error message is shown. But, if user reloads
-    # page there are only empty data. This if reports failed job in the same
-    # manner as started job.  After this, macro runs the AJAX request and this
-    # request is able to dig out the fact that job's been failed.
+    # Data are returned only in case that job finished.  Other cases will
+    # generate the AJAX call to determine what happened.
     #
-    # I can't decide if this is hack or nice solution. It solves problem and
-    # reuse a bunch of code. The straightforward approach needs more variables
-    # or more checks in the view function. So, for now, I vote for this one
-    if job.is_failed:
-        return None, job.id
+    # I can't decide if this is hack or nice solution. It solves all the
+    # problems and reuses a bunch of code. The straightforward approach needs
+    # more variables or more checks in the view function. So, for now, I vote
+    # for this one
+    if job.is_finished:
+        return job.result, None
 
-    return job.result, None
+    return None, job.id
+
 
 
 def common_await_view(post_name="job_id"):
