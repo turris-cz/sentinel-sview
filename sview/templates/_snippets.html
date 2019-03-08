@@ -123,10 +123,12 @@
 	{% if job_id %}
 	<div id="await_job_alert" class="alert alert-danger d-none" role="alert"></div>
 	<div id="await_job_spinner" class="d-block">
-		<div class="spinner-border text-primary" role="status">
+		<div id="await_job_spinner_spinner" class="spinner-border text-primary" role="status">
 			<span class="sr-only">Loading...</span>
 		</div>
-		Please, wait for data being loaded...
+		<span id="await_job_status">
+			Please, wait for data being loaded...
+		</span>
 	</div>
 	<script type="text/javascript">
 		await_job("{{ url }}", "{{ job_id }}");

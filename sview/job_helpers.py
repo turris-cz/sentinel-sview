@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, request
 
 from .extensions import redis, rq
@@ -34,6 +36,13 @@ def run_job(handler, job_function,  **kwargs):
     return None, job.id
 
 
+def _job_waits_too_long(started):
+    now = datetime.datetime.utcnow()
+    if now - started > datetime.timedelta(seconds=10):
+        return True
+
+    return False
+
 
 def common_await_view(post_name="job_id"):
     job_id = request.form.get(post_name)
@@ -45,10 +54,27 @@ def common_await_view(post_name="job_id"):
     if job.is_failed:
         return jsonify({"error": "Server error during request processing"}), 500
 
+    if job.is_started:
+        response = {
+            "job_done": False,
+            "job_started": True,
+            "status": "Processing of your request has been started...",
+        }
+        return jsonify(response)
+
     if job.is_finished:
         return jsonify({"job_done": True})
-    else:
-        return jsonify({"job_done": False})
+
+    if _job_waits_too_long(job.enqueued_at):
+        response = {
+            "job_done": False,
+            "job_started": False,
+            "warning": "Your request is waiting too long for processing. There may be a problem with server.",
+        }
+        return jsonify(response)
+
+    # This may be a dead branch of code, but it's a bullet-proof solution.
+    return jsonify({"job_done": False, "job_started": False})
 
 
 def check_and_mark_data_with_found(d):

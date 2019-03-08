@@ -38,6 +38,18 @@ function await_job_success(data) {
 			window.location.reload();
 		}
 	}
+	if ("status" in data) {
+		$("#await_job_status").html(data["status"]);
+	}
+	if ("warning" in data) {
+		$("#await_job_spinner_spinner").removeClass("text-primary text-success").addClass("text-warning");
+		$("#await_job_status").html(data["warning"]);
+	}
+	if ("job_started" in data) {
+		if (data["job_started"] == true) {
+			$("#await_job_spinner_spinner").removeClass("text-primary text-warning").addClass("text-success");
+		}
+	}
 }
 
 function await_job_error(data) {
