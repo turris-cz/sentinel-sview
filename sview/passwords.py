@@ -29,7 +29,7 @@ def index():
 def _decode_password(encoded_password):
     try:
         return str(base64.b64decode(encoded_password), "UTF-8")
-    except binascii.Error:
+    except (binascii.Error, UnicodeDecodeError):
         return None
 
 
