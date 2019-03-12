@@ -1,7 +1,7 @@
 from .extensions import rq
 
 from .data_helpers import get_and_store, process_query
-from .job_helpers import check_and_mark_data_with_found
+from .job_helpers import mark_data_with_found
 
 from .queries import QUERIES
 from .queries import _attacker_activity_during_time, _attacker_passwords
@@ -23,7 +23,7 @@ def attacker_detail(**kwargs):
         "attacker_passwords": process_query(_attacker_passwords, params=kwargs),
     }
 
-    check_and_mark_data_with_found(res)
+    mark_data_with_found(res)
 
     return res
 
@@ -36,6 +36,6 @@ def password_detail(**kwargs):
         "passwords_logins": process_query(_passwords_logins, params=kwargs),
     }
 
-    check_and_mark_data_with_found(res)
+    mark_data_with_found(res)
 
     return res
