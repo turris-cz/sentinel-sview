@@ -77,7 +77,7 @@ def common_await_view(post_name="job_id"):
     return jsonify({"job_done": False, "job_started": False})
 
 
-def check_and_mark_data_with_found(d):
+def mark_data_with_found(d):
     found = True
     for v in d.values():
         if v:
