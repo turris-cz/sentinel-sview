@@ -1,7 +1,7 @@
 from flask import render_template
 from flask import Blueprint
 
-from .data_helpers import get_data
+from .data_helpers import get_data, DBTask
 from .job_helpers import run_job, common_await_view
 from .jobs import attacker_detail
 
@@ -18,7 +18,8 @@ def index():
         "top_ips_long",
     ]
 
-    data = {k: get_data(k) for k in data_keys}
+    #data = {k: get_data(k) for k in data_keys}
+    data = {k: DBTask.fetch(k) for k in data_keys}
 
     return render_template("attackers/home.html", **data)
 

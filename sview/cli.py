@@ -34,6 +34,13 @@ def queue_queries():
 
 
 @click.command()
+@with_appcontext
+def xxx():
+    for k in QUERIES.keys():
+        load_data_from_template(k)
+
+
+@click.command()
 @click.argument("name", nargs=-1, required=True)
 @with_appcontext
 def queue_query(name):
@@ -84,6 +91,7 @@ def register_cli_commands(app):
     app.cli.add_command(queue_queries)
     app.cli.add_command(queue_query)
     app.cli.add_command(check_redis)
+    app.cli.add_command(xxx)
 
 
 def register_shell_context(app):
