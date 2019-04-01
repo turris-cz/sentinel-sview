@@ -14,6 +14,7 @@ def index():
     data_keys = [
         "map_scores",
         "attackers_trends",
+        "top_port_trends",
         "top_countries_long",
         "top_ips_long",
     ]

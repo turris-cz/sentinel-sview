@@ -229,6 +229,32 @@ _top_countries_trends = """
     ORDER BY day
 """
 
+_top_port_trends = """
+    SELECT
+        to_char(created_at, 'YYYY-MM-DD') AS day,
+        local_port,
+        COUNT(DISTINCT remote_address) as count
+    FROM router_loggedpacket
+    WHERE
+        local_port IN (
+            SELECT
+                local_port
+            FROM (
+                SELECT
+                    local_port,
+                    COUNT(local_port) AS count_inner
+                FROM router_loggedpacket
+                WHERE
+                     direction = 'I'
+                GROUP BY local_port
+                ORDER BY count_inner DESC
+                LIMIT :top_n
+            ) AS foo
+        )
+    GROUP BY day, local_port
+    ORDER BY day
+"""
+
 _limit_dashboard = 15
 _limit_long = 30
 
@@ -286,6 +312,11 @@ QUERIES = {
         "query": _top_passwords_popularity,
         "params": {"top_n": _limit_dashboard},
         "post_process": lambda d: _as_multiline_graph_data(d, "day", "count", "password"),
+    },
+    "top_port_trends": {
+        "query": _top_port_trends,
+        "params": {"top_n": _limit_dashboard},
+        "post_process": lambda d: _as_multiline_graph_data(d, "day", "count", "local_port"),
     },
 }
 
