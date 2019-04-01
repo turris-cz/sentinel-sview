@@ -98,6 +98,7 @@
 			<script type="text/javascript">
 				new Morris.Line({
 					element: '{{ id }}',
+					smooth: false,
 					xkey: '{{ xkey }}',
 					{%- if ykey is string %}
 					ykeys: ['{{ ykey }}'],
