@@ -11,7 +11,8 @@ attackers_by_day = """
 
 attacker_ips = """
     SELECT
-        ip, count(ip) AS count
+        ip,
+        count(ip) AS count
     FROM minipot_telnet
     WHERE
         ip IS NOT NULL
