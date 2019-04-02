@@ -4,7 +4,7 @@ from flask import current_app
 from flask.cli import with_appcontext
 
 from .jobs import load_data_from_template
-from .queries import QUERIES
+from .queries import PRECACHED_QUERIES
 
 from .extensions import db, redis
 
@@ -28,7 +28,7 @@ def clear_cache():
 @with_appcontext
 def queue_queries():
     """Add all cached queries to the queue"""
-    for k in QUERIES.keys():
+    for k in PRECACHED_QUERIES.keys():
         click.echo("Queuing: {}".format(k))
         load_data_from_template.queue(k)
 
@@ -51,7 +51,7 @@ def check_redis():
     available = []
     missing = []
 
-    for k in QUERIES.keys():
+    for k in PRECACHED_QUERIES.keys():
         data = redis.get(k)
         if data:
             available.append(k)
