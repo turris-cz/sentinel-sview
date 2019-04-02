@@ -112,6 +112,11 @@
 					{% endif %}
 					resize: true,
 					data: {{ source|tojson }}
+				}).on('click', function(i, row){
+					if ("day" in row) {
+						window.location = "{{ url_for("attackers.day_details", day=None) }}" + row["day"];
+					}
+					console.log(i, row);
 				});
 			</script>
 		{% else %}

@@ -1,0 +1,26 @@
+{%- from "_snippets.html" import await_job with context -%}
+{%- from "_snippets.html" import data_box with context -%}
+{%- from "_snippets.html" import pair_data_box with context -%}
+{%- from "_snippets.html" import map_box with context -%}
+{%- from "_snippets.html" import line_box with context -%}
+{%- from "_snippets.html" import country_code_item with context -%}
+{% extends "layout.html" %}
+{% block body %}
+<h1 class="display-4">Details of the day {{ day }}</h1>
+{% call await_job(job_id) %}
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{{ map_box("world_map", "Most evil countries", data.countries_map) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 pb-3" align="center">
+			{% call(data_item) data_box("Top attackers", data.attackers, "ip") %}
+				<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
+					{{ data_item }}
+				</a>
+			{% endcall %}
+		</div>
+	</div>
+{% endcall %}
+{% endblock %}

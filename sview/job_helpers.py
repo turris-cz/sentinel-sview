@@ -6,8 +6,8 @@ from .extensions import redis, rq
 from .rlimit import rlimit
 
 
-def run_job(handler, job_function,  **kwargs):
-    @rlimit
+def run_job(handler, job_function, _count=True, **kwargs):
+    @rlimit(_count)
     def _queue_job(job_function, **kw):
         job = job_function.queue(**kw)
         redis.set(handler, job.id, ex=job.result_ttl)

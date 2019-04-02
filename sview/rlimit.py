@@ -34,14 +34,17 @@ class RLimit():
         redis.expire(self.key, self.ban_time)
 
 
-def rlimit(f):
-    @wraps(f)
-    def _rlimit(*args, **kwargs):
-        rl = RLimit()
-        if rl.is_enabled():
-            rl.count()
-            return f(*args, **kwargs)
+def rlimit(count):
+    def _decorator(f):
+        @wraps(f)
+        def _rlimit(*args, **kwargs):
+            rl = RLimit()
+            if rl.is_enabled():
+                if count:
+                    rl.count()
+                return f(*args, **kwargs)
 
-        return abort(400, "You hit the rate limit")
+            return abort(400, "You hit the rate limit")
 
-    return _rlimit
+        return _rlimit
+    return _decorator
