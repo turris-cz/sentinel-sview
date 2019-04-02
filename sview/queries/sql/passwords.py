@@ -1,6 +1,7 @@
 top_passwords = """
     SELECT
-        password, count(password) AS count
+        password,
+        count(password) AS count
     FROM minipot_telnet
     WHERE
         password IS NOT NULL
@@ -18,7 +19,8 @@ top_passwords = """
 
 top_usernames = """
     SELECT
-        username, count(username) AS count
+        username,
+        count(username) AS count
     FROM minipot_telnet
     WHERE
         username IS NOT NULL
@@ -36,7 +38,9 @@ top_usernames = """
 
 top_combinations = """
     SELECT
-        username, password, count(*) AS count
+        username,
+        password,
+        count(*) AS count
     FROM minipot_telnet
     WHERE
         username IS NOT NULL
@@ -112,7 +116,8 @@ logins_of_password = """
 
 passwords_of_attacker = """
     SELECT
-        password, count(password) AS count
+        password,
+        count(password) AS count
     FROM minipot_telnet
     WHERE
         password IS NOT NULL

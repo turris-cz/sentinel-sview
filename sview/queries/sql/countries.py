@@ -1,6 +1,7 @@
 top_countries = """
     SELECT
-        country, count(country) AS count
+        country,
+        count(country) AS count
     FROM minipot_telnet
     WHERE
         country IS NOT NULL
@@ -14,7 +15,8 @@ top_countries = """
 
 map_overview = """
     SELECT
-        country, count(country) AS count
+        country,
+        count(country) AS count
     FROM minipot_telnet
     WHERE
         country IS NOT NULL
