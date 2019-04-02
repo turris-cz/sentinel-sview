@@ -5,7 +5,7 @@ from flask import render_template
 from flask import Blueprint
 
 from .data_helpers import get_data
-from .job_helpers import run_job, common_await_view
+from .job_helpers import run_job
 from .jobs import password_detail
 
 
@@ -47,8 +47,3 @@ def password_details(encoded_password):
             return render_template("passwords/not_found.html", password=password)
 
     return render_template("passwords/detail.html", job_id=job_id, password=password, data=data)
-
-
-@passwords.route("/await", methods=["POST"])
-def password_details_wait():
-    return common_await_view()

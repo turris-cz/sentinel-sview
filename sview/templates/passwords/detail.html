@@ -7,7 +7,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1 class="display-4">{{ password }}</h1>
-{% call await_job(url_for(".password_details_wait"), job_id) %}
+{% call await_job(job_id) %}
 	<div class="row">
 		<div class="col-lg-12 pb-3" align="center">
 			{{ line_box("password_in_time", "Password during time", data.password_during_time, "day", "count", "IPs") }}

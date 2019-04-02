@@ -7,7 +7,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1 class="display-4">{{ ip }}</h1>
-{% call await_job(url_for(".ip_details_wait"), job_id) %}
+{% call await_job(job_id) %}
 	<div class="row">
 		<div class="col-lg-12 pb-3" align="center">
 			{{ line_box("attacker_activity", "Attacker activity", data.attacker_activity, "day", "count", "Events") }}
