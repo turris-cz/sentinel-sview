@@ -2,8 +2,11 @@
 
 from setuptools import setup, find_packages
 
+VERSION = "0.1"
+
+
 setup(name="sview",
-      version="0.0",
+      version=VERSION,
       description="Turris:Sentinel - visualization app for Sentinel data",
       author="CZ.NIC, z.s.p.o.",
       author_email="packaging@turris.cz",
