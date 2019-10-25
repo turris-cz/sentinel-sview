@@ -21,9 +21,9 @@ Python Package Index requirements (including the development ones) are stated in
 - Set the configuration in `instance/local.cfg`. The default configuration
   can be found in `sview/default_settings.py`.
     - For postgres DB use syntax:
-    ```
-    SQLALCHEMY_DATABASE_URI = "postgresql://user:password@hostname/databasename"
-    ```
+        ```
+        SQLALCHEMY_DATABASE_URI = "postgresql://user:password@hostname/databasename"
+        ```
     - For non-debug run it is also needed to specify `SECRET_KEY`
 - Example database structure to work with can be seen in `dev/scheme.sql` and
   should be compatible with
