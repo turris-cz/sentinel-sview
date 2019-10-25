@@ -1,20 +1,26 @@
-## Files for packaging
+## .gitignore
+#
+
+# Files for packaging
 MANIFEST
 dist
 
-## Cache files and folders
+# Cache files and folders
 *.pyc
 __pycache__
 *.egg-info/
 
-## Tests
+# Tests
 .pytest_cache
 .coverage
 
-## Logs
+# Logs
 *.log
 
-## Flask
+# Flask
 .env
 instance/*
 !instance/.placeholder
+
+# uwsgi production deployment
+/wsgi.py
