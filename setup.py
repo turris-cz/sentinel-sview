@@ -22,6 +22,7 @@ setup(name="sview",
           "Flask-RQ2",
           "psycopg2-binary",
           "pycountry",
+          "python-dotenv",
       ],
       extras_require={
           "tests": [
@@ -29,9 +30,6 @@ setup(name="sview",
               "coverage",
               "pytest-cov",
               "flake8",
-          ],
-          "dev": [
-              "python-dotenv",
           ],
       }
       )
