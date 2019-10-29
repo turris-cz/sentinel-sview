@@ -18,6 +18,7 @@ Python Package Index requirements (including the development ones) are stated in
 - Establish python virtual environment (use
   [wrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) optionally)
   and install `sview` package. Consider using `-e` option: `pip install -e ./sview`
+- Create `.env` file with local environment variables (see `.env.example`)
 - Set the configuration in `instance/local.cfg`. The default configuration
   can be found in `sview/default_settings.py`.
     - For postgres DB use syntax:

@@ -1,2 +1,5 @@
+## .flaskenv
+#
+# flask environment file with global variables
+
 FLASK_APP="sview"
-FLASK_ENV=development
