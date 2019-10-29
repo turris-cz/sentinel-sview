@@ -30,7 +30,5 @@ Python Package Index requirements (including the development ones) are stated in
   [Dumper scheme](https://gitlab.labs.nic.cz/turris/sentinel/dumper/blob/master/scheme.sql)
 - Run the application using `flask run` (Use wsgi server for production!)
 - Run some workers using `flask rq worker`. (Using only `rq worker` would lack
-  any configuration  end up working outside of application context). See
-  [Running RQ Workers Under systemd](http://python-rq.org/patterns/systemd/)
-  for production deployment.
+  any configuration and would end up working outside the application context).
 - Populate Redis with initial database data using `flask queue-queries`
