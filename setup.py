@@ -10,6 +10,8 @@ setup(name="sview",
       url="https://gitlab.labs.nic.cz/turris/sentinel/sview",
       packages=[
           "sview",
+          "sview.queries",
+          "sview.queries.sql",
       ],
       install_requires=[
           "Flask",
