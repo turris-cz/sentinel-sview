@@ -31,5 +31,7 @@ setup(name="sview",
               "pytest-cov",
               "flake8",
           ],
-      }
-      )
+      },
+      zip_safe=False,
+      include_package_data=True,
+)
