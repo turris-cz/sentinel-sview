@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name="sview",
       version="0.0",
@@ -8,11 +8,7 @@ setup(name="sview",
       author="CZ.NIC, z.s.p.o.",
       author_email="admin@turris.cz",
       url="https://gitlab.labs.nic.cz/turris/sentinel/sview",
-      packages=[
-          "sview",
-          "sview.queries",
-          "sview.queries.sql",
-      ],
+      packages=find_packages(),
       install_requires=[
           "Flask",
           "Flask-Babel",
