@@ -7,6 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="shortcut icon" href="{{ url_for("static", filename="favicon.ico") }}" type="image/x-icon" />
 		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.min.css") }}" />
+		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/dark-mode.css") }}" />
 		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/all.min.css") }}" />
 		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="jvectormap/jquery-jvectormap.css") }}" />
 		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/morris.css") }}" />
@@ -35,6 +36,11 @@
 						{{ nav_link("attackers.index", _("Attackers"), per_bp=True) }}
 						{{ nav_link("passwords.index", _("Passwords"), per_bp=True) }}
 					</ul>
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input" id="darkSwitch" />
+						<label class="custom-control-label text-light" for="darkSwitch">Dark mode</label>
+					</div>
+					<script type="text/javascript" src="{{ url_for("static", filename="js/dark-mode-switch.js") }}"></script>
 				</div>
 			</nav>
 
