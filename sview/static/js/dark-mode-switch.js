@@ -8,14 +8,12 @@
  */
 
 const darkSwitch = document.getElementById('darkSwitch');
-window.addEventListener('load', () => {
-  if (darkSwitch) {
-    initTheme();
-    darkSwitch.addEventListener('change', () => {
-      resetTheme();
-    });
-  }
-});
+if (darkSwitch) {
+  initTheme();
+  darkSwitch.addEventListener('change', () => {
+    resetTheme();
+  });
+}
 
 
 /**
