@@ -7,7 +7,7 @@
 		{%- set active = "" %}
 	{%- endif %}
 						<li class="nav-item">
-							<a class="nav-link{{ active }}" {{ 'target="_blank"' if target_blank else '' }} href="{{ url_for(endpoint) }}">
+							<a class="nav-link{{ active }}" {%- if target_blank %} target="_blank" {%- endif %} href="{{ url_for(endpoint) }}">
 								{{ text }}
 							</a>
 						</li>
