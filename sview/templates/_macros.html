@@ -1,4 +1,4 @@
-{%- macro nav_link(endpoint, text, per_bp=False) -%}
+{%- macro nav_link(endpoint, text, per_bp=False, target=None) -%}
 	{%- if per_bp and request.endpoint.split(".")[0] == endpoint.split(".")[0] %}
 		{%- set active = " active" %}
 	{%- elif request.endpoint.startswith(endpoint) %}
@@ -7,7 +7,7 @@
 		{%- set active = "" %}
 	{%- endif %}
 						<li class="nav-item">
-							<a class="nav-link{{ active }}" href="{{ url_for(endpoint) }}">
+							<a class="nav-link{{ active }}" {{ 'target="' + target + '"' if target else '' }} href="{{ url_for(endpoint) }}">
 								{{ text }}
 							</a>
 						</li>
