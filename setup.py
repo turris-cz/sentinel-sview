@@ -10,7 +10,7 @@ setup(name="sview",
       description="Turris:Sentinel - visualization app for Sentinel data",
       author="CZ.NIC, z.s.p.o.",
       author_email="packaging@turris.cz",
-      url="https://gitlab.labs.nic.cz/turris/sentinel/sview",
+      url="https://gitlab.nic.cz/turris/sentinel/sview",
       packages=find_packages(),
       install_requires=[
           "Flask",
