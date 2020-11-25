@@ -39,6 +39,7 @@ def create_app(additional_config=None):
 
     from .extensions import babel
     from .extensions import cache
+    from .extensions import influx
     from .extensions import mail
     from .extensions import db
     from .extensions import migrate
@@ -47,6 +48,7 @@ def create_app(additional_config=None):
 
     babel.init_app(app)
     cache.init_app(app)
+    influx.init_app(app)
     mail.init_app(app)
     db.init_app(app)
     migrate.init_app(app)

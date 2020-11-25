@@ -3,7 +3,7 @@ from .extensions import rq
 from .data_helpers import get_and_store, process_query
 from .job_helpers import mark_data_with_found
 
-from .queries import PRECACHED_QUERIES
+from .queries import PRECACHED_QUERIES, DEFAULT_BACKEND
 
 from .queries.sql.attackers import attackers_activity_graph
 from .queries.sql.attackers import attackers_of_password
@@ -18,7 +18,8 @@ def load_data_from_template(resource_name):
     get_and_store(resource_name,
                   PRECACHED_QUERIES[resource_name]["query"],
                   params=PRECACHED_QUERIES[resource_name].get("params"),
-                  post_process=PRECACHED_QUERIES[resource_name].get("post_process"))
+                  post_process=PRECACHED_QUERIES[resource_name].get("post_process"),
+                  backend=PRECACHED_QUERIES[resource_name].get("backend", DEFAULT_BACKEND))
 
 
 @rq.job(result_ttl=300)

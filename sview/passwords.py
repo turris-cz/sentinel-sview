@@ -5,6 +5,7 @@ from flask import render_template
 from flask import Blueprint
 
 from .data_helpers import get_data
+from .extensions import influx
 from .job_helpers import run_job
 from .jobs import password_detail
 
