@@ -4,7 +4,7 @@ from .post_process import as_multiline_graph_data
 from .limits import limit_dashboard
 from .limits import limit_long
 
-from .sql.passwords import top_passwords
+from .flux.passwords import top_passwords
 from .sql.passwords import top_usernames
 from .sql.passwords import top_combinations
 from .sql.passwords import top_passwords_popularity
@@ -21,10 +21,12 @@ PRECACHED_QUERIES = {
     "top_passwords": {
         "query": top_passwords,
         "params": lambda: {"limit": limit_dashboard, "since": 0},
+        "backend": "influx",
     },
     "top_passwords_long": {
         "query": top_passwords,
         "params": lambda: {"limit": limit_long, "since": 0},
+        "backend": "influx",
     },
     "top_usernames": {
         "query": top_usernames,

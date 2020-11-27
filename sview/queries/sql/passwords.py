@@ -1,22 +1,3 @@
-top_passwords = """
-    SELECT
-        password,
-        count(password) AS count
-    FROM minipot_telnet
-    WHERE
-        password IS NOT NULL
-        AND
-        password <> ''
-        AND
-        password <> '\n'
-        AND
-        ts > :since
-    GROUP BY password
-    HAVING count(password) > 5
-    ORDER BY count DESC
-    LIMIT :limit
-    """
-
 top_usernames = """
     SELECT
         username,
