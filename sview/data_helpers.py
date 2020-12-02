@@ -6,7 +6,7 @@ from .queries import DEFAULT_BACKEND
 
 def process_query(query, params=None, post_process=None, backend=DEFAULT_BACKEND):
     if not params:
-        query_params = None
+        query_params = {}
     elif callable(params):
         query_params = params()
     else:

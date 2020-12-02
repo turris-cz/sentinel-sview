@@ -1,14 +1,3 @@
-attackers_by_day = """
-    SELECT
-        to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
-        COUNT(DISTINCT ip) as count
-    FROM minipot_telnet
-    WHERE
-        action = 'login'
-    GROUP BY day
-    ORDER BY day
-"""
-
 attackers_activity_graph = """
     SELECT
         to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,

@@ -9,7 +9,7 @@ from .flux.passwords import top_usernames
 from .flux.passwords import top_combinations
 from .sql.passwords import top_passwords_popularity
 
-from .sql.attackers import attackers_by_day
+from .flux.attackers import attackers_by_day
 from .flux.attackers import attacker_ips
 
 from .flux.countries import top_countries
@@ -66,6 +66,7 @@ PRECACHED_QUERIES = {
     },
     "attackers": {
         "query": attackers_by_day,
+        "backend": "influx",
     },
     "attackers_trends": {
         "query": top_countries_trends,
