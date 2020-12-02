@@ -9,21 +9,6 @@ attackers_by_day = """
     ORDER BY day
 """
 
-attacker_ips = """
-    SELECT
-        ip,
-        count(ip) AS count
-    FROM minipot_telnet
-    WHERE
-        ip IS NOT NULL
-        AND
-        ts > :since
-    GROUP BY ip
-    HAVING count(ip) > 5
-    ORDER BY count DESC
-    LIMIT :limit
-    """
-
 attackers_activity_graph = """
     SELECT
         to_char(date_trunc('day', to_timestamp(ts)), 'YYYY-MM-DD') AS day,
