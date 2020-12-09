@@ -7,7 +7,7 @@ from .limits import limit_long
 from .flux.passwords import top_passwords
 from .flux.passwords import top_usernames
 from .flux.passwords import top_combinations
-from .sql.passwords import top_passwords_popularity
+from .flux.passwords import top_passwords_popularity
 
 from .flux.attackers import attackers_by_day
 from .flux.attackers import attacker_ips
@@ -78,5 +78,6 @@ PRECACHED_QUERIES = {
         "query": top_passwords_popularity,
         "params": {"top_n": limit_dashboard},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
+        "backend": "influx",
     },
 }
