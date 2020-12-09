@@ -7,6 +7,10 @@ from .rlimit import rlimit
 
 
 def run_job(handler, job_function,  **kwargs):
+    """Enqueue a job or check its result when it is already enqueued.
+    Return either (job.result, None) when the job already finished or
+    (None, job.id) when it is still pending.
+    """
     @rlimit
     def _queue_job(job_function, **kw):
         job = job_function.queue(**kw)

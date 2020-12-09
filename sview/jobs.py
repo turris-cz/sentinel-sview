@@ -5,12 +5,11 @@ from .job_helpers import mark_data_with_found
 
 from .queries import PRECACHED_QUERIES, DEFAULT_BACKEND
 
-from .queries.sql.attackers import attackers_activity_graph
+from .queries.flux.attackers import attackers_activity_graph
 from .queries.sql.attackers import attackers_of_password
 
 from .queries.sql.passwords import password_activity_graph
 from .queries.sql.passwords import logins_of_password
-from .queries.sql.passwords import passwords_of_attacker
 
 
 @rq.job(result_ttl=10, timeout=600)
@@ -25,8 +24,7 @@ def load_data_from_template(resource_name):
 @rq.job(result_ttl=300)
 def attacker_detail(**kwargs):
     res = {
-        "attacker_activity": process_query(attackers_activity_graph, params=kwargs),
-        "attacker_passwords": process_query(passwords_of_attacker, params=kwargs),
+        "attacker_activity": process_query(attackers_activity_graph, params=kwargs, backend="influx"),
     }
 
     mark_data_with_found(res)

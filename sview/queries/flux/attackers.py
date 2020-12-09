@@ -23,5 +23,17 @@ attackers_by_day = """
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count"])
         |> group()
+"""
 
+attackers_activity_graph = """
+    from(bucket: "mybucket")
+        |> range(start: -1000h)
+        |> filter(fn: (r) =>r._measurement=="attacker_count" and r._field=="{ip}")
+        |> group()
+        |> window(every: 5m)
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count"])
+        |> group()
 """
