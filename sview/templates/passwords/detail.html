@@ -10,21 +10,12 @@
 {% call await_job(job_id) %}
 	<div class="row">
 		<div class="col-lg-12 pb-3" align="center">
-			{{ line_box("password_in_time", "Password during time", data.password_during_time, "day", "count", "IPs") }}
+			{{ line_box("password_in_time", "Password usage during the time", data.password_during_time, "day", "count", "IPs") }}
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-lg-12 pb-3" align="center">
-			{{ data_box("Password's logins", data.passwords_logins, "username") }}
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-lg-12 pb-3" align="center">
-			{% call(data_item) data_box("Password by attackers", data.password_by_attackers, "ip") %}
-				<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
-					{{ data_item }}
-				</a>
-			{% endcall %}
+			{{ data_box("Password's top usernames", data.passwords_logins, "username") }}
 		</div>
 	</div>
 {% endcall %}

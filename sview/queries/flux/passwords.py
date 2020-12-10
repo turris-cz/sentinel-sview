@@ -45,8 +45,7 @@ top_passwords_popularity = """
         |> group()
         |> sort(desc:true)
         |> limit(n: {top_n})
-        |> tableFind(fn: (key)=>true)
-        |> getColumn(column: "_field")
+        |> findColumn(fn: (key)=>true, column: "_field")
 
     from(bucket: "mybucket")
         |> range(start: -1y)
@@ -59,4 +58,29 @@ top_passwords_popularity = """
         |> rename(columns: {{"_field": "password", "_value":"count"}})
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count", "password"])
+"""
+
+password_activity_graph = """
+    from(bucket: "mybucket")
+        |> range(start: -1000h)
+        |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
+        |> group()
+        |> window(every: 5m)
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count"])
+        |> group()
+"""
+logins_of_password = """
+    from(bucket: "mybucket")
+        |> range(start: -1000h)
+        |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
+        |> group(columns: ["username"])
+        |> sum()
+        |> group()
+        |> sort(desc: true)
+        |> limit(n: 20)
+        |> rename(columns: {{"_value":"count"}})
+        |> keep(columns: ["username", "count"])
 """
