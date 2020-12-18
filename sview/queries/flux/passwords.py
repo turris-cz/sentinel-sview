@@ -1,6 +1,6 @@
 top_passwords = """
-    from(bucket: "mybucket")
-        |> range(start: -1000h)
+    from(bucket: "sentinel-base")
+        |> range(start: -1y)
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["_field"])
         |> sum()
@@ -12,8 +12,8 @@ top_passwords = """
 """
 
 top_usernames = """
-    from(bucket: "mybucket")
-        |> range(start: -1000h)
+    from(bucket: "sentinel-base")
+        |> range(start: -1y)
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["username"])
         |> sum()
@@ -25,8 +25,8 @@ top_usernames = """
 """
 
 top_combinations = """
-    from(bucket: "mybucket")
-        |> range(start: -1000h)
+    from(bucket: "sentinel-base")
+        |> range(start: -1y)
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> sum()
         |> rename(columns: {{"_field": "password", "_value":"count"}})
@@ -37,7 +37,7 @@ top_combinations = """
 """
 
 top_passwords_popularity = """
-    top_passwords=from(bucket: "mybucket")
+    top_passwords=from(bucket: "sentinel-base")
         |> range(start: -1y)
         |> filter(fn: (r)=>r._measurement=="password_count")
         |> group(columns: ["_field"])
@@ -47,11 +47,11 @@ top_passwords_popularity = """
         |> limit(n: {top_n})
         |> findColumn(fn: (key)=>true, column: "_field")
 
-    from(bucket: "mybucket")
+    from(bucket: "sentinel-base")
         |> range(start: -1y)
         |> filter(fn: (r)=>r._measurement=="password_count" and contains(value: r._field, set:top_passwords))
         |> group()
-        |> window(every: 5m)
+        |> window(every: 1w)
         |> group(columns: ["_field", "_start"])
         |> sum()
         |> group(columns: ["_start"])
@@ -61,11 +61,11 @@ top_passwords_popularity = """
 """
 
 password_activity_graph = """
-    from(bucket: "mybucket")
-        |> range(start: -1000h)
+    from(bucket: "sentinel-base")
+        |> range(start: -1y)
         |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
         |> group()
-        |> window(every: 5m)
+        |> window(every: 1w)
         |> sum()
         |> rename(columns: {{"_value":"count"}})
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
@@ -73,8 +73,8 @@ password_activity_graph = """
         |> group()
 """
 logins_of_password = """
-    from(bucket: "mybucket")
-        |> range(start: -1000h)
+    from(bucket: "sentinel-base")
+        |> range(start: -1y)
         |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
         |> group(columns: ["username"])
         |> sum()
