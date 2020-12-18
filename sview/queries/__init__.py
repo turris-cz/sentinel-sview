@@ -3,6 +3,7 @@ from .post_process import as_multiline_graph_data
 
 from .limits import limit_dashboard
 from .limits import limit_long
+from .limits import limit_plot
 
 from .flux.passwords import top_passwords
 from .flux.passwords import top_usernames
@@ -60,12 +61,12 @@ PRECACHED_QUERIES = {
     },
     "attackers_trends": {
         "query": top_countries_trends,
-        "params": {"top_n": limit_dashboard},
+        "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
     "top_passwords_popularity": {
         "query": top_passwords_popularity,
-        "params": {"top_n": limit_dashboard},
+        "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
     },
 }
