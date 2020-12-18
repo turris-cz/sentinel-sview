@@ -41,8 +41,6 @@ def create_app(additional_config=None):
     from .extensions import cache
     from .extensions import influx
     from .extensions import mail
-    from .extensions import db
-    from .extensions import migrate
     from .extensions import redis
     from .extensions import rq
 
@@ -50,8 +48,6 @@ def create_app(additional_config=None):
     cache.init_app(app)
     influx.init_app(app)
     mail.init_app(app)
-    db.init_app(app)
-    migrate.init_app(app)
     redis.init_app(app)
     rq.init_app(app)
 

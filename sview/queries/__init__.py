@@ -21,63 +21,51 @@ PRECACHED_QUERIES = {
     "top_passwords": {
         "query": top_passwords,
         "params": lambda: {"limit": limit_dashboard, "since": 0},
-        "backend": "influx",
     },
     "top_passwords_long": {
         "query": top_passwords,
         "params": lambda: {"limit": limit_long, "since": 0},
-        "backend": "influx",
     },
     "top_usernames": {
         "query": top_usernames,
         "params": lambda: {"limit": limit_dashboard, "since": 0},
-        "backend": "influx",
     },
     "top_usernames_long": {
         "query": top_usernames,
         "params": lambda: {"limit": limit_long, "since": 0},
-        "backend": "influx",
     },
     "top_countries": {
         "query": top_countries,
         "params": lambda: {"limit": limit_dashboard, "since": 0},
-        "backend": "influx",
     },
     "top_countries_long": {
         "query": top_countries,
         "params": lambda: {"limit": limit_long, "since": 0},
-        "backend": "influx",
     },
     "top_ips_long": {
         "query": attacker_ips,
         "params": lambda: {"limit": limit_long, "since": 0},
-        "backend": "influx",
     },
     "top_combinations_long": {
         "query": top_combinations,
         "params": lambda: {"limit": limit_long, "since": 0},
-        "backend": "influx",
     },
     "map_scores": {
         "query": map_overview,
         "params": lambda: {"since": 0},
         "post_process": lambda d: as_map_data(d, "country", "count"),
-        "backend": "influx",
     },
     "attackers": {
         "query": attackers_by_day,
-        "backend": "influx",
     },
     "attackers_trends": {
         "query": top_countries_trends,
         "params": {"top_n": limit_dashboard},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
-        "backend": "influx",
     },
     "top_passwords_popularity": {
         "query": top_passwords_popularity,
         "params": {"top_n": limit_dashboard},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
-        "backend": "influx",
     },
 }
