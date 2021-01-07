@@ -55,8 +55,6 @@ def create_app(additional_config=None):
     register_filters(app)
 
     from .cli import register_cli_commands
-    from .cli import register_shell_context
     register_cli_commands(app)
-    register_shell_context(app)
 
     return app

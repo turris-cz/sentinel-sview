@@ -6,7 +6,7 @@ from flask.cli import with_appcontext
 from .jobs import load_data_from_template
 from .queries import PRECACHED_QUERIES
 
-from .extensions import db, redis
+from .extensions import redis
 
 
 @click.command()
@@ -84,11 +84,3 @@ def register_cli_commands(app):
     app.cli.add_command(queue_queries)
     app.cli.add_command(queue_query)
     app.cli.add_command(check_redis)
-
-
-def register_shell_context(app):
-    @app.shell_context_processor
-    def make_shell_context():
-        return {
-            "db": db,
-        }
