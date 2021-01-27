@@ -21,39 +21,38 @@ from .flux.countries import top_countries_trends
 PRECACHED_QUERIES = {
     "top_passwords": {
         "query": top_passwords,
-        "params": lambda: {"limit": limit_dashboard, "since": 0},
+        "params": {"limit": limit_dashboard},
     },
     "top_passwords_long": {
         "query": top_passwords,
-        "params": lambda: {"limit": limit_long, "since": 0},
+        "params": {"limit": limit_long},
     },
     "top_usernames": {
         "query": top_usernames,
-        "params": lambda: {"limit": limit_dashboard, "since": 0},
+        "params": {"limit": limit_dashboard},
     },
     "top_usernames_long": {
         "query": top_usernames,
-        "params": lambda: {"limit": limit_long, "since": 0},
+        "params": {"limit": limit_long},
     },
     "top_countries": {
         "query": top_countries,
-        "params": lambda: {"limit": limit_dashboard, "since": 0},
+        "params": {"limit": limit_dashboard},
     },
     "top_countries_long": {
         "query": top_countries,
-        "params": lambda: {"limit": limit_long, "since": 0},
+        "params": {"limit": limit_long},
     },
     "top_ips_long": {
         "query": attacker_ips,
-        "params": lambda: {"limit": limit_long, "since": 0},
+        "params": {"limit": limit_long},
     },
     "top_combinations_long": {
         "query": top_combinations,
-        "params": lambda: {"limit": limit_long, "since": 0},
+        "params": {"limit": limit_long},
     },
     "map_scores": {
         "query": map_overview,
-        "params": lambda: {"since": 0},
         "post_process": lambda d: as_map_data(d, "country", "count"),
     },
     "attackers": {
