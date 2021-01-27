@@ -35,19 +35,5 @@ def process_query(query, params=None, post_process=None):
 
     return result
 
-
-def query_to_json(query, params=None, post_process=None):
-    result = process_query(query, params, post_process)
-    return json.dumps(result)
-
-
-def get_and_store(key, query, params=None, post_process=None, expire=None):
-    json_data = query_to_json(query, params, post_process)
-    redis.set(key, json_data, ex=expire)
-
-
-def get_data(key):
-    data = redis.get(key)
-    if not data:
-        return None
-    return json.loads(data.decode("UTF-8"))
+def precached_data_key(resource_name):
+    return "precached:{}".format(resource_name)

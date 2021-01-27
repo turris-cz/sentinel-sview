@@ -18,7 +18,7 @@ from .flux.countries import map_overview
 from .flux.countries import top_countries_trends
 
 
-PRECACHED_QUERIES = {
+RESOURCE_QUERIES = {
     "top_passwords": {
         "query": top_passwords,
         "params": {"limit": limit_dashboard},
@@ -69,3 +69,19 @@ PRECACHED_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
     },
 }
+
+
+PRECACHED_RESOURCES = [
+    ("top_passwords",),
+    ("top_passwords_long",),
+    ("top_usernames",),
+    ("top_usernames_long",),
+    ("top_countries",),
+    ("top_countries_long",),
+    ("top_ips_long",),
+    ("top_combinations_long",),
+    ("map_scores",),
+    ("attackers",),
+    ("attackers_trends",),
+    ("top_passwords_popularity",)
+]

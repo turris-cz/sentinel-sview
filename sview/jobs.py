@@ -1,9 +1,11 @@
-from .extensions import rq
+import json
 
-from .data_helpers import get_and_store, process_query
+from .extensions import redis, rq
+
+from .data_helpers import process_query, precached_data_key
 from .job_helpers import mark_data_with_found
 
-from .queries import PRECACHED_QUERIES
+from .queries import RESOURCE_QUERIES
 
 from .queries.flux.attackers import attackers_activity_graph
 
@@ -12,11 +14,31 @@ from .queries.flux.passwords import logins_of_password
 
 
 @rq.job(result_ttl=10, timeout=600)
-def load_data_from_template(resource_name):
-    get_and_store(resource_name,
-                  PRECACHED_QUERIES[resource_name]["query"],
-                  params=PRECACHED_QUERIES[resource_name].get("params"),
-                  post_process=PRECACHED_QUERIES[resource_name].get("post_process"))
+def precache_resource(resource_name):
+    """ Precache the most used and default resources
+    """
+    params = {}
+    params.update(RESOURCE_QUERIES[resource_name].get("params", {}))
+
+    resource = process_query(
+        RESOURCE_QUERIES[resource_name]["query"],
+        params=params,
+        post_process=RESOURCE_QUERIES[resource_name].get("post_process")
+    )
+
+    redis.set(precached_data_key(resource_name), json.dumps(resource))
+
+
+@rq.job(result_ttl=300)
+def query_resource(resource_name=None, **kwargs):
+    """ Just a job shell around process_query() function
+    """
+    kwargs.update(RESOURCE_QUERIES[resource_name].get("params", {}))
+    return process_query(
+        RESOURCE_QUERIES[resource_name]["query"],
+        params=kwargs,
+        post_process=RESOURCE_QUERIES[resource_name].get("post_process")
+    )
 
 
 @rq.job(result_ttl=300)

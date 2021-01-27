@@ -18,7 +18,7 @@ def as_multiline_graph_data(data, time_key, val_key, group_by):
             time_key: key,
         }
         for i, g in enumerate(groups):
-            item_dict[i] = tmp[key][g] if g in tmp[key] else 0
+            item_dict[str(i)] = tmp[key][g] if g in tmp[key] else 0
         result.append(item_dict)
 
     return {

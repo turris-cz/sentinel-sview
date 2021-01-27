@@ -1,7 +1,7 @@
 from flask import render_template
 from flask import Blueprint
 
-from .data_helpers import get_data
+from .resources import get_resource
 from .job_helpers import run_job
 from .jobs import attacker_detail
 
@@ -11,16 +11,16 @@ attackers = Blueprint("attackers", __name__)
 
 @attackers.route("/")
 def index():
-    data_keys = [
+    resource_names = [
         "map_scores",
         "attackers_trends",
         "top_countries_long",
         "top_ips_long",
     ]
 
-    data = {k: get_data(k) for k in data_keys}
+    resources = {resource_name: get_resource(resource_name) for resource_name in resource_names}
 
-    return render_template("attackers/home.html", **data)
+    return render_template("attackers/home.html", **resources)
 
 
 @attackers.route("/details/ip/<string:ip>")

@@ -3,8 +3,9 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .jobs import load_data_from_template
-from .queries import PRECACHED_QUERIES
+from .data_helpers import precached_data_key
+from .jobs import precache_resource
+from .queries import PRECACHED_RESOURCES
 
 from .extensions import redis
 
@@ -28,19 +29,18 @@ def clear_cache():
 @with_appcontext
 def queue_queries():
     """Add all cached queries to the queue"""
-    for k in PRECACHED_QUERIES.keys():
-        click.echo("Queuing: {}".format(k))
-        load_data_from_template.queue(k)
+    for resource_request in PRECACHED_RESOURCES:
+        click.echo("Queuing: {}".format(resource_request))
+        precache_resource.queue(*resource_request)
 
 
 @click.command()
-@click.argument("name", nargs=-1, required=True)
+@click.argument("resource_name", nargs=1, required=True)
 @with_appcontext
-def queue_query(name):
+def queue_query(resource_name):
     """Add cached query to the queue"""
-    for k in name:
-        click.echo("Queuing: {}".format(k))
-        load_data_from_template.queue(k)
+    click.echo("Queuing: {}".format(resource_name))
+    precache_resource.queue(resource_name)
 
 
 @click.command()
@@ -51,22 +51,22 @@ def check_redis():
     available = []
     missing = []
 
-    for k in PRECACHED_QUERIES.keys():
-        data = redis.get(k)
+    for resource_request in PRECACHED_RESOURCES:
+        data = redis.get(precached_data_key(*resource_request))
         if data:
-            available.append(k)
+            available.append(resource_request)
             size += len(data)
         else:
-            missing.append(k)
+            missing.append(resource_request)
 
     if available:
         click.echo("Stored keys:")
-        for k in available:
-            click.echo("  - {}".format(k))
+        for resource_request in available:
+            click.echo("  - {}".format(precached_data_key(*resource_request)))
     if missing:
         click.echo("Missing keys:")
-        for k in missing:
-            click.echo("  - {}".format(k))
+        for resource_request in missing:
+            click.echo("  - {}".format(precached_data_key(*resource_request)))
     if available:
         click.echo("")
         click.echo("Keys occupy:  {}".format(_human_readable_bytes(size)))

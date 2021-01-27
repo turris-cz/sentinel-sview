@@ -14,10 +14,10 @@ def run_job(handler, job_function,  **kwargs):
     @rlimit
     def _queue_job(job_function, **kw):
         job = job_function.queue(**kw)
-        redis.set(handler, job.id, ex=job.result_ttl)
+        redis.set(_job_handler_key(handler), job.id, ex=job.result_ttl)
         return job.id
 
-    job_id = redis.get(handler)
+    job_id = redis.get(_job_handler_key(handler))
     if job_id:
         job_id = job_id.decode("UTF-8")
     else:
@@ -46,6 +46,10 @@ def _job_waits_too_long(started):
         return True
 
     return False
+
+
+def _job_handler_key(handler):
+    return "job_id:{}".format(handler)
 
 
 def common_await_view(post_name="job_id"):
