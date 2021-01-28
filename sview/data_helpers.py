@@ -35,5 +35,5 @@ def process_query(query, params=None, post_process=None):
 
     return result
 
-def precached_data_key(resource_name):
-    return "precached:{}".format(resource_name)
+def precached_data_key(resource_name, period):
+    return "precached:{}:{}".format(resource_name, period)

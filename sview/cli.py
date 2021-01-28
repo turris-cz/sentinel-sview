@@ -36,11 +36,12 @@ def queue_queries():
 
 @click.command()
 @click.argument("resource_name", nargs=1, required=True)
+@click.argument("period", nargs=1, required=True)
 @with_appcontext
-def queue_query(resource_name):
+def queue_query(resource_name, period):
     """Add cached query to the queue"""
-    click.echo("Queuing: {}".format(resource_name))
-    precache_resource.queue(resource_name)
+    click.echo("Queuing: {}".format((resource_name, period)))
+    precache_resource.queue(resource_name, period)
 
 
 @click.command()

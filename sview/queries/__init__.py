@@ -17,6 +17,44 @@ from .flux.countries import top_countries
 from .flux.countries import map_overview
 from .flux.countries import top_countries_trends
 
+PERIODS = {
+    "1h": {
+        "label": "Hour",
+        "flux_start": "-1h",
+        "flux_window": "1m",
+    },
+    "12h": {
+        "label": "12 Hours",
+        "flux_start": "-12h",
+        "flux_window": "15m",
+    },
+    "1d": {
+        "label": "Day",
+        "flux_start": "-1d",
+        "flux_window": "30m",
+    },
+    "1w": {
+        "label": "Week",
+        "flux_start": "-1w",
+        "flux_window": "3h",
+    },
+    "1m": {
+        "label": "Month",
+        "flux_start": "-1mo",
+        "flux_window": "1d",
+    },
+    "3m": {
+        "label": "3 Months",
+        "flux_start": "-3mo",
+        "flux_window": "2d",
+    },
+    "1y": {
+        "label": "Year",
+        "flux_start": "-1y",
+        "flux_window": "1w",
+    },
+}
+
 
 RESOURCE_QUERIES = {
     "top_passwords": {
@@ -72,16 +110,16 @@ RESOURCE_QUERIES = {
 
 
 PRECACHED_RESOURCES = [
-    ("top_passwords",),
-    ("top_passwords_long",),
-    ("top_usernames",),
-    ("top_usernames_long",),
-    ("top_countries",),
-    ("top_countries_long",),
-    ("top_ips_long",),
-    ("top_combinations_long",),
-    ("map_scores",),
-    ("attackers",),
-    ("attackers_trends",),
-    ("top_passwords_popularity",)
+    ("top_passwords", "1y"),
+    ("top_passwords_long", "1y"),
+    ("top_usernames", "1y"),
+    ("top_usernames_long", "1y"),
+    ("top_countries", "1y"),
+    ("top_countries_long", "1y"),
+    ("top_ips_long", "1y"),
+    ("top_combinations_long", "1y"),
+    ("map_scores", "1y"),
+    ("attackers", "1y"),
+    ("attackers_trends", "1y"),
+    ("top_passwords_popularity", "1y")
 ]

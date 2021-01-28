@@ -1,6 +1,6 @@
 attacker_ips = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count")
         |> group(columns:["src_addr"])
         |> sum()
@@ -13,10 +13,10 @@ attacker_ips = """
 
 attackers_by_day = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count")
         |> group()
-        |> window(every: 1w)
+        |> window(every: {window})
         |> unique(column: "src_addr")
         |> sum()
         |> rename(columns: {{"_value":"count"}})

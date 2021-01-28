@@ -1,6 +1,6 @@
 top_passwords = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["_field"])
         |> sum()
@@ -13,7 +13,7 @@ top_passwords = """
 
 top_usernames = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["username"])
         |> sum()
@@ -26,7 +26,7 @@ top_usernames = """
 
 top_combinations = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> sum()
         |> rename(columns: {{"_field": "password", "_value":"count"}})
@@ -38,7 +38,7 @@ top_combinations = """
 
 top_passwords_popularity = """
     top_passwords=from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="password_count")
         |> group(columns: ["_field"])
         |> sum()
@@ -48,10 +48,10 @@ top_passwords_popularity = """
         |> findColumn(fn: (key)=>true, column: "_field")
 
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="password_count" and contains(value: r._field, set:top_passwords))
         |> group()
-        |> window(every: 1w)
+        |> window(every: {window})
         |> group(columns: ["_field", "_start"])
         |> sum()
         |> group(columns: ["_start"])
