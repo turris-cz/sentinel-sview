@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask import request
 
 from .resources import get_resource
+from .queries import PERIODS
 
 
 dashboard = Blueprint("dashboard", __name__)
@@ -20,4 +21,7 @@ def index():
 
     resources = {resource_name: get_resource(resource_name, period) for resource_name in resource_names}
 
-    return render_template("dashboard/home.html", **resources)
+    return render_template("dashboard/home.html",
+                           periods=PERIODS,
+                           active_period=period,
+                           **resources)

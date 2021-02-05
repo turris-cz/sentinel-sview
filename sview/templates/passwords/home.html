@@ -3,8 +3,12 @@
 {%- from "_snippets.html" import map_box with context -%}
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
+{%- from "_snippets.html" import big_period_buttons with context -%}
 {% extends "layout.html" %}
 {% block body %}
+<div class="row">
+	{{ big_period_buttons(periods, active_period) }}
+</div>
 <div class="row">
 	<div class="col">
 		{{ line_box("top_passwords_popularity", "Top passwords popularity", top_passwords_popularity.data, "day", top_passwords_popularity.ykeys, top_passwords_popularity.labels) }}

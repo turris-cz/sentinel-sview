@@ -3,12 +3,16 @@
 {%- from "_snippets.html" import map_box with context -%}
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
+{%- from "_snippets.html" import big_period_buttons with context -%}
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
 		{{ map_box("world_map", "Most evil countries", map_scores) }}
 	</div>
+</div>
+<div class="row">
+    {{ big_period_buttons(periods, active_period) }}
 </div>
 <div class="row">
 	<div class="col">

@@ -5,6 +5,7 @@ from flask import request
 from .resources import get_resource
 from .job_helpers import run_job
 from .jobs import attacker_detail
+from .queries import PERIODS
 
 
 attackers = Blueprint("attackers", __name__)
@@ -22,7 +23,10 @@ def index():
 
     resources = {resource_name: get_resource(resource_name, period) for resource_name in resource_names}
 
-    return render_template("attackers/home.html", **resources)
+    return render_template("attackers/home.html",
+                           periods=PERIODS,
+                           active_period=period,
+                           **resources)
 
 
 @attackers.route("/details/ip/<string:ip>")

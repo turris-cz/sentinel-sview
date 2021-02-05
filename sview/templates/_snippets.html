@@ -156,3 +156,19 @@
 		{{ caller() }}
 	{% endif %}
 {%- endmacro -%}
+
+{%- macro big_period_buttons(periods, active_period) -%}
+	<div class="col">
+		<div class="btn-group-toggle sview-big-time-buttons" data-toggle="buttons">
+{%		for period, period_params in periods.items() %}
+{%				if period==active_period %}
+						<a href="?period={{ period }}" class="btn btn-secondary" name="options" autocomplete="off">
+{%				else %}
+						<a href="?period={{ period }}" class="btn btn-outline-secondary" name="options" autocomplete="off">
+{%				endif %}
+					{{ period_params["label"] }}
+					</a>
+{%		endfor %}
+		</div>
+	</div>
+{%- endmacro -%}
