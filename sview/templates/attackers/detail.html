@@ -1,17 +1,17 @@
-{%- from "_snippets.html" import await_job with context -%}
 {%- from "_snippets.html" import data_box with context -%}
 {%- from "_snippets.html" import pair_data_box with context -%}
 {%- from "_snippets.html" import map_box with context -%}
+{%- from "_snippets.html" import button_line_box with context -%}
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
-<h1 class="display-4">{{ ip }}</h1>
-{% call await_job(job_id) %}
-	<div class="row">
-		<div class="col-lg-12 pb-3" align="center">
-			{{ line_box("attacker_activity", "Attacker activity", data.attacker_activity, "day", "count", "Events") }}
-		</div>
+<h1 class="display-4">{{ active_params["ip"] }}</h1>
+<div class="row">
+	<div class="col-lg-12 pb-3" align="center">
+		{{ line_box("attacker_activity", "Attacker activity", resources["attacker_activity"], "day", "count", "Events") }}
 	</div>
-{% endcall %}
+</div>
+{{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}

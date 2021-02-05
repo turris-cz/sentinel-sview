@@ -12,6 +12,7 @@ from .flux.passwords import top_passwords_popularity
 
 from .flux.attackers import attackers_by_day
 from .flux.attackers import attacker_ips
+from .flux.attackers import attackers_activity_graph
 
 from .flux.countries import top_countries
 from .flux.countries import map_overview
@@ -105,6 +106,9 @@ RESOURCE_QUERIES = {
         "query": top_passwords_popularity,
         "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
+    },
+    "attacker_activity": {
+        "query": attackers_activity_graph,
     },
 }
 

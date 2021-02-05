@@ -27,10 +27,10 @@ attackers_by_day = """
 
 attackers_activity_graph = """
     from(bucket: "sentinel-base")
-        |> range(start: -1y)
+        |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and r.src_addr=="{ip}")
         |> group()
-        |> window(every: 1w)
+        |> window(every: {window})
         |> sum()
         |> rename(columns: {{"_value":"count"}})
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
