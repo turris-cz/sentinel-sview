@@ -3,6 +3,7 @@ import binascii
 
 from flask import render_template
 from flask import Blueprint
+from flask import request
 
 from .resources import get_resource
 from .extensions import influx
@@ -21,8 +22,9 @@ def index():
         "top_usernames_long",
         "top_combinations_long",
     ]
+    period = request.args.get("period", "1y")
 
-    resources = {resource_name: get_resource(resource_name) for resource_name in resource_names}
+    resources = {resource_name: get_resource(resource_name, period) for resource_name in resource_names}
 
     return render_template("passwords/home.html", **resources)
 

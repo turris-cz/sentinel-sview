@@ -1,5 +1,6 @@
 from flask import render_template
 from flask import Blueprint
+from flask import request
 
 from .resources import get_resource
 
@@ -15,7 +16,8 @@ def index():
         "top_countries",
         "top_passwords",
     ]
+    period = request.args.get("period", "1y")
 
-    resources = {resource_name: get_resource(resource_name) for resource_name in resource_names}
+    resources = {resource_name: get_resource(resource_name, period) for resource_name in resource_names}
 
     return render_template("dashboard/home.html", **resources)
