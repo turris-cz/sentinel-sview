@@ -94,10 +94,27 @@ function set_param_in_window_location(key, value){
  */
 function start_multi_poller(url, resource_names, period) {
 	for (var i=0; i<resource_names.length; i++) {
+		show_spinner(resource_names[i]);
 		clear_interval(resource_names[i]);
 		resource_poll(url, resource_names[i], period);
 		var interval = window.setInterval(resource_poll, 1000, url, resource_names[i], period);
 		intervals[resource_names[i]] = interval;
+	}
+}
+
+
+function show_spinner(resource_name) {
+	spinner = document.getElementById("spinner-" + resource_name);
+	if (spinner) {
+		spinner.style.display = "flex";
+	}
+}
+
+
+function hide_spinner(resource_name) {
+	spinner = document.getElementById("spinner-" + resource_name);
+	if (spinner) {
+		spinner.style.display = "none";
 	}
 }
 
@@ -141,6 +158,7 @@ function process_response(response) {
 	}
 
 	clear_interval(response["resource_name"]);
+	hide_spinner(response["resource_name"]);
 	redraw_callbacks[response["resource_name"]](response);
 }
 
