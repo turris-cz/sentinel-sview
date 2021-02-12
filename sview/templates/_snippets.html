@@ -1,8 +1,23 @@
-{%- macro data_not_cached() -%}
-<p>
-	{{ _("Data source is being cached. Try it later please.") }}
-</p>
+{%- macro no_data_infobox(source) -%}
+	<div style="display:flex;height:70px;width:100%;align-items:center;justify-content:center">
+		<strong>
+			{%- if source is none or source is undefined -%}
+				{{ data_not_cached() }}
+			{%- else -%}
+				{{ empty_period() }}
+			{%- endif -%}
+		</strong>
+	</div>
 {%- endmacro -%}
+
+{%- macro data_not_cached() -%}
+	{{ _("Data source is being cached. Try it later please.") }}
+{%- endmacro -%}
+
+{%- macro empty_period() -%}
+	{{ _("No data available from this period.") }}
+{%- endmacro -%}
+
 {%- macro data_item(data) -%}
 	{%- set len_limit = 10 -%}
 	{%- if data|length > len_limit -%}
@@ -40,7 +55,7 @@
 		{% endfor %}
 		</table>
 		{% else %}
-			{{ data_not_cached() }}
+			{{ no_data_infobox(source) }}
 		{% endif %}
 		</div>
 	</div>
@@ -71,7 +86,7 @@
 		{% endfor %}
 		</table>
 		{% else %}
-			{{ data_not_cached() }}
+			{{ no_data_infobox(source) }}
 		{% endif %}
 		</div>
 	</div>
@@ -97,7 +112,7 @@
 					{% if source %}
 						{{ morris_line(id, source, xkey, ykey, label) }}
 					{% else %}
-						{{ data_not_cached() }}
+						{{ no_data_infobox(source) }}
 					{% endif %}
 		</div>
 	</div>
