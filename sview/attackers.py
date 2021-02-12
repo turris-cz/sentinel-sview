@@ -24,6 +24,7 @@ def index():
     resources = {resource_name: get_resource(resource_name, period) for resource_name in resource_names}
 
     return render_template("attackers/home.html",
+                           resource_names=resource_names,
                            periods=PERIODS,
                            active_period=period,
                            **resources)

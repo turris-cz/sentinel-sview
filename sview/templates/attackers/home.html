@@ -8,11 +8,11 @@
 {% block body %}
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
-		{{ map_box("world_map", "Most evil countries", map_scores) }}
+		{{ map_box("map_scores", "Most evil countries", map_scores) }}
 	</div>
 </div>
 <div class="row">
-    {{ big_period_buttons(periods, active_period) }}
+	{{ big_period_buttons(resource_names, periods, active_period) }}
 </div>
 <div class="row">
 	<div class="col">

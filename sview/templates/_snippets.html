@@ -34,60 +34,66 @@
 {%- macro country_code_item(data) -%}
 	{{ country_code_flag(data) }}&nbsp;&nbsp;<abbr title="{{data|uncc}}">{{ data }}</abbr>
 {%- endmacro -%}
-{%- macro data_box(name, source, data_attr) -%}
+
+{%- macro data_box(id, name, source, data_attr) -%}
 	<div class="card mb-3 border">
 		<div class="card-header">
 			{{ name }}
 		</div>
 		<div class="card-body"></ul>
-		{% if source %}
-		<table class="table table-borderless table-sm">
-		{% for item in source %}
-			<tr>
-				<td>{{ loop.index }}.</td>
-				<td>
-					<strong>
-						{% if caller %}{{ caller(item[data_attr]) }}{% else %}{{ data_item(item[data_attr]) }}{% endif %}
-					</strong>
-				</td>
-				<td>{{ item.count }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-		{% else %}
-			{{ no_data_infobox(source) }}
-		{% endif %}
+			<div id="{{ id }}">
+			{% if source %}
+				<table class="table table-borderless table-sm">
+				{% for item in source %}
+					<tr>
+						<td>{{ loop.index }}.</td>
+						<td>
+							<strong>
+								{% if caller %}{{ caller(item[data_attr]) }}{% else %}{{ data_item(item[data_attr]) }}{% endif %}
+							</strong>
+						</td>
+						<td>{{ item.count }}</td>
+					</tr>
+				{% endfor %}
+				</table>
+			{% else %}
+				{{ no_data_infobox(source) }}
+			{% endif %}
+			</div>
 		</div>
 	</div>
 {%- endmacro -%}
-{%- macro pair_data_box(name, source, data_attr1, data_attr2) -%}
+
+{%- macro pair_data_box(id, name, source, data_attr1, data_attr2) -%}
 	<div class="card mb-3 border">
 		<div class="card-header">
 			{{ name }}
 		</div>
 		<div class="card-body"></ul>
-		{% if source %}
-		<table class="table table-borderless table-sm">
-		{% for item in source %}
-			<tr>
-				<td>{{ loop.index }}.</td>
-				<td>
-					<strong>
-						{{ data_item(item[data_attr1]) }}
-					</strong>
-				</td>
-				<td>
-					<strong>
-						{{ data_item(item[data_attr2]) }}
-					</strong>
-				</td>
-				<td>{{ item.count }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-		{% else %}
-			{{ no_data_infobox(source) }}
-		{% endif %}
+			<div id="{{ id }}">
+				{% if source %}
+					<table class="table table-borderless table-sm">
+						{% for item in source %}
+							<tr>
+								<td>{{ loop.index }}.</td>
+								<td>
+									<strong>
+										{{ data_item(item[data_attr1]) }}
+									</strong>
+								</td>
+								<td>
+									<strong>
+										{{ data_item(item[data_attr2]) }}
+									</strong>
+								</td>
+								<td>{{ item.count }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% else %}
+					{{ no_data_infobox(source) }}
+				{% endif %}
+			</div>
 		</div>
 	</div>
 {%- endmacro -%}
@@ -108,12 +114,13 @@
 			{{ name }}
 		</div>
 		<div class="card-body"></ul>
-			<div id="{{ id }}"></div>
+				<div id="{{ id }}">
 					{% if source %}
 						{{ morris_line(id, source, xkey, ykey, label) }}
 					{% else %}
 						{{ no_data_infobox(source) }}
 					{% endif %}
+				</div>
 		</div>
 	</div>
 {%- endmacro -%}
@@ -157,10 +164,24 @@
 	{% endif %}
 {%- endmacro -%}
 
-{%- macro big_period_buttons(periods, active_period) -%}
+{%- macro big_period_buttons(resource_names, periods, active_period) -%}
 	<div class="col">
 		<div class="btn-group-toggle sview-big-time-buttons" data-toggle="buttons">
 {%		for period, period_params in periods.items() %}
+				<label class="btn btn-outline-secondary js-required">
+					<input type="radio" name="options" autocomplete="off"
+{%					if period==active_period %}
+							checked
+{%					endif %}
+						onclick='process_new_settings(
+							"{{ url_for("api.get_resource_view") }}",
+							{{ resource_names|tojson }},
+							"{{ period }}"
+						)'
+					>
+					{{ period_params["label"] }}
+				</label>
+				<noscript>
 {%				if period==active_period %}
 						<a href="?period={{ period }}" class="btn btn-secondary" name="options" autocomplete="off">
 {%				else %}
@@ -168,6 +189,7 @@
 {%				endif %}
 					{{ period_params["label"] }}
 					</a>
+				</noscript>
 {%		endfor %}
 		</div>
 	</div>

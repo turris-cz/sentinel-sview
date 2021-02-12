@@ -59,6 +59,199 @@ function await_job_error(data) {
 }
 
 
+/**
+ * Clear polling interval for given resource name.
+ */
+function clear_interval(resource_name) {
+	if (!(resource_name in intervals)) {
+		return;
+	}
+	window.clearInterval(intervals[resource_name]);
+	delete intervals[resource_name];
+}
+
+
+/**
+ * Prepare the page for diplaying data set according
+ * to a new settings - such a period or so.
+ */
+function process_new_settings(api_url, resource_names, period) {
+	set_param_in_window_location("period", period);
+	start_multi_poller(api_url, resource_names, period);
+}
+
+
+function set_param_in_window_location(key, value){
+	var url = new URL(document.location.href);
+	url.searchParams.set(key, value);
+	url_params_string = url.search
+	history.replaceState(null, null, url_params_string);
+}
+
+
+/**
+ * Start multiple resource pollers ot once.
+ */
+function start_multi_poller(url, resource_names, period) {
+	for (var i=0; i<resource_names.length; i++) {
+		clear_interval(resource_names[i]);
+		resource_poll(url, resource_names[i], period);
+		var interval = window.setInterval(resource_poll, 1000, url, resource_names[i], period);
+		intervals[resource_names[i]] = interval;
+	}
+}
+
+
+function resource_poll(url, resource_name, period) {
+	$.ajax({
+		method: "GET",
+		url: url,
+		success: process_response,
+		data : {
+			"name": resource_name,
+			"period": period,
+		}
+	});
+}
+
+
+function process_response(response) {
+	if ("error" in response) {
+		console.log("Error occured in server response:");
+		console.log(response);
+		return;
+	}
+
+	if (!("resource_name" in response)){
+		console.log("Missing resource name in server response:");
+		console.log(response);
+		return;
+	}
+
+	if (!(response["resource_name"] in redraw_callbacks)){
+		console.log("Invalid resource name: " + response["resource_name"]);
+		if (response["resource_name"] in intervals){
+			clear_interval(response["resource_name"]);
+		}
+		return;
+	}
+
+	if (!response["data"]) { // Data are not ready yet.
+		return;
+	}
+
+	clear_interval(response["resource_name"]);
+	redraw_callbacks[response["resource_name"]](response);
+}
+
+
+function createCountryRow(row){
+	td = document.createElement("td");
+	let span = document.createElement("span");
+	span.className = "flag-icon flag-icon-" + row["country"].toLowerCase();
+	span.style.paddingRight = "40px";
+	td.appendChild(span);
+	let strong = document.createElement("strong");
+	strong.innerHTML = row["country"];
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
+function createPasswordRow(row){
+	td = document.createElement("td");
+	let strong = document.createElement('strong');
+	let a = document.createElement('a');
+	a.setAttribute("href", "/passwords/details/" + btoa(row["password"]));
+	a.innerHTML = row["password"];
+	strong.appendChild(a);
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
+function createUsernameRow(row){
+	td = document.createElement("td");
+	let strong = document.createElement('strong');
+	strong.innerHTML = row["username"];
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
+function createIPRow(row){
+	td = document.createElement("td");
+	let strong = document.createElement('strong');
+	let a = document.createElement('a');
+	a.setAttribute("href", "/attackers/details/ip/" + row["ip"]);
+	a.innerHTML = row["ip"];
+	strong.appendChild(a);
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
+function createCombinedRow(row){
+	return createUsernameRow(row).concat(createPasswordRow(row));
+}
+
+
+function create_table(rows, createRow){
+	let table = document.createElement("table");
+	table.className="table table-borderless table-sm";
+	for (var i = 0; i < rows.length; i++) {
+		let tr = document.createElement("tr");
+		let td = document.createElement("td");
+		td.innerHTML = i + 1 + ".";
+		tr.appendChild(td);
+
+		tds = createRow(rows[i]);
+		for (var j=0; j<tds.length; j++){
+			tr.appendChild(tds[j]);
+		}
+
+		td = document.createElement("td");
+		td.innerHTML = rows[i]["count"];
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	}
+	return table;
+}
+
+
+function insert_no_data_infobox(el) {
+	var div = document.createElement("div");
+	div.setAttribute("style", "display:flex;height:70px;width:100%;align-items:center;justify-content:center");
+
+	var strong = document.createElement("strong");
+	strong.innerHTML = "No data available from this period.";
+
+	div.appendChild(strong)
+	el.appendChild(div)
+}
+
+
+function create_data_box(data, row_function) {
+	var resource_name = data["resource_name"];
+	var container = document.getElementById(resource_name);
+	while(container.firstChild){
+		container.removeChild(container.firstChild);
+	}
+
+	if (data["data"].length != 0){
+		let table = create_table(data["data"], row_function);
+		container.appendChild(table);
+	} else {
+		insert_no_data_infobox(container);
+	}
+}
+
+
 function draw_graph(id, data, ykeys, labels){
 	graph_div = document.getElementById(id);
 	while(graph_div.firstChild){
@@ -82,4 +275,58 @@ function create_graph(id, xkey, ykeys, labels, data) {
 		resize: true,
 		data: data
 	});
+}
+
+
+intervals = {}
+redraw_callbacks = {
+	"map_scores": function(data){
+		$( '#' + data["resource_name"]).contents().remove();
+		draw_map("#" + data["resource_name"], data["data"]);
+	},
+	"attackers": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"],
+			["count"],
+			["Unique IP addresses"]
+		);
+	},
+	"attackers_trends": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
+	"top_passwords_popularity": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
+	"top_countries": function(data){
+		create_data_box(data, createCountryRow);
+	},
+	"top_countries_long": function(data){
+		create_data_box(data, createCountryRow);
+	},
+	"top_passwords": function(data){
+		create_data_box(data, createPasswordRow);
+	},
+	"top_passwords_long": function(data){
+		create_data_box(data, createPasswordRow);
+	},
+	"top_usernames_long": function(data){
+		create_data_box(data, createUsernameRow);
+	},
+	"top_ips_long": function(data){
+		create_data_box(data, createIPRow);
+	},
+	"top_combinations_long": function(data){
+		create_data_box(data, createCombinedRow);
+	}
 }
