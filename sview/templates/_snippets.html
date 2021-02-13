@@ -93,33 +93,36 @@
 			{{ name }}
 		</div>
 		<div class="card-body"></ul>
-		{% if source %}
 			<div id="{{ id }}"></div>
-			<script type="text/javascript">
-				new Morris.Line({
-					element: '{{ id }}',
-					smooth: false,
-					xkey: '{{ xkey }}',
-					{%- if ykey is string %}
-					ykeys: ['{{ ykey }}'],
-					{%- else %}
-					ykeys: {{ ykey|tojson }},
+					{% if source %}
+						{{ morris_line(id, source, xkey, ykey, label) }}
+					{% else %}
+						{{ data_not_cached() }}
 					{% endif %}
-					{%- if label is string %}
-					labels: ['{{ label }}'],
-					{%- else %}
-					labels: {{ label|tojson }},
-					{% endif %}
-					resize: true,
-					data: {{ source|tojson }}
-				});
-			</script>
-		{% else %}
-			{{ data_not_cached() }}
-		{% endif %}
 		</div>
 	</div>
 {%- endmacro -%}
+
+{%- macro morris_line(id, source, xkey, ykey, label) -%}
+	<script type="text/javascript">
+		create_graph(
+			'{{ id }}',
+			'{{ xkey }}',
+			{%- if ykey is string %}
+				['{{ ykey }}'],
+			{%- else %}
+				{{ ykey|tojson }},
+			{% endif %}
+			{%- if label is string %}
+				['{{ label }}'],
+			{%- else %}
+				{{ label|tojson }},
+			{% endif %}
+			{{ source|tojson }}
+		);
+	</script>
+{%- endmacro -%}
+
 {%- macro await_job(job_id) -%}
 	{% if job_id %}
 	<div id="await_job_alert" class="alert alert-danger d-none" role="alert"></div>

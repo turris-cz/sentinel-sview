@@ -57,3 +57,29 @@ function await_job_error(data) {
 	$("#await_job_alert").removeClass("d-none").addClass("d-block");
 	$("#await_job_spinner").addClass("d-none").removeClass("d-block");
 }
+
+
+function draw_graph(id, data, ykeys, labels){
+	graph_div = document.getElementById(id);
+	while(graph_div.firstChild){
+		graph_div.removeChild(graph_div.firstChild);
+	}
+	if (data === undefined || data.length == 0){
+		insert_no_data_infobox(graph_div);
+	} else {
+		create_graph(id, "day", ykeys, labels, data);
+	}
+}
+
+
+function create_graph(id, xkey, ykeys, labels, data) {
+	return Morris.Line({
+		element: id,
+		smooth: false,
+		xkey: xkey,
+		ykeys: ykeys,
+		labels: labels,
+		resize: true,
+		data: data
+	});
+}
