@@ -1,3 +1,11 @@
+{%- macro js_required() -%}
+	<noscript>
+		<div style="display:flex;height:70px;width:100%;align-items:center;justify-content:center">
+			<strong>Javasript required to display this feature.</strong>
+		</div>
+	</noscript>
+{%- endmacro -%}
+
 {%- macro no_data_infobox(source) -%}
 	<div style="display:flex;height:70px;width:100%;align-items:center;justify-content:center">
 		<strong>
@@ -111,8 +119,9 @@
 	</div>
 {%- endmacro -%}
 {%- macro map_box(id, name, source) -%}
-	<div id="{{ id }}" style="position: relative; width: 900; height: 300px;"></div>
+	<div id="{{ id }}" class="js-required" style="position: relative; width: 900; height: 300px;"></div>
 		{{ spinner_overlay("spinner-{}".format(id)) }}
+		{{ js_required() }}
 		{% if source %}
 			<script type="text/javascript">
 				let scores = {{ source|tojson }};
@@ -128,6 +137,7 @@
 			{{ name }}
 		</div>
 		<div class="card-body" style="position:relative"></ul>
+			<div class="js-required">
 				{{ spinner_overlay("spinner-{}".format(id)) }}
 				<div id="{{ id }}">
 					{% if source %}
@@ -136,6 +146,8 @@
 						{{ no_data_infobox(source) }}
 					{% endif %}
 				</div>
+			</div>
+			{{ js_required() }}
 		</div>
 	</div>
 {%- endmacro -%}
