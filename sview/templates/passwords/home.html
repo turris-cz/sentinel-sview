@@ -4,6 +4,7 @@
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
 {%- from "_snippets.html" import big_period_buttons with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
@@ -11,24 +12,32 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("top_passwords_popularity", "Top passwords popularity", top_passwords_popularity.data, "day", top_passwords_popularity.ykeys, top_passwords_popularity.labels) }}
+		{{ line_box(
+			"top_passwords_popularity",
+			"Top passwords popularity",
+			resources["top_passwords_popularity"]["data"],
+			"day",
+			resources["top_passwords_popularity"]["ykeys"],
+			resources["top_passwords_popularity"]["labels"]
+			) }}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("Top passwords", top_passwords_long, "password") %}
+		{% call(data_item) data_box("top_passwords_long", "Top passwords", resources["top_passwords_long"], "password") %}
 			<a href="{{ url_for(".password_details", encoded_password=data_item|b64) }}">
 				{{ data_item }}
 			</a>
 		{% endcall %}
 	</div>
 	<div class="col-md">
-		{{ data_box("Top usernames", top_usernames_long, "username") }}
+		{{ data_box("top_usernames_long", "Top usernames", resources["top_usernames_long"], "username") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ pair_data_box("Top username / password combinations", top_combinations_long, "username", "password") }}
+		{{ pair_data_box("top_combinations_long", "Top username / password combinations", resources["top_combinations_long"], "username", "password") }}
 	</div>
 </div>
+{{ request_missing_resources(resource_names, resources, active_period) }}
 {% endblock %}

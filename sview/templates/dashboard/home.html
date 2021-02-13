@@ -4,11 +4,12 @@
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
 {%- from "_snippets.html" import big_period_buttons with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
-		{{ map_box("map_scores", "Most evil countries", map_scores) }}
+		{{ map_box("map_scores", "Most evil countries", resources["map_scores"]) }}
 	</div>
 </div>
 <div class="row">
@@ -16,17 +17,18 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers", "All the attackers during the time", attackers, "day", "count", "Unique IP addresses") }}
+		{{ line_box("attackers", "All the attackers during the time", resources["attackers"], "day", "count", "Unique IP addresses") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("Most evil countries", top_countries, "country") -%}
+		{% call(data_item) data_box("top_countries", "Most evil countries", resources["top_countries"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{{ data_box("Top passwords", top_passwords, "password") }}
+		{{ data_box("top_passwords", "Top passwords", resources["top_passwords"], "password") }}
 	</div>
 </div>
+{{ request_missing_resources(resource_names, resources, active_period) }}
 {% endblock %}

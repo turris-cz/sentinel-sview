@@ -11,7 +11,9 @@
 {%- endmacro -%}
 
 {%- macro data_not_cached() -%}
-	{{ _("Data source is being cached. Try it later please.") }}
+	<noscript>
+		{{ _("Data source is being cached. Try it later please.") }}
+	</noscript>
 {%- endmacro -%}
 
 {%- macro empty_period() -%}
@@ -206,4 +208,15 @@
 {%		endfor %}
 		</div>
 	</div>
+{%- endmacro -%}
+
+{%- macro request_missing_resources(resource_names, resources, period) -%}
+	<script>
+		request_missing_resources(
+			{{ resource_names|tojson }},
+			{{resources|tojson}},
+			"{{ url_for("api.get_resource_view") }}",
+			"{{ period }}"
+		)
+	</script>
 {%- endmacro -%}

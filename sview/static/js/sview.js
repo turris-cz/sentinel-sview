@@ -89,6 +89,19 @@ function set_param_in_window_location(key, value){
 }
 
 
+function request_missing_resources(resource_names, resources, url, period){
+	requested_resources = [];
+	for (var i=0; i<resource_names.length; i++) {
+		if (resources[resource_names[i]] === null) {
+			requested_resources.push(resource_names[i]);
+		}
+	}
+	if (requested_resources.length != 0) {
+		start_multi_poller(url, requested_resources, period)
+	}
+}
+
+
 /**
  * Start multiple resource pollers ot once.
  */

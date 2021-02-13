@@ -4,11 +4,12 @@
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
 {%- from "_snippets.html" import big_period_buttons with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
-		{{ map_box("map_scores", "Most evil countries", map_scores) }}
+		{{ map_box("map_scores", "Most evil countries", resources["map_scores"]) }}
 	</div>
 </div>
 <div class="row">
@@ -16,23 +17,31 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers_trends", "Attackers by country trends", attackers_trends.data, "day", attackers_trends.ykeys, attackers_trends.labels) }}
+		{{ line_box(
+			"attackers_trends",
+			"Attackers by country trends",
+			resources["attackers_trends"]["data"],
+			"day",
+			resources["attackers_trends"]["ykeys"],
+			resources["attackers_trends"]["labels"]
+		) }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{% call(data_item) data_box("Most evil countries", top_countries_long, "country") -%}
+		{% call(data_item) data_box("top_countries_long", "Most evil countries", resources["top_countries_long"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{% call(data_item) data_box("Most evil IP addresses", top_ips_long, "ip") -%}
+		{% call(data_item) data_box("top_ips_long", "Most evil IP addresses", resources["top_ips_long"], "ip") -%}
 			<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
 				{{ data_item }}
 			</a>
 		{%- endcall %}
 	</div>
 </div>
+{{ request_missing_resources(resource_names, resources, active_period) }}
 {% endblock %}

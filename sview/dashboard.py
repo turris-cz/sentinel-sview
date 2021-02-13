@@ -25,4 +25,4 @@ def index():
                            resource_names=resource_names,
                            periods=PERIODS,
                            active_period=period,
-                           **resources)
+                           resources=resources)
