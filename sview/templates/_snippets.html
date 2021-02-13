@@ -128,7 +128,9 @@
 				draw_map("#{{ id }}", scores);
 			</script>
 		{% else %}
-			{{ data_not_cached() }}
+			<script type="text/javascript">
+				draw_map("#{{ id }}", {});
+			</script>
 		{% endif %}
 {%- endmacro -%}
 {%- macro line_box(id, name, source, xkey, ykey, label) -%}
