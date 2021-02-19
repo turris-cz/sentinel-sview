@@ -154,6 +154,26 @@
 	</div>
 {%- endmacro -%}
 
+{%- macro button_line_box(id, name, periods, params, source, xkey, ykey, label) -%}
+	<div class="card mb-3 border">
+		<div class="card-header">
+			{{ name }}
+		</div>
+		<div class="card-body"></ul>
+			<div class="js-required">
+				{{ spinner_overlay("spinner-{}".format(id)) }}
+				{{ graph_period_buttons(id, periods, params) }}
+				<div id="{{ id }}">
+					{% if source %}
+						{{ morris_line(id, source, xkey, ykey, label) }}
+					{% else %}
+						{{ no_data_infobox(source) }}
+					{% endif %}
+			</div>
+		</div>
+	</div>
+{%- endmacro -%}
+
 {%- macro morris_line(id, source, xkey, ykey, label) -%}
 	<script type="text/javascript">
 		create_graph(
@@ -225,6 +245,34 @@
 {%		endfor %}
 		</div>
 	</div>
+{%- endmacro -%}
+
+{%- macro graph_period_buttons(resource_name, periods, active_params) -%}
+			<div class="container">
+				<div class="row justify-content-end">
+					<div class="col-4">
+						<div class="btn-group btn-group-toggle" data-toggle="buttons">
+{%					for period in periods %}
+							<label class="btn btn-outline-secondary">
+								<input type="radio" name="options" autocomplete="off"
+{%								if period==active_params["period"] %}
+										checked
+{%								endif %}
+									onclick='process_new_settings(
+										"{{ url_for("api.get_resource_view") }}",
+										["{{ resource_name }}"],
+										Object.assign(
+											{{ active_params|tojson }},
+											{"period": "{{ period }}"}  // Override active period passed via active params
+										)
+									)'
+								> {{ period }}
+							</label>
+{%					endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
 {%- endmacro -%}
 
 {%- macro request_missing_resources(resource_names, resources, params) -%}
