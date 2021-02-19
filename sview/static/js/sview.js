@@ -348,6 +348,14 @@ redraw_callbacks = {
 			data["data"]["labels"]
 		);
 	},
+	"password_in_time": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"],
+			["count"],
+			["IPs"]
+		);
+	},
 	"top_countries": function(data){
 		create_data_box(data, createCountryRow);
 	},
@@ -361,6 +369,9 @@ redraw_callbacks = {
 		create_data_box(data, createPasswordRow);
 	},
 	"top_usernames_long": function(data){
+		create_data_box(data, createUsernameRow);
+	},
+	"password_logins": function(data){
 		create_data_box(data, createUsernameRow);
 	},
 	"top_ips_long": function(data){

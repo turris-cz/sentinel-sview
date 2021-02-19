@@ -11,6 +11,7 @@ from .queries import PERIODS, RESOURCE_QUERIES
 KNOWN_PARAMS = {
     "period": "1y",
     "ip": None,
+    "password": None,
 }
 
 def job_handler(resource_name, params):

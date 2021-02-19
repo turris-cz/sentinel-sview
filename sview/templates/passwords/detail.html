@@ -4,19 +4,23 @@
 {%- from "_snippets.html" import map_box with context -%}
 {%- from "_snippets.html" import line_box with context -%}
 {%- from "_snippets.html" import country_code_item with context -%}
+{%- from "_snippets.html" import big_period_buttons with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
-<h1 class="display-4">{{ password }}</h1>
-{% call await_job(job_id) %}
-	<div class="row">
-		<div class="col-lg-12 pb-3" align="center">
-			{{ line_box("password_in_time", "Password usage during the time", data.password_during_time, "day", "count", "IPs") }}
-		</div>
+<h1 class="display-4">{{ active_params["password"] }}</h1>
+<div class="row">
+	{{ big_period_buttons(resource_names, periods, active_params) }}
+</div>
+<div class="row">
+	<div class="col-lg-12 pb-3" align="center">
+		{{ line_box("password_in_time", "Password usage during the time", resources["password_in_time"], "day", "count", "IPs") }}
 	</div>
-	<div class="row">
-		<div class="col-lg-12 pb-3" align="center">
-			{{ data_box("Password's top usernames", data.passwords_logins, "username") }}
-		</div>
+</div>
+<div class="row">
+	<div class="col-lg-12 pb-3" align="center">
+		{{ data_box("password_logins", "Password's top usernames", resources["password_logins"], "username") }}
 	</div>
-{% endcall %}
+</div>
+{{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}

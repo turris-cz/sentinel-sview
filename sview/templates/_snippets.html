@@ -118,6 +118,7 @@
 		</div>
 	</div>
 {%- endmacro -%}
+
 {%- macro map_box(id, name, source) -%}
 	<div id="{{ id }}" class="js-required" style="position: relative; width: 900; height: 300px;"></div>
 		{{ spinner_overlay("spinner-{}".format(id)) }}
@@ -133,6 +134,7 @@
 			</script>
 		{% endif %}
 {%- endmacro -%}
+
 {%- macro line_box(id, name, source, xkey, ykey, label) -%}
 	<div class="card mb-3 border">
 		<div class="card-header">

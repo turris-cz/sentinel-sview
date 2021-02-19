@@ -9,6 +9,8 @@ from .flux.passwords import top_passwords
 from .flux.passwords import top_usernames
 from .flux.passwords import top_combinations
 from .flux.passwords import top_passwords_popularity
+from .flux.passwords import password_activity_graph
+from .flux.passwords import logins_of_password
 
 from .flux.attackers import attackers_by_day
 from .flux.attackers import attacker_ips
@@ -109,6 +111,12 @@ RESOURCE_QUERIES = {
     },
     "attacker_activity": {
         "query": attackers_activity_graph,
+    },
+    "password_in_time": {
+        "query": password_activity_graph,
+    },
+    "password_logins": {
+        "query": logins_of_password,
     },
 }
 
