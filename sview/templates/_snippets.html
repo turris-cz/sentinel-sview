@@ -196,25 +196,6 @@
 	</script>
 {%- endmacro -%}
 
-{%- macro await_job(job_id) -%}
-	{% if job_id %}
-	<div id="await_job_alert" class="alert alert-danger d-none" role="alert"></div>
-	<div id="await_job_spinner" class="d-block">
-		<div id="await_job_spinner_spinner" class="spinner-border text-primary" role="status">
-			<span class="sr-only">Loading...</span>
-		</div>
-		<span id="await_job_status">
-			Please, wait for data being loaded...
-		</span>
-	</div>
-	<script type="text/javascript">
-		await_job("{{ url_for("api.await_job") }}", "{{ job_id }}");
-	</script>
-	{% else %}
-		{{ caller() }}
-	{% endif %}
-{%- endmacro -%}
-
 {%- macro big_period_buttons(resource_names, periods, active_params) -%}
 	<div class="col">
 		<div class="btn-group-toggle sview-big-time-buttons" data-toggle="buttons">
