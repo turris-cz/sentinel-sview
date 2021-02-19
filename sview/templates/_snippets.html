@@ -193,25 +193,28 @@
 	{% endif %}
 {%- endmacro -%}
 
-{%- macro big_period_buttons(resource_names, periods, active_period) -%}
+{%- macro big_period_buttons(resource_names, periods, active_params) -%}
 	<div class="col">
 		<div class="btn-group-toggle sview-big-time-buttons" data-toggle="buttons">
 {%		for period, period_params in periods.items() %}
 				<label class="btn btn-outline-secondary js-required">
 					<input type="radio" name="options" autocomplete="off"
-{%					if period==active_period %}
+{%					if period==active_params["period"] %}
 							checked
 {%					endif %}
 						onclick='process_new_settings(
 							"{{ url_for("api.get_resource_view") }}",
 							{{ resource_names|tojson }},
-							"{{ period }}"
+							Object.assign(
+								{{ active_params|tojson }},
+								{"period": "{{ period }}"}  // Override active period passed via active params
+							)
 						)'
 					>
 					{{ period_params["label"] }}
 				</label>
 				<noscript>
-{%				if period==active_period %}
+{%				if period==active_params["period"] %}
 						<a href="?period={{ period }}" class="btn btn-secondary" name="options" autocomplete="off">
 {%				else %}
 						<a href="?period={{ period }}" class="btn btn-outline-secondary" name="options" autocomplete="off">
@@ -224,13 +227,13 @@
 	</div>
 {%- endmacro -%}
 
-{%- macro request_missing_resources(resource_names, resources, period) -%}
+{%- macro request_missing_resources(resource_names, resources, params) -%}
 	<script>
 		request_missing_resources(
 			{{ resource_names|tojson }},
 			{{resources|tojson}},
 			"{{ url_for("api.get_resource_view") }}",
-			"{{ period }}"
+			{{params|tojson}}
 		)
 	</script>
 {%- endmacro -%}

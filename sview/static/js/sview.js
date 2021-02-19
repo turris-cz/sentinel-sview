@@ -73,11 +73,12 @@ function clear_interval(resource_name) {
 
 /**
  * Prepare the page for diplaying data set according
- * to a new settings - such a period or so.
+ * to a new settings - such a period or so passed in
+ * params
  */
-function process_new_settings(api_url, resource_names, period) {
-	set_param_in_window_location("period", period);
-	start_multi_poller(api_url, resource_names, period);
+function process_new_settings(api_url, resource_names, params) {
+	set_param_in_window_location("period", params["period"]);
+	start_multi_poller(api_url, resource_names, params);
 }
 
 
@@ -89,7 +90,7 @@ function set_param_in_window_location(key, value){
 }
 
 
-function request_missing_resources(resource_names, resources, url, period){
+function request_missing_resources(resource_names, resources, url, params){
 	requested_resources = [];
 	for (var i=0; i<resource_names.length; i++) {
 		if (resources[resource_names[i]] === null) {
@@ -97,7 +98,7 @@ function request_missing_resources(resource_names, resources, url, period){
 		}
 	}
 	if (requested_resources.length != 0) {
-		start_multi_poller(url, requested_resources, period)
+		start_multi_poller(url, requested_resources, params)
 	}
 }
 
@@ -105,12 +106,12 @@ function request_missing_resources(resource_names, resources, url, period){
 /**
  * Start multiple resource pollers ot once.
  */
-function start_multi_poller(url, resource_names, period) {
+function start_multi_poller(url, resource_names, params) {
 	for (var i=0; i<resource_names.length; i++) {
 		show_spinner(resource_names[i]);
 		clear_interval(resource_names[i]);
-		resource_poll(url, resource_names[i], period);
-		var interval = window.setInterval(resource_poll, 1000, url, resource_names[i], period);
+		resource_poll(url, resource_names[i], params);
+		var interval = window.setInterval(resource_poll, 1000, url, resource_names[i], params);
 		intervals[resource_names[i]] = interval;
 	}
 }
@@ -132,15 +133,15 @@ function hide_spinner(resource_name) {
 }
 
 
-function resource_poll(url, resource_name, period) {
+function resource_poll(url, resource_name, params) {
 	$.ajax({
 		method: "GET",
 		url: url,
 		success: process_response,
-		data : {
-			"name": resource_name,
-			"period": period,
-		}
+		data : Object.assign(
+			{"name": resource_name},
+			params
+		)
 	});
 }
 

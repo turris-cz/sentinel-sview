@@ -8,7 +8,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
-	{{ big_period_buttons(resource_names, periods, active_period) }}
+	{{ big_period_buttons(resource_names, periods, active_params) }}
 </div>
 <div class="row">
 	<div class="col">
@@ -39,5 +39,5 @@
 		{{ pair_data_box("top_combinations_long", "Top username / password combinations", resources["top_combinations_long"], "username", "password") }}
 	</div>
 </div>
-{{ request_missing_resources(resource_names, resources, active_period) }}
+{{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}
