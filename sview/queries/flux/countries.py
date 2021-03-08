@@ -25,9 +25,9 @@ map_overview = """
 top_countries_trends = """
     top_countries=from(bucket: "sentinel-base")
         |> range(start: -1y)
-        |> filter(fn: (r)=>r._measurement=="attacker_count" and exists r.country)
+        |> filter(fn: (r)=>r._measurement=="incident_count" and exists r.country)
         |> group(columns: ["country"])
-        |> unique(column: "_field")
+        |> unique(column: "src_addr")
         |> sum()
         |> group()
         |> sort(desc:true)
@@ -36,13 +36,13 @@ top_countries_trends = """
 
     from(bucket: "sentinel-base")
         |> range(start: -1y)
-        |> filter(fn: (r)=>r._measurement=="attacker_count"
+        |> filter(fn: (r)=>r._measurement=="incident_count"
             and exists r.country
             and contains(value: r.country, set:top_countries)
             )
         |> group()
         |> window(every: 1w)
-        |> unique(column: "_field")
+        |> unique(column: "src_addr")
         |> group(columns: ["country", "_start"])
         |> sum()
         |> group(columns: ["_start"])
