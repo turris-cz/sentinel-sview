@@ -1,5 +1,5 @@
 attacker_ips = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count")
         |> group(columns:["src_addr"])
@@ -12,7 +12,7 @@ attacker_ips = """
 """
 
 attackers_by_day = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count")
         |> group()
@@ -26,7 +26,7 @@ attackers_by_day = """
 """
 
 attackers_activity_graph = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and r.src_addr=="{ip}")
         |> group()

@@ -1,15 +1,22 @@
 import json
 
 from .extensions import redis, influx
+from .queries import PERIODS
 
 
-def process_query(query, params=None, post_process=None):
+def process_query(query, period, params=None, post_process=None):
     if not params:
         query_params = {}
     elif callable(params):
         query_params = params()
     else:
         query_params = params
+
+    query_params.update({
+        "start": PERIODS[period]["flux_start"],
+        "window": PERIODS[period]["flux_window"],
+        "bucket": PERIODS[period]["bucket"],
+    })
 
     result = []
 

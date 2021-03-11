@@ -25,36 +25,43 @@ PERIODS = {
         "label": "Hour",
         "flux_start": "-1h",
         "flux_window": "1m",
+        "bucket": "sentinel-base",
     },
     "12h": {
         "label": "12 Hours",
         "flux_start": "-12h",
         "flux_window": "15m",
+        "bucket": "sentinel-base",
     },
     "1d": {
         "label": "Day",
         "flux_start": "-1d",
         "flux_window": "30m",
+        "bucket": "sentinel-base",
     },
     "1w": {
         "label": "Week",
         "flux_start": "-1w",
         "flux_window": "3h",
+        "bucket": "sentinel-base",
     },
     "1m": {
         "label": "Month",
         "flux_start": "-1mo",
         "flux_window": "1d",
+        "bucket": "sentinel-hourly",
     },
     "3m": {
         "label": "3 Months",
         "flux_start": "-3mo",
         "flux_window": "2d",
+        "bucket": "sentinel-hourly",
     },
     "1y": {
         "label": "Year",
         "flux_start": "-1y",
         "flux_window": "1w",
+        "bucket": "sentinel-daily",
     },
 }
 

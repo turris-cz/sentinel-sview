@@ -1,5 +1,5 @@
 top_countries = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
         |> group(columns:["country"])
@@ -12,7 +12,7 @@ top_countries = """
 """
 
 map_overview = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
         |> group(columns:["country"])
@@ -23,7 +23,7 @@ map_overview = """
 """
 
 top_countries_trends = """
-    top_countries=from(bucket: "sentinel-base")
+    top_countries=from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="incident_count" and exists r.country)
         |> group(columns: ["country"])
@@ -34,7 +34,7 @@ top_countries_trends = """
         |> limit(n: {top_n})
         |> findColumn(fn: (key)=>true, column: "country")
 
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="incident_count"
             and exists r.country

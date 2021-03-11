@@ -1,5 +1,5 @@
 top_passwords = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["_field"])
@@ -12,7 +12,7 @@ top_passwords = """
 """
 
 top_usernames = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> group(columns:["username"])
@@ -25,7 +25,7 @@ top_usernames = """
 """
 
 top_combinations = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count")
         |> sum()
@@ -37,7 +37,7 @@ top_combinations = """
 """
 
 top_passwords_popularity = """
-    top_passwords=from(bucket: "sentinel-base")
+    top_passwords=from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="password_count")
         |> group(columns: ["_field"])
@@ -47,7 +47,7 @@ top_passwords_popularity = """
         |> limit(n: {top_n})
         |> findColumn(fn: (key)=>true, column: "_field")
 
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r)=>r._measurement=="password_count" and contains(value: r._field, set:top_passwords))
         |> group()
@@ -61,7 +61,7 @@ top_passwords_popularity = """
 """
 
 password_activity_graph = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
         |> group()
@@ -73,7 +73,7 @@ password_activity_graph = """
         |> group()
 """
 logins_of_password = """
-    from(bucket: "sentinel-base")
+    from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
         |> group(columns: ["username"])
