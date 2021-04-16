@@ -29,7 +29,7 @@
 	<body>
 		<div class="container">
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-				<a class="navbar-brand" href="{{ url_for("dashboard.index") }}">
+				<a class="navbar-brand" href="{{ url_for("statistics.dashboard") }}">
 					Sentinel:view
 				</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +37,9 @@
 				</button>
 				<div class="collapse navbar-collapse show" id="main-menu">
 					<ul class="navbar-nav">
-						{{ nav_link("dashboard.index", _("Home")) }}
-						{{ nav_link("attackers.index", _("Attackers"), per_bp=True) }}
-						{{ nav_link("passwords.index", _("Passwords"), per_bp=True) }}
+						{{ nav_link("statistics.dashboard", _("Home")) }}
+						{{ nav_link("statistics.attackers", _("Attackers")) }}
+						{{ nav_link("statistics.passwords", _("Passwords")) }}
 						{{ nav_link("web.greylist", _("Greylist"), target_blank=True) }}
 					</ul>
 					<div class="custom-control custom-switch ml-auto">

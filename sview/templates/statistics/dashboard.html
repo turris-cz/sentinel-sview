@@ -28,7 +28,7 @@
 	</div>
 	<div class="col-md">
 		{% call(data_item) data_box("top_passwords", "Top passwords", resources["top_passwords"], "password") %}
-			<a href="{{ url_for("passwords.password_details", encoded_password=data_item|b64) }}">
+			<a href="{{ url_for("statistics.password_details", encoded_password=data_item|b64) }}">
 				{{ data_item }}
 			</a>
 		{% endcall %}

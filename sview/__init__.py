@@ -24,17 +24,13 @@ def create_app(additional_config=None):
 
     setup_logging()
 
-    from .dashboard import dashboard
+    from .statistics import statistics
     from .api import api
     from .opendata import opendata
-    from .passwords import passwords
-    from .attackers import attackers
     from .web import web
-    app.register_blueprint(dashboard)
+    app.register_blueprint(statistics)
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(opendata, url_prefix="/opendata")
-    app.register_blueprint(passwords, url_prefix="/passwords")
-    app.register_blueprint(attackers, url_prefix="/attackers")
     app.register_blueprint(web)
 
     from .extensions import babel

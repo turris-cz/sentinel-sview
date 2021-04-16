@@ -37,7 +37,7 @@
 <div class="row">
 	<div class="col">
 		{% call(data_item) data_box("top_ips_long", "Most evil IP addresses", resources["top_ips_long"], "ip") -%}
-			<a href="{{ url_for("attackers.ip_details", ip=data_item) }}">
+			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
 				{{ data_item }}
 			</a>
 		{%- endcall %}

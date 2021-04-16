@@ -1,7 +1,7 @@
-{%- macro nav_link(endpoint, text, per_bp=False, target_blank=False) -%}
-	{%- if per_bp and request.endpoint.split(".")[0] == endpoint.split(".")[0] %}
+{%- macro nav_link(endpoint, text, target_blank=False) -%}
+	{%- if request.endpoint.split(".")[1] == endpoint.split(".")[1] %}
 		{%- set active = " active" %}
-	{%- elif request.endpoint.startswith(endpoint) %}
+	{%- elif endpoint.split(".")[1][:-1] in request.endpoint.split(".")[1] %}
 		{%- set active = " active" %}
 	{%- else %}
 		{%- set active = "" %}
