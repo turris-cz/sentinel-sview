@@ -13,7 +13,7 @@ from .queries.sql.passwords import logins_of_password
 from .queries.sql.passwords import passwords_of_attacker
 
 
-@rq.job(result_ttl=10)
+@rq.job(result_ttl=10, timeout=600)
 def load_data_from_template(resource_name):
     get_and_store(resource_name,
                   PRECACHED_QUERIES[resource_name]["query"],
