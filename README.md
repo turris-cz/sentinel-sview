@@ -9,7 +9,7 @@ Python Package Index requirements (including the development ones) are stated in
 
 ## Infrastructure requirements
 
-- Postgresql DB (example scheme in `/dev/scheme.sql`)
+- InfluxDB
 - Redis server
 
 
@@ -21,14 +21,6 @@ Python Package Index requirements (including the development ones) are stated in
 - Create `.env` file with local environment variables (see `.env.example`)
 - Set the configuration in `instance/local.cfg`. The default configuration
   can be found in `sview/default_settings.py`.
-    - For postgres DB use syntax:
-        ```
-        SQLALCHEMY_DATABASE_URI = "postgresql://user:password@hostname/databasename"
-        ```
-    - For non-debug run it is also needed to specify `SECRET_KEY`
-- Example database structure to work with can be seen in `dev/scheme.sql` and
-  should be compatible with
-  [Dumper scheme](https://gitlab.labs.nic.cz/turris/sentinel/dumper/blob/master/scheme.sql)
 - Run the application using `flask run` (Use wsgi server for production!)
 - Run some workers using `flask rq worker`. (Using only `rq worker` would lack
   any configuration and would end up working outside the application context).
