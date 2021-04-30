@@ -89,3 +89,15 @@ top_countries_trends = """
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count", "country"])
 """
+
+all_incidents_graph = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="incident_count")
+        |> group()
+        |> window(every: {window})
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count"])
+"""

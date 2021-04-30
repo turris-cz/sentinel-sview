@@ -19,6 +19,8 @@ from .flux.incidents import top_countries
 from .flux.incidents import map_overview
 from .flux.incidents import top_countries_trends
 
+from .flux.incidents import all_incidents_graph
+
 PERIODS = {
     "1h": {
         "label": "Hour",
@@ -66,6 +68,9 @@ PERIODS = {
 
 
 RESOURCE_QUERIES = {
+    "all_incidents_graph": {
+        "query": all_incidents_graph,
+    },
     "top_passwords": {
         "query": top_passwords,
         "params": {"limit": limit_dashboard},

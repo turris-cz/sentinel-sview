@@ -117,3 +117,22 @@ def password_details(encoded_password):
                            periods=PERIODS,
                            active_params=params,
                            resources=resources)
+
+
+@statistics.route("/incidents/")
+def incidents():
+    print(request.endpoint)
+    resource_names = [
+        "map_scores",
+        "all_incidents_graph",
+        "top_countries",
+    ]
+    params = {"period": request.args.get("period", "1y")}
+
+    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+
+    return render_template("statistics/incidents.html",
+                           resource_names=resource_names,
+                           periods=PERIODS,
+                           active_params=params,
+                           resources=resources)

@@ -284,6 +284,14 @@ redraw_callbacks = {
 			["Unique IP addresses"]
 		);
 	},
+	"all_incidents_graph": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"],
+			["count"],
+			["Incidents"]
+		);
+	},
 	"attacker_activity": function(data){
 		draw_graph(
 			data["resource_name"],
