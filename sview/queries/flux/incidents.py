@@ -101,3 +101,15 @@ all_incidents_graph = """
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count"])
 """
+top_incident_types = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="incident_count")
+        |> group(columns:["_field", "action"])
+        |> sum()
+        |> group()
+        |> sort(columns: ["_value"], desc: true)
+        |> rename(columns: {{"_field": "source", "_value": "count"}})
+        |> keep(columns: ["source", "action", "count"])
+        |> limit(n: {limit})
+"""

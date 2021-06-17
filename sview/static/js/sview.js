@@ -164,6 +164,16 @@ function createPasswordRow(row){
 }
 
 
+function createIncidentTypeRow(row){
+	td = document.createElement("td");
+	let strong = document.createElement('strong');
+	strong.innerHTML = row["source"].concat(" / ").concat(row["action"]);
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
 function createUsernameRow(row){
 	td = document.createElement("td");
 	let strong = document.createElement('strong');
@@ -332,6 +342,9 @@ redraw_callbacks = {
 	},
 	"top_passwords": function(data){
 		create_data_box(data, createPasswordRow);
+	},
+	"top_incident_types": function(data){
+		create_data_box(data, createIncidentTypeRow)
 	},
 	"top_passwords_long": function(data){
 		create_data_box(data, createPasswordRow);

@@ -26,6 +26,9 @@
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
+	<div class="col-md">
+		{{ pair_data_box("top_incident_types", "Top incident types", resources["top_incident_types"], "source", "action") }}
+	</div>
 </div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}

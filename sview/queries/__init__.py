@@ -20,6 +20,7 @@ from .flux.incidents import map_overview
 from .flux.incidents import top_countries_trends
 
 from .flux.incidents import all_incidents_graph
+from .flux.incidents import top_incident_types
 
 PERIODS = {
     "1h": {
@@ -102,6 +103,10 @@ RESOURCE_QUERIES = {
     "top_combinations_long": {
         "query": top_combinations,
         "params": {"limit": limit_long},
+    },
+    "top_incident_types": {
+        "query": top_incident_types,
+        "params": {"limit": limit_dashboard},
     },
     "map_scores": {
         "query": map_overview,

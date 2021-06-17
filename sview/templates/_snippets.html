@@ -29,7 +29,7 @@
 {%- endmacro -%}
 
 {%- macro data_item(data) -%}
-	{%- set len_limit = 10 -%}
+	{%- set len_limit = 14 -%}
 	{%- if data|length > len_limit -%}
 	<abbr title="{{ data }}">
 		{{ data | truncate(len_limit, True, "...", 0) }}

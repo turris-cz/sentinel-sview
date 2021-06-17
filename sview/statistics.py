@@ -126,6 +126,7 @@ def incidents():
         "map_scores",
         "all_incidents_graph",
         "top_countries",
+        "top_incident_types",
     ]
     params = {"period": request.args.get("period", "1y")}
 
