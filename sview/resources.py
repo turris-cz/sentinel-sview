@@ -25,7 +25,7 @@ def get_resource(resource_name, params):
     """
 
     if resource_name not in RESOURCE_QUERIES:
-        raise ResourceError("Unknown resource")
+        raise ResourceError(f"Unknown resource '{resource_name}'")
 
     if params["period"] not in PERIODS:
         raise ResourceError("Not a valid period")
