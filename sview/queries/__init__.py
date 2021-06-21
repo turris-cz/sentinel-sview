@@ -23,6 +23,7 @@ from .flux.incidents import all_incidents_graph
 from .flux.incidents import top_incident_types
 from .flux.incidents import incidents_by_country_trends
 from .flux.incidents import incidents_by_source_trends
+from .flux.incidents import incidents_by_action_trends
 
 PERIODS = {
     "1h": {
@@ -131,6 +132,11 @@ RESOURCE_QUERIES = {
         "query": incidents_by_source_trends,
         "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
+    },
+    "incidents_by_action_trends": {
+        "query": incidents_by_action_trends,
+        "params": {"top_n": limit_plot},
+        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "action"),
     },
     "top_passwords_popularity": {
         "query": top_passwords_popularity,

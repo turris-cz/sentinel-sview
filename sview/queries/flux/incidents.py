@@ -164,3 +164,29 @@ incidents_by_source_trends = """
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count", "source"])
 """
+incidents_by_action_trends = """
+    top_actions=from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="incident_count" and exists r.action)
+        |> group(columns: ["action"])
+        |> sum()
+        |> group()
+        |> sort(desc:true)
+        |> limit(n: {top_n})
+        |> findColumn(fn: (key)=>true, column: "action")
+
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="incident_count"
+            and exists r.action
+            and contains(value: r.action, set:top_actions)
+            )
+        |> group()
+        |> window(every: {window})
+        |> group(columns: ["action", "_start"])
+        |> sum()
+        |> group(columns: ["_start"])
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count", "action"])
+"""

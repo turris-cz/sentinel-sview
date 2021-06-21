@@ -129,6 +129,7 @@ def incidents():
         "top_incident_types",
         "incidents_by_country_trends",
         "incidents_by_source_trends",
+        "incidents_by_action_trends",
     ]
     params = {"period": request.args.get("period", "1y")}
 
