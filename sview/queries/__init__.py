@@ -21,6 +21,7 @@ from .flux.incidents import top_countries_trends
 
 from .flux.incidents import all_incidents_graph
 from .flux.incidents import top_incident_types
+from .flux.incidents import incidents_by_country_trends
 
 PERIODS = {
     "1h": {
@@ -117,6 +118,11 @@ RESOURCE_QUERIES = {
     },
     "attackers_trends": {
         "query": top_countries_trends,
+        "params": {"top_n": limit_plot},
+        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
+    },
+    "incidents_by_country_trends": {
+        "query": incidents_by_country_trends,
         "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },

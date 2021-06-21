@@ -30,5 +30,17 @@
 		{{ pair_data_box("top_incident_types", "Top incident types", resources["top_incident_types"], "source", "action") }}
 	</div>
 </div>
+<div class="row">
+	<div class="col">
+		{{ line_box(
+			"incidents_by_country_trends",
+			"Incidents by country trends",
+			resources["incidents_by_country_trends"]["data"],
+			"day",
+			resources["incidents_by_country_trends"]["ykeys"],
+			resources["incidents_by_country_trends"]["labels"]
+		) }}
+	</div>
+</div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}

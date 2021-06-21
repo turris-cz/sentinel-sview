@@ -113,3 +113,29 @@ top_incident_types = """
         |> keep(columns: ["source", "action", "count"])
         |> limit(n: {limit})
 """
+incidents_by_country_trends = """
+    top_countries=from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="incident_count" and exists r.country)
+        |> group(columns: ["country"])
+        |> sum()
+        |> group()
+        |> sort(desc:true)
+        |> limit(n: {top_n})
+        |> findColumn(fn: (key)=>true, column: "country")
+
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="incident_count"
+            and exists r.country
+            and contains(value: r.country, set:top_countries)
+            )
+        |> group()
+        |> window(every: {window})
+        |> group(columns: ["country", "_start"])
+        |> sum()
+        |> group(columns: ["_start"])
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count", "country"])
+"""
