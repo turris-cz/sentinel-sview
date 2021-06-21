@@ -326,6 +326,14 @@ redraw_callbacks = {
 			data["data"]["labels"]
 		);
 	},
+	"incidents_by_source_trends": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
 	"top_passwords_popularity": function(data){
 		draw_graph(
 			data["resource_name"],

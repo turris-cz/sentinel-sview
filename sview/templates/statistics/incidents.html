@@ -42,5 +42,17 @@
 		) }}
 	</div>
 </div>
+<div class="row">
+	<div class="col">
+		{{ line_box(
+			"incidents_by_source_trends",
+			"Incidents by source trends",
+			resources["incidents_by_source_trends"]["data"],
+			"day",
+			resources["incidents_by_source_trends"]["ykeys"],
+			resources["incidents_by_source_trends"]["labels"]
+		) }}
+	</div>
+</div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}
