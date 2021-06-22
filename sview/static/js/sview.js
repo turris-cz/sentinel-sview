@@ -184,6 +184,16 @@ function createUsernameRow(row){
 }
 
 
+function createPortRow(row){
+	td = document.createElement("td");
+	let strong = document.createElement("strong");
+	strong.innerHTML = row["port"];
+	td.appendChild(strong);
+
+	return [td];
+}
+
+
 function createIPRow(row){
 	td = document.createElement("td");
 	let strong = document.createElement('strong');
@@ -302,6 +312,14 @@ redraw_callbacks = {
 			["Incidents"]
 		);
 	},
+	"all_scans_graph": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"],
+			["count"],
+			["Scanned ports"]
+		);
+	},
 	"attacker_activity": function(data){
 		draw_graph(
 			data["resource_name"],
@@ -342,6 +360,14 @@ redraw_callbacks = {
 			data["data"]["labels"]
 		);
 	},
+	"port_trends": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
 	"top_passwords_popularity": function(data){
 		draw_graph(
 			data["resource_name"],
@@ -375,6 +401,9 @@ redraw_callbacks = {
 	},
 	"top_usernames_long": function(data){
 		create_data_box(data, createUsernameRow);
+	},
+	"top_ports_long": function(data){
+		create_data_box(data, createPortRow);
 	},
 	"password_logins": function(data){
 		create_data_box(data, createUsernameRow);

@@ -1,0 +1,36 @@
+{%- from "_snippets.html" import data_box with context -%}
+{%- from "_snippets.html" import pair_data_box with context -%}
+{%- from "_snippets.html" import map_box with context -%}
+{%- from "_snippets.html" import line_box with context -%}
+{%- from "_snippets.html" import country_code_item with context -%}
+{%- from "_snippets.html" import big_period_buttons with context -%}
+{%- from "_snippets.html" import request_missing_resources with context -%}
+{% extends "layout.html" %}
+{% block body %}
+<div class="row">
+	{{ big_period_buttons(resource_names, periods, active_params) }}
+</div>
+<div class="row">
+	<div class="col">
+		{{ line_box("all_scans_graph", "Number of all scanned ports during the time", resources["all_scans_graph"], "day", "count", "Scanned ports") }}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		{{ data_box("top_ports_long", "Most scanned ports", resources["top_ports_long"], "port") }}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		{{ line_box(
+			"port_trends",
+			"Port trends",
+			resources["port_trends"]["data"],
+			"day",
+			resources["port_trends"]["ykeys"],
+			resources["port_trends"]["labels"]
+		) }}
+	</div>
+</div>
+{{ request_missing_resources(resource_names, resources, active_params) }}
+{% endblock %}

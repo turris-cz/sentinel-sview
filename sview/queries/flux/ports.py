@@ -1,0 +1,48 @@
+all_scans_graph = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="port_count")
+        |> group()
+        |> window(every: {window})
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count"])
+"""
+port_trends = """
+    top_ports=from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="port_count")
+        |> group(columns: ["_field"])
+        |> sum()
+        |> group()
+        |> sort(desc:true)
+        |> limit(n: {top_n})
+        |> findColumn(fn: (key)=>true, column: "_field")
+
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r)=>r._measurement=="port_count"
+            and contains(value: r._field, set:top_ports)
+            )
+        |> group()
+        |> window(every: {window})
+        |> group(columns: ["_field", "_start"])
+        |> sum()
+        |> group(columns: ["_start"])
+        |> rename(columns: {{"_value":"count", "_field": "port"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count", "port"])
+"""
+top_ports = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="port_count")
+        |> group(columns:["_field"])
+        |> sum()
+        |> rename(columns: {{"_value": "count", "_field": "port"}})
+        |> keep(columns: ["port", "count"])
+        |> group()
+        |> sort(columns: ["count"], desc: true)
+        |> limit(n: {limit})
+"""

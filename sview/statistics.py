@@ -140,3 +140,21 @@ def incidents():
                            periods=PERIODS,
                            active_params=params,
                            resources=resources)
+
+
+@statistics.route("/ports/")
+def ports():
+    resource_names = [
+        "all_scans_graph",
+        "top_ports_long",
+        "port_trends",
+    ]
+    params = {"period": request.args.get("period", "1y")}
+
+    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+
+    return render_template("statistics/ports.html",
+                           resource_names=resource_names,
+                           periods=PERIODS,
+                           active_params=params,
+                           resources=resources)

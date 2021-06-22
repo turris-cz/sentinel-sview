@@ -25,6 +25,10 @@ from .flux.incidents import incidents_by_country_trends
 from .flux.incidents import incidents_by_source_trends
 from .flux.incidents import incidents_by_action_trends
 
+from .flux.ports import all_scans_graph
+from .flux.ports import top_ports
+from .flux.ports import port_trends
+
 PERIODS = {
     "1h": {
         "label": "Hour",
@@ -75,6 +79,9 @@ RESOURCE_QUERIES = {
     "all_incidents_graph": {
         "query": all_incidents_graph,
     },
+    "all_scans_graph": {
+        "query": all_scans_graph,
+    },
     "top_passwords": {
         "query": top_passwords,
         "params": {"limit": limit_dashboard},
@@ -89,6 +96,10 @@ RESOURCE_QUERIES = {
     },
     "top_usernames_long": {
         "query": top_usernames,
+        "params": {"limit": limit_long},
+    },
+    "top_ports_long": {
+        "query": top_ports,
         "params": {"limit": limit_long},
     },
     "top_countries": {
@@ -137,6 +148,11 @@ RESOURCE_QUERIES = {
         "query": incidents_by_action_trends,
         "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "action"),
+    },
+    "port_trends": {
+        "query": port_trends,
+        "params": {"top_n": limit_plot},
+        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "port"),
     },
     "top_passwords_popularity": {
         "query": top_passwords_popularity,
