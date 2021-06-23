@@ -12,13 +12,12 @@ from .flux.passwords import top_passwords_popularity
 from .flux.passwords import password_activity_graph
 from .flux.passwords import logins_of_password
 
-from .flux.attackers import attackers_by_day
-from .flux.attackers import attacker_ips
-from .flux.attackers import attackers_activity_graph
-
-from .flux.countries import top_countries
-from .flux.countries import map_overview
-from .flux.countries import top_countries_trends
+from .flux.incidents import attackers_by_day
+from .flux.incidents import attacker_ips
+from .flux.incidents import attackers_activity_graph
+from .flux.incidents import top_countries
+from .flux.incidents import map_overview
+from .flux.incidents import top_countries_trends
 
 PERIODS = {
     "1h": {
