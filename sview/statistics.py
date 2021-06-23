@@ -15,7 +15,7 @@ statistics = Blueprint("statistics", __name__)
 @statistics.route("/")
 def dashboard():
     resource_names = [
-        "map_scores",
+        "incidents_map",
         "attackers",
         "top_countries",
         "top_passwords",
@@ -34,7 +34,7 @@ def dashboard():
 @statistics.route("/attackers/")
 def attackers():
     resource_names = [
-        "map_scores",
+        "attackers_map",
         "attackers_trends",
         "top_countries_long",
         "top_ips_long",
@@ -121,9 +121,8 @@ def password_details(encoded_password):
 
 @statistics.route("/incidents/")
 def incidents():
-    print(request.endpoint)
     resource_names = [
-        "map_scores",
+        "incidents_map",
         "all_incidents_graph",
         "top_countries",
         "top_incident_types",

@@ -16,9 +16,9 @@ from .flux.incidents import attackers_by_day
 from .flux.incidents import attacker_ips
 from .flux.incidents import attackers_activity_graph
 from .flux.incidents import top_countries
-from .flux.incidents import map_overview
+from .flux.incidents import incidents_map
+from .flux.incidents import attackers_map
 from .flux.incidents import top_countries_trends
-
 from .flux.incidents import all_incidents_graph
 from .flux.incidents import top_incident_types
 from .flux.incidents import incidents_by_country_trends
@@ -122,8 +122,12 @@ RESOURCE_QUERIES = {
         "query": top_incident_types,
         "params": {"limit": limit_dashboard},
     },
-    "map_scores": {
-        "query": map_overview,
+    "incidents_map": {
+        "query": incidents_map,
+        "post_process": lambda d: as_map_data(d, "country", "count"),
+    },
+    "attackers_map": {
+        "query": attackers_map,
         "post_process": lambda d: as_map_data(d, "country", "count"),
     },
     "attackers": {

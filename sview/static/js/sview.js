@@ -1,4 +1,4 @@
-function draw_map(elem_handler, scores) {
+function draw_map(elem_handler, scores, label) {
 	$(elem_handler).vectorMap({
 		map: 'world_mill',
 		series: {
@@ -10,7 +10,7 @@ function draw_map(elem_handler, scores) {
 		},
 		onRegionTipShow: function(e, el, code){
 			if (scores[code]) {
-				el.html(el.html()+' ('+scores[code]+' events)');
+				el.html(el.html()+' ('+scores[code]+' '+label+')');
 			} else {
 				el.html(el.html());
 			}
@@ -292,9 +292,13 @@ function create_graph(id, xkey, ykeys, labels, data) {
 
 intervals = {}
 redraw_callbacks = {
-	"map_scores": function(data){
+	"incidents_map": function(data){
 		$( '#' + data["resource_name"]).contents().remove();
-		draw_map("#" + data["resource_name"], data["data"]);
+		draw_map("#" + data["resource_name"], data["data"], "incidents");
+	},
+	"attackers_map": function(data){
+		$( '#' + data["resource_name"]).contents().remove();
+		draw_map("#" + data["resource_name"], data["data"], "attackers");
 	},
 	"attackers": function(data){
 		draw_graph(

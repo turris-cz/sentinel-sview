@@ -50,11 +50,23 @@ top_countries = """
         |> limit(n: {limit})
 """
 
-map_overview = """
+incidents_map = """
     from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
         |> group(columns:["country"])
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> keep(columns: ["country", "count"])
+        |> group()
+"""
+
+attackers_map = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
+        |> group(columns:["country"])
+        |> unique(column: "src_addr")
         |> sum()
         |> rename(columns: {{"_value":"count"}})
         |> keep(columns: ["country", "count"])
