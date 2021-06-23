@@ -388,10 +388,16 @@ redraw_callbacks = {
 			["IPs"]
 		);
 	},
-	"top_countries": function(data){
+	"top_countries_by_incidents_table": function(data){
 		create_data_box(data, createCountryRow);
 	},
-	"top_countries_long": function(data){
+	"top_countries_by_incidents_table_long": function(data){
+		create_data_box(data, createCountryRow);
+	},
+	"top_countries_by_attackers_table": function(data){
+		create_data_box(data, createCountryRow);
+	},
+	"top_countries_by_attackers_table_long": function(data){
 		create_data_box(data, createCountryRow);
 	},
 	"top_passwords": function(data){

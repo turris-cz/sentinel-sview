@@ -37,11 +37,26 @@ attackers_activity_graph = """
         |> keep(columns: ["day", "count"])
         |> group()
 """
-top_countries = """
+
+top_countries_by_incidents_table = """
     from(bucket: "{bucket}")
         |> range(start: {start})
         |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
         |> group(columns:["country"])
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> keep(columns: ["country", "count"])
+        |> group()
+        |> sort(columns: ["count"], desc: true)
+        |> limit(n: {limit})
+"""
+
+top_countries_by_attackers_table = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="incident_count" and exists r.country)
+        |> group(columns:["country"])
+        |> unique(column: "src_addr")
         |> sum()
         |> rename(columns: {{"_value":"count"}})
         |> keep(columns: ["country", "count"])

@@ -15,7 +15,8 @@ from .flux.passwords import logins_of_password
 from .flux.incidents import attackers_by_day
 from .flux.incidents import attacker_ips
 from .flux.incidents import attackers_activity_graph
-from .flux.incidents import top_countries
+from .flux.incidents import top_countries_by_incidents_table
+from .flux.incidents import top_countries_by_attackers_table
 from .flux.incidents import incidents_map
 from .flux.incidents import attackers_map
 from .flux.incidents import top_countries_trends
@@ -102,12 +103,20 @@ RESOURCE_QUERIES = {
         "query": top_ports,
         "params": {"limit": limit_long},
     },
-    "top_countries": {
-        "query": top_countries,
+    "top_countries_by_incidents_table": {
+        "query": top_countries_by_incidents_table,
         "params": {"limit": limit_dashboard},
     },
-    "top_countries_long": {
-        "query": top_countries,
+    "top_countries_by_incidents_table_long": {
+        "query": top_countries_by_incidents_table,
+        "params": {"limit": limit_long},
+    },
+    "top_countries_by_attackers_table": {
+        "query": top_countries_by_attackers_table,
+        "params": {"limit": limit_dashboard},
+    },
+    "top_countries_by_attackers_table_long": {
+        "query": top_countries_by_attackers_table,
         "params": {"limit": limit_long},
     },
     "top_ips_long": {

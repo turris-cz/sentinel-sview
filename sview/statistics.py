@@ -17,7 +17,8 @@ def dashboard():
     resource_names = [
         "incidents_map",
         "attackers",
-        "top_countries",
+        "all_incidents_graph",
+        "top_countries_by_incidents_table",
         "top_passwords",
     ]
     params = {"period": request.args.get("period", "1y")}
@@ -35,8 +36,9 @@ def dashboard():
 def attackers():
     resource_names = [
         "attackers_map",
+        "attackers",
         "attackers_trends",
-        "top_countries_long",
+        "top_countries_by_attackers_table_long",
         "top_ips_long",
     ]
     params = {"period": request.args.get("period", "1y")}
@@ -124,7 +126,7 @@ def incidents():
     resource_names = [
         "incidents_map",
         "all_incidents_graph",
-        "top_countries",
+        "top_countries_by_incidents_table",
         "top_incident_types",
         "incidents_by_country_trends",
         "incidents_by_source_trends",

@@ -17,6 +17,25 @@
 </div>
 <div class="row">
 	<div class="col">
+		{{ line_box("attackers", "All the attackers during the time", resources["attackers"], "day", "count", "Unique IP addresses") }}
+	</div>
+</div>
+<div class="row">
+	<div class="col-md">
+		{% call(data_item) data_box("top_countries_by_attackers_table_long", "Top countries with the highest number of unique attackers", resources["top_countries_by_attackers_table_long"], "country") -%}
+			{{ country_code_item(data_item) }}
+		{%- endcall %}
+	</div>
+	<div class="col-md">
+		{% call(data_item) data_box("top_ips_long", "Top IP addresses with the highest number of recorded incidents", resources["top_ips_long"], "ip") -%}
+			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
+				{{ data_item }}
+			</a>
+		{%- endcall %}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
 		{{ line_box(
 			"attackers_trends",
 			"Attackers by country trends",
@@ -25,22 +44,6 @@
 			resources["attackers_trends"]["ykeys"],
 			resources["attackers_trends"]["labels"]
 		) }}
-	</div>
-</div>
-<div class="row">
-	<div class="col">
-		{% call(data_item) data_box("top_countries_long", "Most evil countries", resources["top_countries_long"], "country") -%}
-			{{ country_code_item(data_item) }}
-		{%- endcall %}
-	</div>
-</div>
-<div class="row">
-	<div class="col">
-		{% call(data_item) data_box("top_ips_long", "Most evil IP addresses", resources["top_ips_long"], "ip") -%}
-			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
-				{{ data_item }}
-			</a>
-		{%- endcall %}
 	</div>
 </div>
 {{ request_missing_resources(resource_names, resources, active_params) }}

@@ -22,12 +22,12 @@
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries", "Most evil countries", resources["top_countries"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_incidents_table", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_table"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{{ pair_data_box("top_incident_types", "Top incident types", resources["top_incident_types"], "source", "action") }}
+		{{ pair_data_box("top_incident_types", "Most common incident types", resources["top_incident_types"], "source", "action") }}
 	</div>
 </div>
 <div class="row">

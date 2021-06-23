@@ -21,13 +21,18 @@
 	</div>
 </div>
 <div class="row">
+	<div class="col">
+		{{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "day", "count", "Incidents") }}
+	</div>
+</div>
+<div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries", "Most evil countries", resources["top_countries"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_incidents_table", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_table"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{% call(data_item) data_box("top_passwords", "Top passwords", resources["top_passwords"], "password") %}
+		{% call(data_item) data_box("top_passwords", "Most abused passwords", resources["top_passwords"], "password") %}
 			<a href="{{ url_for("statistics.password_details", encoded_password=data_item|b64) }}">
 				{{ data_item }}
 			</a>
