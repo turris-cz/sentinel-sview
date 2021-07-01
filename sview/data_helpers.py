@@ -1,10 +1,12 @@
 import json
 
+import influxdb_client
+
 from .extensions import redis, influx
 from .queries import PERIODS
 
 
-def process_query(query, period, params=None, post_process=None):
+def process_query(query_frame, period, params=None, post_process=None):
     if not params:
         query_params = {}
     elif callable(params):
@@ -20,7 +22,12 @@ def process_query(query, period, params=None, post_process=None):
 
     result = []
 
-    tables = influx.client.query_api().query(query.format(**query_params))
+    full_query = query_frame.format(**query_params)
+    try:
+        tables = influx.client.query_api().query(full_query)
+    except influxdb_client.rest.ApiException as exc:
+        raise Exception(f"Failed to execute query: {full_query}") from exc
+
 
     if len(tables) == 0:
         return []
