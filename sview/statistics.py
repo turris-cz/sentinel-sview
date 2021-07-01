@@ -164,9 +164,14 @@ def ports():
 @statistics.route("/devices/")
 def devices():
     resource_names = [
-        "all_incidents_graph",
+        "my_incidents_graph",
     ]
     params = {"period": request.args.get("period", "1y")}
+
+    if "devices" in session:
+        params["my_device_tokens"] = str(session["devices"]).replace("'", '"')
+    else:
+        params["my_device_tokens"] = "[]"
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 

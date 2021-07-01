@@ -21,6 +21,7 @@ from .flux.incidents import incidents_map
 from .flux.incidents import attackers_map
 from .flux.incidents import top_countries_trends
 from .flux.incidents import all_incidents_graph
+from .flux.incidents import my_incidents_graph
 from .flux.incidents import top_incident_types
 from .flux.incidents import incidents_by_country_trends
 from .flux.incidents import incidents_by_source_trends
@@ -79,6 +80,9 @@ PERIODS = {
 RESOURCE_QUERIES = {
     "all_incidents_graph": {
         "query": all_incidents_graph,
+    },
+    "my_incidents_graph": {
+        "query": my_incidents_graph,
     },
     "all_scans_graph": {
         "query": all_scans_graph,

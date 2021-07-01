@@ -128,6 +128,22 @@ all_incidents_graph = """
         |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
         |> keep(columns: ["day", "count"])
 """
+
+my_incidents_graph = """
+    from(bucket: "{bucket}")
+        |> range(start: {start})
+        |> filter(fn: (r) =>r._measurement=="incident_count"
+            and exists r.device_token
+            and contains(value: r.device_token, set: {my_device_tokens})
+            )
+        |> group()
+        |> window(every: {window})
+        |> sum()
+        |> rename(columns: {{"_value":"count"}})
+        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
+        |> keep(columns: ["day", "count"])
+"""
+
 top_incident_types = """
     from(bucket: "{bucket}")
         |> range(start: {start})

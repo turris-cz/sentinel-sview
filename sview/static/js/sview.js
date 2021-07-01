@@ -316,6 +316,14 @@ redraw_callbacks = {
 			["Incidents"]
 		);
 	},
+	"my_incidents_graph": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"],
+			["count"],
+			["Incidents"]
+		);
+	},
 	"all_scans_graph": function(data){
 		draw_graph(
 			data["resource_name"],

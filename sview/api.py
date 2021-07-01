@@ -29,6 +29,11 @@ def get_resource_view():
         if param is not None:
             params[param_name] = param
 
+    if "devices" in session:
+        params["my_device_tokens"] = str(session["devices"]).replace("'", '"')
+    else:
+        params["my_device_tokens"] = "[]"
+
     try:
         return jsonify({
             "resource_name": resource_name,
