@@ -1,12 +1,20 @@
+import re
+
 from flask import Blueprint
 from flask import jsonify
+from flask import redirect
 from flask import request
+from flask import url_for
+from flask import session
 
 from .exceptions import ResourceError
 from .resources import get_resource
 from .resources import KNOWN_PARAMS
 
 api = Blueprint("api", __name__)
+
+DEVICE_TOKEN_CHARS = "^[a-z0-9]*$"
+DEVICE_TOKEN_LENGTH = 64
 
 
 @api.route("/resource")
@@ -28,3 +36,33 @@ def get_resource_view():
         })
     except ResourceError as exc:
         return jsonify({"error": str(exc)})
+
+
+@api.route("/device/<action>", methods=["POST"])
+def device_view(action):
+    if action not in ("add", "delete"):
+        return "Unknown operation", 500
+
+    if "device_token" not in request.form:
+        return "Device token not provided", 400
+
+    if (
+        not re.match(DEVICE_TOKEN_CHARS, request.form["device_token"])
+        or len(request.form["device_token"]) != DEVICE_TOKEN_LENGTH
+    ):
+        return "Bad format of device token", 400
+
+    if "devices" not in session:
+        session["devices"] = []
+
+    if action == "add":
+        if request.form["device_token"] not in session["devices"]:
+            session["devices"].append(request.form["device_token"])
+            session.modified = True
+
+    elif action == "delete":
+        if request.form["device_token"] in session["devices"]:
+            session["devices"].remove(request.form["device_token"])
+            session.modified = True
+
+    return redirect(url_for("statistics.devices"))

@@ -7,6 +7,55 @@
 {%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
+<div class="card mb-3 border">
+	<div class="card-header">
+		My devices
+	</div>
+	<div class="card-body" style="position:relative"></ul>
+		<div class="js-required">
+			<table class="table table-striped">
+				<tbody>
+					{% for device_token in session["devices"] %}
+					<tr>
+						<td>
+							<form action="/api/device/delete" method="post">
+								<div class="form-row justify-content-between">
+									<div class="col-md-7">
+										<div class="form-group mx-sm-3 mb-2">
+											<label for="inputDeviceToken" class="sr-only">Device Token</label>
+											<input type="text" class="form-control" name="device_token" id="inputDeviceToken" placeholder={{ device_token }} value={{ device_token }} readonly>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<button type="submit" class="btn btn-danger mb-2">Remove device</button>
+									</div>
+								</div>
+							</form>
+						</td>
+					</tr>
+					{% endfor %}
+					<tr>
+						<td>
+							<form action="/api/device/add" method="post">
+								<div class="form-row justify-content-between">
+									<div class="col-md-7">
+										<div class="form-group mx-sm-3 mb-2">
+											<label for="inputDeviceToken" class="sr-only">Device Token</label>
+											<input type="text" class="form-control" name="device_token" id="inputDeviceToken" placeholder="Device token" required pattern="^[a-z0-9]*$" minlength="64" maxlength="64">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<button type="submit" class="btn btn-success mb-2">Add device</button>
+									</div>
+								</div>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 <div class="row">
 	{{ big_period_buttons(resource_names, periods, active_params) }}
 </div>
