@@ -1,33 +1,26 @@
-import json
-
 import influxdb_client
 
-from .extensions import redis, influx
+from .extensions import influx
 from .queries import PERIODS
+from .queries import RESOURCE_QUERIES
 
 
-def process_query(query_frame, period, params=None, post_process=None):
-    if not params:
-        query_params = {}
-    elif callable(params):
-        query_params = params()
-    else:
-        query_params = params
-
-    query_params.update({
-        "start": PERIODS[period]["flux_start"],
-        "window": PERIODS[period]["flux_window"],
-        "bucket": PERIODS[period]["bucket"],
+def process_query(resource_name, params):
+    query_frame = RESOURCE_QUERIES[resource_name]["query"]
+    params.update(RESOURCE_QUERIES[resource_name].get("params", {}))
+    params.update({
+        "start": PERIODS[params["period"]]["flux_start"],
+        "window": PERIODS[params["period"]]["flux_window"],
+        "bucket": PERIODS[params["period"]]["bucket"],
     })
 
     result = []
 
-    full_query = query_frame.format(**query_params)
+    full_query = query_frame.format(**params)
     try:
         tables = influx.client.query_api().query(full_query)
     except influxdb_client.rest.ApiException as exc:
         raise Exception(f"Failed to execute query: {full_query}") from exc
-
 
     if len(tables) == 0:
         return []
@@ -40,6 +33,7 @@ def process_query(query_frame, period, params=None, post_process=None):
         del flux_record.values["table"]  # Can't be filtered using flux query
         result.append(flux_record.values)
 
+    post_process = RESOURCE_QUERIES[resource_name].get("post_process")
     if post_process and callable(post_process):
         # This is experimental feature
         # It would be nice to have better interface
@@ -48,6 +42,3 @@ def process_query(query_frame, period, params=None, post_process=None):
             result = returned
 
     return result
-
-def precached_data_key(resource_name, period):
-    return "precached:{}:{}".format(resource_name, period)

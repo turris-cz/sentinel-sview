@@ -31,48 +31,67 @@ from .flux.ports import all_scans_graph
 from .flux.ports import top_ports
 from .flux.ports import port_trends
 
+KNOWN_PARAMS = {
+    "period": "1y",
+    "ip": None,
+    "password": None,
+}
+
+"""Time periods of displayed data. If you divide period length by length of
+flux window, you will get the number of displayed data points. Each period has
+defined cache TTL. It seems reasonable for TTL to be half a length of flux
+window. Cache TTL is defined in seconds and should be used on both server and
+client sides.
+"""
 PERIODS = {
     "1h": {
         "label": "Hour",
         "flux_start": "-1h",
         "flux_window": "1m",
         "bucket": "sentinel-base",
+        "cache_ttl": 30,
     },
     "12h": {
         "label": "12 Hours",
         "flux_start": "-12h",
         "flux_window": "15m",
         "bucket": "sentinel-base",
+        "cache_ttl": 450,
     },
     "1d": {
         "label": "Day",
         "flux_start": "-1d",
         "flux_window": "30m",
         "bucket": "sentinel-base",
+        "cache_ttl": 900,
     },
     "1w": {
         "label": "Week",
         "flux_start": "-1w",
         "flux_window": "3h",
         "bucket": "sentinel-base",
+        "cache_ttl": 5400,
     },
     "1m": {
         "label": "Month",
         "flux_start": "-1mo",
         "flux_window": "1d",
         "bucket": "sentinel-hourly",
+        "cache_ttl": 432000,
     },
     "3m": {
         "label": "3 Months",
         "flux_start": "-3mo",
         "flux_window": "2d",
         "bucket": "sentinel-hourly",
+        "cache_ttl": 864000,
     },
     "1y": {
         "label": "Year",
         "flux_start": "-1y",
         "flux_window": "1w",
         "bucket": "sentinel-daily",
+        "cache_ttl": 302400,
     },
 }
 
@@ -189,16 +208,27 @@ RESOURCE_QUERIES = {
 
 
 PRECACHED_RESOURCES = [
-    ("top_passwords", "1y"),
-    ("top_passwords_long", "1y"),
-    ("top_usernames", "1y"),
-    ("top_usernames_long", "1y"),
-    ("top_countries", "1y"),
-    ("top_countries_long", "1y"),
-    ("top_ips_long", "1y"),
-    ("top_combinations_long", "1y"),
-    ("map_scores", "1y"),
-    ("attackers", "1y"),
-    ("attackers_trends", "1y"),
-    ("top_passwords_popularity", "1y")
+    ("top_passwords", {"period": "1y"}),
+    ("top_passwords_long", {"period": "1y"}),
+    ("top_usernames", {"period": "1y"}),
+    ("top_usernames_long", {"period": "1y"}),
+    ("top_countries_by_attackers_table", {"period": "1y"}),
+    ("top_countries_by_attackers_table_long", {"period": "1y"}),
+    ("top_countries_by_incidents_table", {"period": "1y"}),
+    ("top_countries_by_incidents_table_long", {"period": "1y"}),
+    ("top_ips_long", {"period": "1y"}),
+    ("top_combinations_long", {"period": "1y"}),
+    ("attackers_map", {"period": "1y"}),
+    ("incidents_map", {"period": "1y"}),
+    ("attackers", {"period": "1y"}),
+    ("attackers_trends", {"period": "1y"}),
+    ("top_passwords_popularity", {"period": "1y"})
 ]
+
+
+def get_job_handler_key(resource_name, params):
+    return "job_id:{}".format(":".join([resource_name] + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]))
+
+
+def get_cached_data_key(resource_name, params):
+    return "cached:{}".format(":".join([resource_name] + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]))

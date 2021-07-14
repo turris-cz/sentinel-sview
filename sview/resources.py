@@ -1,25 +1,17 @@
-from flask import jsonify
 import json
 
-from .data_helpers import precached_data_key
 from .exceptions import ResourceError
-from .extensions import redis
-from .job_helpers import run_job
-from .jobs import query_resource
-from .queries import PERIODS, RESOURCE_QUERIES
-
-KNOWN_PARAMS = {
-    "period": "1y",
-    "ip": None,
-    "password": None,
-}
-
-def job_handler(resource_name, params):
-    return ":".join([resource_name] + list(params.values()))
+from .extensions import redis, rq
+from .jobs import cache_resource
+from .queries import PERIODS
+from .queries import RESOURCE_QUERIES
+from .queries import get_cached_data_key
+from .queries import get_job_handler_key
+from .rlimit import rlimit
 
 
 def get_resource(resource_name, params):
-    """ Return a cached resource or start a job to query it.
+    """Return a cached resource or start a job to query & cache it.
     Return either requested resource or None when it is not ready yet.
     Raise an exception in case of invalid resource or invalid parameters.
     """
@@ -30,16 +22,37 @@ def get_resource(resource_name, params):
     if params["period"] not in PERIODS:
         raise ResourceError("Not a valid period")
 
-    precached_result = redis.get(precached_data_key(resource_name, params["period"]))
+    precached_result = redis.get(get_cached_data_key(resource_name, params))
     if precached_result:
         resource = json.loads(precached_result.decode("utf-8"))
         return resource
 
-    resource, _ = run_job(
-        job_handler(resource_name, params),
-        query_resource,
-        resource_name=resource_name,
-        **params
-    )
+    _run_caching_job(resource_name, params)
 
-    return resource
+
+def _run_caching_job(resource_name, params):
+    """Enqueue a job or check its result when it is already enqueued.
+    Return either job.result when the job already finished or
+    None when it is still pending.
+    """
+    job_handler_key = get_job_handler_key(resource_name, params)
+
+    @rlimit
+    def _queue_job():
+        job = cache_resource.queue(resource_name, params)
+        redis.set(job_handler_key, job.id, ex=job.result_ttl)
+
+    job_id = redis.get(job_handler_key)
+    if job_id:
+        job_id = job_id.decode("UTF-8")
+    else:
+        _queue_job()
+        return
+
+    job = rq.get_queue().fetch_job(job_id)
+    if not job:
+        _queue_job()
+        return
+
+    # TODO: Check whether the job is in fail state, but there's probably
+    # no point in notifying the client what exactly went wrong

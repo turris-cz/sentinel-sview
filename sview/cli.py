@@ -3,9 +3,9 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .data_helpers import precached_data_key
-from .jobs import precache_resource
+from .jobs import cache_resource
 from .queries import PRECACHED_RESOURCES
+from .queries import get_cached_data_key
 
 from .extensions import redis
 
@@ -31,7 +31,7 @@ def queue_queries():
     """Add all cached queries to the queue"""
     for resource_request in PRECACHED_RESOURCES:
         click.echo("Queuing: {}".format(resource_request))
-        precache_resource.queue(*resource_request)
+        cache_resource.queue(*resource_request)
 
 
 @click.command()
@@ -41,7 +41,7 @@ def queue_queries():
 def queue_query(resource_name, period):
     """Add cached query to the queue"""
     click.echo("Queuing: {}".format((resource_name, period)))
-    precache_resource.queue(resource_name, period)
+    cache_resource.queue(resource_name, {"period": period})
 
 
 @click.command()
@@ -53,7 +53,7 @@ def check_redis():
     missing = []
 
     for resource_request in PRECACHED_RESOURCES:
-        data = redis.get(precached_data_key(*resource_request))
+        data = redis.get(get_cached_data_key(*resource_request))
         if data:
             available.append(resource_request)
             size += len(data)
@@ -63,11 +63,11 @@ def check_redis():
     if available:
         click.echo("Stored keys:")
         for resource_request in available:
-            click.echo("  - {}".format(precached_data_key(*resource_request)))
+            click.echo("  - {}".format(get_cached_data_key(*resource_request)))
     if missing:
         click.echo("Missing keys:")
         for resource_request in missing:
-            click.echo("  - {}".format(precached_data_key(*resource_request)))
+            click.echo("  - {}".format(get_cached_data_key(*resource_request)))
     if available:
         click.echo("")
         click.echo("Keys occupy:  {}".format(_human_readable_bytes(size)))
