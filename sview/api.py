@@ -9,7 +9,8 @@ from flask import session
 
 from .exceptions import ResourceError
 from .resources import get_resource
-from .resources import KNOWN_PARAMS
+from .queries import KNOWN_PARAMS
+from .queries import PERIODS
 
 api = Blueprint("api", __name__)
 
@@ -35,12 +36,21 @@ def get_resource_view():
         params["my_device_tokens"] = "[]"
 
     try:
-        return jsonify({
-            "resource_name": resource_name,
-            "data": get_resource(resource_name, params)
-        })
+        data = get_resource(resource_name, params)
     except ResourceError as exc:
         return jsonify({"error": str(exc)})
+
+    response = jsonify(
+        {
+            "resource_name": resource_name,
+            "data": data,
+        }
+    )
+
+    if data is not None:
+        response.cache_control.max_age = PERIODS[params["period"]]["cache_ttl"]
+
+    return response
 
 
 @api.route("/device/<action>", methods=["POST"])
