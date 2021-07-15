@@ -3,10 +3,13 @@ import binascii
 
 from flask import render_template
 from flask import Blueprint
+from flask import redirect
 from flask import request
+from flask import session
+from flask import url_for
 
 from .resources import get_resource
-from .queries import PERIODS
+from .queries import PERIODS, DEFAULT_PERIOD
 
 
 statistics = Blueprint("statistics", __name__)
@@ -21,7 +24,11 @@ def dashboard():
         "top_countries_by_incidents_table",
         "top_passwords",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
@@ -41,7 +48,11 @@ def attackers():
         "top_countries_by_attackers_table_long",
         "top_ips_long",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
@@ -57,9 +68,13 @@ def attacker_details(ip):
     resource_names = [
         "attacker_activity",
     ]
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, ip=ip, period=DEFAULT_PERIOD))
+
     params = {
-        "period": request.args.get("period", "1y"),
-        "ip": ip
+        "period": period,
+        "ip": ip,
     }
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
@@ -79,7 +94,11 @@ def passwords():
         "top_usernames_long",
         "top_combinations_long",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
@@ -107,8 +126,18 @@ def password_details(encoded_password):
         "password_logins",
         "password_in_time",
     ]
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(
+            url_for(
+                request.endpoint,
+                encoded_password=encoded_password,
+                period=DEFAULT_PERIOD,
+            )
+        )
+
     params = {
-        "period": request.args.get("period", "1y"),
+        "period": period,
         "password": password,
     }
 
@@ -132,7 +161,11 @@ def incidents():
         "incidents_by_source_trends",
         "incidents_by_action_trends",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
@@ -150,7 +183,11 @@ def ports():
         "top_ports_long",
         "port_trends",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
@@ -166,7 +203,11 @@ def devices():
     resource_names = [
         "my_incidents_graph",
     ]
-    params = {"period": request.args.get("period", "1y")}
+    period = request.args.get("period")
+    if period not in PERIODS:
+        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+
+    params = {"period": period}
 
     if "devices" in session:
         params["my_device_tokens"] = str(session["devices"]).replace("'", '"')

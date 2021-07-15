@@ -43,6 +43,7 @@ defined cache TTL. It seems reasonable for TTL to be half a length of flux
 window. Cache TTL is defined in seconds and should be used on both server and
 client sides.
 """
+DEFAULT_PERIOD = "1y"
 PERIODS = {
     "1h": {
         "label": "Hour",
