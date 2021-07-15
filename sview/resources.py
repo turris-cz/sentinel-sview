@@ -22,6 +22,9 @@ def get_resource(resource_name, params):
     if params["period"] not in PERIODS:
         raise ResourceError("Not a valid period")
 
+    if resource_name == "my_incidents_graph" and "token" not in params:
+        return []
+
     precached_result = redis.get(get_cached_data_key(resource_name, params))
     if precached_result:
         resource = json.loads(precached_result.decode("utf-8"))

@@ -10,6 +10,7 @@ from flask import url_for
 
 from .resources import get_resource
 from .queries import PERIODS, DEFAULT_PERIOD
+from .view_helpers import get_tokens_hash
 
 
 statistics = Blueprint("statistics", __name__)
@@ -203,18 +204,26 @@ def devices():
     resource_names = [
         "my_incidents_graph",
     ]
+    tokens_hash = get_tokens_hash(session.get("devices"))
+
     period = request.args.get("period")
-    if period not in PERIODS:
-        return redirect(url_for(request.endpoint, period=DEFAULT_PERIOD))
+    if period not in PERIODS or tokens_hash != request.args.get("token"):
+        return redirect(
+            url_for(request.endpoint, period=DEFAULT_PERIOD, token=tokens_hash)
+        )
 
-    params = {"period": period}
+    params = (
+        {"period": period, "token": tokens_hash} if tokens_hash else {"period": period}
+    )
 
-    if "devices" in session:
-        params["my_device_tokens"] = str(session["devices"]).replace("'", '"')
-    else:
-        params["my_device_tokens"] = "[]"
+    tokens_string = str(session.get("devices", [])).replace("'", '"')
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(
+            resource_name, {**params, "my_device_tokens": tokens_string}
+        )
+        for resource_name in resource_names
+    }
 
     return render_template("statistics/devices.html",
                            resource_names=resource_names,

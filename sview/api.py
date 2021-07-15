@@ -10,7 +10,8 @@ from flask import session
 from .exceptions import ResourceError
 from .resources import get_resource
 from .queries import KNOWN_PARAMS
-from .queries import PERIODS
+from .queries import PERIODS, DEFAULT_PERIOD
+from .view_helpers import get_tokens_hash
 
 api = Blueprint("api", __name__)
 
@@ -80,4 +81,11 @@ def device_view(action):
             session["devices"].remove(request.form["device_token"])
             session.modified = True
 
-    return redirect(url_for("statistics.devices"))
+    token = get_tokens_hash(session.get("devices"))
+    if token:
+        return redirect(
+            url_for("statistics.devices", period=DEFAULT_PERIOD, token=token)
+        )
+
+    else:
+        return redirect(url_for("statistics.devices", period=DEFAULT_PERIOD))

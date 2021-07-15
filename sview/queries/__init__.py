@@ -35,6 +35,7 @@ KNOWN_PARAMS = {
     "period": "1y",
     "ip": None,
     "password": None,
+    "token": None,
 }
 
 """Time periods of displayed data. If you divide period length by length of
