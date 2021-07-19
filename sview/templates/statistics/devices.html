@@ -64,5 +64,15 @@
 		{{ line_box("my_incidents_graph", "All incidents recorded on my devices", resources["my_incidents_graph"], "day", "count", "Incidents") }}
 	</div>
 </div>
+<div class="row">
+	<div class="col">
+		{{ line_box("my_incidents_by_source_trends", "Incidents by source recorded on my devices", resources["my_incidents_by_source_trends"], "day", "count", "Incidents") }}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		{{ line_box("my_incidents_by_country_trends", "Incidents by country recorded on my devices", resources["my_incidents_by_country_trends"], "day", "count", "Incidents") }}
+	</div>
+</div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}

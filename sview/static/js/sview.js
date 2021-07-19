@@ -364,6 +364,22 @@ redraw_callbacks = {
 			data["data"]["labels"]
 		);
 	},
+	"my_incidents_by_country_trends": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
+	"my_incidents_by_source_trends": function(data){
+		draw_graph(
+			data["resource_name"],
+			data["data"]["data"],
+			data["data"]["ykeys"],
+			data["data"]["labels"]
+		);
+	},
 	"incidents_by_action_trends": function(data){
 		draw_graph(
 			data["resource_name"],

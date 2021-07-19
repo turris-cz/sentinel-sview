@@ -9,6 +9,12 @@ from .queries import get_cached_data_key
 from .queries import get_job_handler_key
 from .rlimit import rlimit
 
+USER_SPECIFIC_RESOURCES = (
+    "my_incidents_graph",
+    "my_incidents_by_country_trends",
+    "my_incidents_by_source_trends",
+)
+
 
 def get_resource(resource_name, params):
     """Return a cached resource or start a job to query & cache it.
@@ -22,7 +28,7 @@ def get_resource(resource_name, params):
     if params["period"] not in PERIODS:
         raise ResourceError("Not a valid period")
 
-    if resource_name == "my_incidents_graph" and "token" not in params:
+    if resource_name in USER_SPECIFIC_RESOURCES and "token" not in params:
         return []
 
     precached_result = redis.get(get_cached_data_key(resource_name, params))

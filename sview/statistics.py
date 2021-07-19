@@ -203,6 +203,8 @@ def ports():
 def devices():
     resource_names = [
         "my_incidents_graph",
+        "my_incidents_by_source_trends",
+        "my_incidents_by_country_trends",
     ]
     tokens_hash = get_tokens_hash(session.get("devices"))
 

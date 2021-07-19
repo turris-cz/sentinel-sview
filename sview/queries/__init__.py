@@ -25,6 +25,8 @@ from .flux.incidents import my_incidents_graph
 from .flux.incidents import top_incident_types
 from .flux.incidents import incidents_by_country_trends
 from .flux.incidents import incidents_by_source_trends
+from .flux.incidents import my_incidents_by_country_trends
+from .flux.incidents import my_incidents_by_source_trends
 from .flux.incidents import incidents_by_action_trends
 
 from .flux.ports import all_scans_graph
@@ -179,6 +181,16 @@ RESOURCE_QUERIES = {
     },
     "incidents_by_source_trends": {
         "query": incidents_by_source_trends,
+        "params": {"top_n": limit_plot},
+        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
+    },
+    "my_incidents_by_country_trends": {
+        "query": my_incidents_by_country_trends,
+        "params": {"top_n": limit_plot},
+        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
+    },
+    "my_incidents_by_source_trends": {
+        "query": my_incidents_by_source_trends,
         "params": {"top_n": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
     },
