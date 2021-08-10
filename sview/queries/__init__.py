@@ -12,22 +12,24 @@ from .flux.passwords import top_passwords_popularity
 from .flux.passwords import password_activity_graph
 from .flux.passwords import logins_of_password
 
-from .flux.incidents import attackers_by_day
-from .flux.incidents import attacker_ips
-from .flux.incidents import attackers_activity_graph
-from .flux.incidents import top_countries_by_incidents_table
-from .flux.incidents import top_countries_by_attackers_table
-from .flux.incidents import incidents_map
-from .flux.incidents import attackers_map
-from .flux.incidents import top_countries_trends
 from .flux.incidents import all_incidents_graph
-from .flux.incidents import my_incidents_graph
 from .flux.incidents import top_incident_types
-from .flux.incidents import incidents_by_country_trends
 from .flux.incidents import incidents_by_source_trends
-from .flux.incidents import my_incidents_by_country_trends
-from .flux.incidents import my_incidents_by_source_trends
 from .flux.incidents import incidents_by_action_trends
+
+from .flux.attacker_incidents import attackers_by_day
+from .flux.attacker_incidents import attacker_ips
+from .flux.attacker_incidents import attackers_activity_graph
+from .flux.attacker_incidents import top_countries_by_incidents_table
+from .flux.attacker_incidents import top_countries_by_attackers_table
+from .flux.attacker_incidents import incidents_map
+from .flux.attacker_incidents import attackers_map
+from .flux.attacker_incidents import top_countries_trends
+from .flux.attacker_incidents import incidents_by_country_trends
+
+from .flux.user_incidents import my_incidents_graph
+from .flux.user_incidents import my_incidents_by_country_trends
+from .flux.user_incidents import my_incidents_by_source_trends
 
 from .flux.ports import all_scans_graph
 from .flux.ports import top_ports
