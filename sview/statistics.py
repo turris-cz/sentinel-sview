@@ -18,6 +18,7 @@ statistics = Blueprint("statistics", __name__)
 
 @statistics.route("/")
 def dashboard():
+    page_title = "Home"
     resource_names = [
         "incidents_map",
         "attackers",
@@ -33,15 +34,19 @@ def dashboard():
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/dashboard.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/dashboard.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 @statistics.route("/attackers/")
 def attackers():
+    page_title = "Attackers"
     resource_names = [
         "attackers_map",
         "attackers",
@@ -57,15 +62,19 @@ def attackers():
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/attackers.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/attackers.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 @statistics.route("/attackers/details/ip/<string:ip>")
 def attacker_details(ip):
+    page_title = "Attacker Details"
     resource_names = [
         "attacker_activity",
     ]
@@ -80,15 +89,19 @@ def attacker_details(ip):
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/attacker_details.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/attacker_details.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 @statistics.route("/passwords/")
 def passwords():
+    page_title = "Passwords"
     resource_names = [
         "top_passwords_popularity",
         "top_passwords_long",
@@ -103,11 +116,14 @@ def passwords():
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/passwords.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/passwords.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 def _decode_password(encoded_password):
@@ -119,6 +135,7 @@ def _decode_password(encoded_password):
 
 @statistics.route("/passwords/details/<string:encoded_password>")
 def password_details(encoded_password):
+    page_title = "Password Details"
     password = _decode_password(encoded_password)
     if not password:
         return "Unable to decode password", 400
@@ -144,15 +161,19 @@ def password_details(encoded_password):
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/password_details.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/password_details.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 @statistics.route("/incidents/")
 def incidents():
+    page_title = "Incidents"
     resource_names = [
         "incidents_map",
         "all_incidents_graph",
@@ -170,15 +191,19 @@ def incidents():
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/incidents.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/incidents.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title
+    )
 
 
 @statistics.route("/ports/")
 def ports():
+    page_title = "Ports"
     resource_names = [
         "all_scans_graph",
         "top_ports_long",
@@ -192,15 +217,19 @@ def ports():
 
     resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
 
-    return render_template("statistics/ports.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/ports.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
 
 
 @statistics.route("/devices/")
 def devices():
+    page_title = "Devices"
     resource_names = [
         "my_incidents_graph",
         "my_incidents_by_source_trends",
@@ -227,8 +256,11 @@ def devices():
         for resource_name in resource_names
     }
 
-    return render_template("statistics/devices.html",
-                           resource_names=resource_names,
-                           periods=PERIODS,
-                           active_params=params,
-                           resources=resources)
+    return render_template(
+        "statistics/devices.html",
+        resource_names=resource_names,
+        periods=PERIODS,
+        active_params=params,
+        resources=resources,
+        page_title=page_title,
+    )
