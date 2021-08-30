@@ -113,7 +113,7 @@ class InfluxStorage():
         for tag_name, tag_value in tags.items():
             point = point.tag(tag_name, tag_value)
 
-        for bucket in ["sentinel-base", "sentinel-hourly", "sentinel-daily"]:
+        for bucket in ["sentinel-base", "sentinel-minutely", "sentinel-hourly", "sentinel-daily"]:
             self.write_api.write(bucket, self.org, point)
 
 
