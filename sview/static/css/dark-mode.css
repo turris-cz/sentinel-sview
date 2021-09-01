@@ -1,41 +1,78 @@
 [data-theme="dark"] {
-  background-color: #222;
-  color: #bebebe;
+    color: rgb(209, 205, 199);
+    background-color: rgb(24, 26, 27);
 }
 
-
 [data-theme="dark"] .bg-light {
-  background-color: #444;
+    background-color: #444;
 }
 
 [data-theme="dark"] .bg-white {
-  background-color: #000;
+    background-color: #000;
 }
 
 [data-theme="dark"] .bg-black {
-  background-color: #eee;
+    background-color: #eee;
 }
 
-
-[data-theme=dark] .card {
-  color: #bebebe;
-  background-color: #181818;
-  border-color: #404040;
+[data-theme="dark"] .card {
+    color: #bebebe;
+    background-color: #181818;
+    border-color: #404040;
 }
 
-[data-theme=dark] .card-header,
-[data-theme=dark] .card-footer {
-  color: #bebebe;
-  background-color: #202020;
-  border-top-color: #404040;
-  border-bottom-color: #404040;
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .card-footer {
+    color: #bebebe;
+    background-color: #202020;
+    border-top-color: #404040;
+    border-bottom-color: #404040;
 }
 
-
-[data-theme=dark] .table {
-  color: #bebebe;
+[data-theme="dark"] .table {
+    color: #bebebe;
 }
 
-[data-theme=dark] .table-hover tbody tr:hover {
-  color: #bebebe;
+[data-theme="dark"] .table-hover tbody tr:hover {
+    color: #bebebe;
+}
+
+[data-theme="dark"] .form-control {
+    color: rgb(181, 175, 166);
+    background-color: rgb(24, 26, 27);
+    border-color: rgb(60, 65, 68);
+}
+
+[data-theme="dark"] .border-bottom {
+    border-bottom-color: rgb(56, 61, 63) !important;
+}
+
+[data-theme="dark"] .morris-hover.morris-default-style {
+    color: rgb(168, 160, 149);
+    background-image: initial;
+    background-color: rgba(24, 26, 27, 0.8);
+    border-color: rgba(55, 60, 62, 0.8);
+}
+
+[data-theme="dark"] .bg-dark {
+    background-color: rgb(44, 47, 49) !important;
+}
+
+[data-theme="dark"] circle {
+    stroke: rgb(0 0 0 / 8%) !important;
+}
+
+[data-theme="dark"]
+    .custom-switch
+    .custom-control-input:checked
+    ~ .custom-control-label::after {
+    background-color: rgb(24, 26, 27);
+}
+
+[data-theme="dark"] .btn-outline-secondary:not(:disabled):not(.disabled).active,
+.btn-outline-secondary:not(:disabled):not(.disabled):active,
+.show > .btn-outline-secondary.dropdown-toggle {
+    color: rgb(232, 230, 227);
+    background-color: rgb(88, 95, 99);
+    border-color: #495057;
 }
