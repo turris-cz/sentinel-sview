@@ -27,22 +27,23 @@
 		</noscript>
 	</head>
 	<body>
-		<div class="container">
-			<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+	<header class="mb-3">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+			<div class="container">
 				<a class="navbar-brand" href="{{ url_for("statistics.dashboard") }}">
 					Sentinel:view
 				</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-				<div class="collapse navbar-collapse show" id="main-menu">
+				<div class="collapse navbar-collapse" id="main-menu">
 					<ul class="navbar-nav">
 						{{ nav_link("statistics.dashboard", _("Home")) }}
 						{{ nav_link("statistics.incidents", _("Incidents")) }}
 						{{ nav_link("statistics.attackers", _("Attackers")) }}
 						{{ nav_link("statistics.passwords", _("Passwords")) }}
 						{{ nav_link("statistics.ports", _("Ports")) }}
-						{{ nav_link("statistics.devices", _("My devices")) }}
+						{{ nav_link("statistics.devices", _("My Devices")) }}
 						{{ nav_link("web.greylist", _("Greylist"), target_blank=True) }}
 					</ul>
 					<div class="custom-control custom-switch ml-auto">
@@ -51,8 +52,10 @@
 					</div>
 					<script type="text/javascript" src="{{ url_for("static", filename="js/dark-mode-switch.js") }}"></script>
 				</div>
+			</div>
 			</nav>
-
+	</header>
+	<main class="container">
 			{%- with messages = get_flashed_messages(with_categories=True) %}
 				{%- if messages %}
 					{%- for category, message in messages %}
@@ -67,7 +70,7 @@
 			{%- endwith %}
 
 			{%- block body %}{% endblock %}
-		</div> <!-- /container -->
+	</main>
 		{%- block body_end %}{% endblock %}
 	</body>
 </html>
