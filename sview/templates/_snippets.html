@@ -55,15 +55,15 @@
 {%- endmacro -%}
 
 {%- macro data_box(id, name, source, data_attr) -%}
-	<div class="card mb-3 border">
+	<div class="card mb-3">
 		<div class="card-header">
 			{{ name }}
 		</div>
 		<div class="card-body" style="position:relative"></ul>
 			{{ spinner_overlay("spinner-{}".format(id)) }}
-			<div id="{{ id }}">
+			<div id="{{ id }}" class="table-responsive">
 			{% if source %}
-				<table class="table table-borderless table-sm">
+				<table class="table table-borderless table-sm table-hover mb-0">
 				{% for item in source %}
 					<tr>
 						<td>{{ loop.index }}.</td>
@@ -85,15 +85,15 @@
 {%- endmacro -%}
 
 {%- macro pair_data_box(id, name, source, data_attr1, data_attr2) -%}
-	<div class="card mb-3 border">
+	<div class="card mb-3">
 		<div class="card-header">
 			{{ name }}
 		</div>
 		<div class="card-body" style="position:relative"></ul>
 			{{ spinner_overlay("spinner-{}".format(id)) }}
-			<div id="{{ id }}">
+			<div id="{{ id }}" class="table-responsive">
 				{% if source %}
-					<table class="table table-borderless table-sm">
+					<table class="table table-borderless table-sm table-hover mb-0">
 						{% for item in source %}
 							<tr>
 								<td>{{ loop.index }}.</td>
@@ -136,7 +136,7 @@
 {%- endmacro -%}
 
 {%- macro line_box(id, name, source, xkey, ykey, label) -%}
-	<div class="card mb-3 border">
+	<div class="card mb-3">
 		<div class="card-header">
 			{{ name }}
 		</div>
@@ -157,7 +157,7 @@
 {%- endmacro -%}
 
 {%- macro button_line_box(id, name, periods, params, source, xkey, ykey, label) -%}
-	<div class="card mb-3 border">
+	<div class="card mb-3">
 		<div class="card-header">
 			{{ name }}
 		</div>
