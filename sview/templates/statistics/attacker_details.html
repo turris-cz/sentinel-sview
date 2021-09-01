@@ -7,11 +7,13 @@
 {%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
-<h1 class="display-4">{{ active_params["ip"] }}</h1>
+<h1 class="mb-3">{{ active_params["ip"] }}</h1>
 <div class="row">
-	<div class="col-lg-12 pb-3" align="center">
-		{{ button_line_box("attacker_activity", "Attacker activity", periods, active_params, resources["attacker_activity"], "day", "count", "Events") }}
-	</div>
+    <div class="col-lg-12 mb-4" align="center">
+        {{ button_line_box("attacker_activity", "Attacker activity", periods,
+        active_params, resources["attacker_activity"], "day", "count", "Events")
+        }}
+    </div>
 </div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}
