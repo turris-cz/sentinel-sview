@@ -120,7 +120,7 @@
 {%- endmacro -%}
 
 {%- macro map_box(id, name, source) -%}
-	<div id="{{ id }}" class="js-required" style="position: relative; width: 900; height: 300px;"></div>
+	<div id="{{ id }}" class="js-required world-map" style="position: relative; width: 900; height: 300px;"></div>
 		{{ spinner_overlay("spinner-{}".format(id)) }}
 		{{ js_required() }}
 		{% if source %}

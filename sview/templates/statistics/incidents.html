@@ -8,63 +8,62 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="row">
-	<div class="col-lg-12 pb-3" align="center">
-		{{ map_box("incidents_map", "Most evil countries", resources["incidents_map"]) }}
-	</div>
+    <div class="col-lg-12 mb-4" align="center">
+        {{ map_box("incidents_map", "Most evil countries", resources["incidents_map"]) }}
+    </div>
 </div>
 <div class="row">
-	{{ big_period_buttons(resource_names, periods, active_params) }}
+    {{ big_period_buttons(resource_names, periods, active_params) }}
 </div>
 <div class="row">
-	<div class="col">
-		{{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "day", "count", "Incidents") }}
-	</div>
+    <div class="col">
+        {{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "day", "count", "Incidents") }}
+    </div>
 </div>
 <div class="row">
-	<div class="col-md">
-		{% call(data_item) data_box("top_countries_by_incidents_table", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_table"], "country") -%}
-			{{ country_code_item(data_item) }}
-		{%- endcall %}
-	</div>
-	<div class="col-md">
-		{{ pair_data_box("top_incident_types", "Most common incident types", resources["top_incident_types"], "source", "action") }}
-	</div>
+    <div class="col-md">
+        {% call(data_item) data_box("top_countries_by_incidents_table", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_table"], "country") -%}
+            {{ country_code_item(data_item) }}
+        {%- endcall %}
+    </div>
+    <div class="col-md">
+        {{ pair_data_box("top_incident_types", "Most common incident types", resources["top_incident_types"], "source", "action") }}
+    </div>
 </div>
 <div class="row">
-	<div class="col">
-		{{ line_box(
-			"incidents_by_country_trends",
-			"Incidents by country trends",
-			resources["incidents_by_country_trends"]["data"],
-			"day",
-			resources["incidents_by_country_trends"]["ykeys"],
-			resources["incidents_by_country_trends"]["labels"]
-		) }}
-	</div>
+    <div class="col">
+        {{ line_box(
+            "incidents_by_country_trends",
+            "Incidents by country trends",
+            resources["incidents_by_country_trends"]["data"],
+            "day",
+            resources["incidents_by_country_trends"]["ykeys"],
+            resources["incidents_by_country_trends"]["labels"] ) }}
+    </div>
 </div>
 <div class="row">
-	<div class="col">
-		{{ line_box(
-			"incidents_by_source_trends",
-			"Incidents by source trends",
-			resources["incidents_by_source_trends"]["data"],
-			"day",
-			resources["incidents_by_source_trends"]["ykeys"],
-			resources["incidents_by_source_trends"]["labels"]
-		) }}
-	</div>
+    <div class="col">
+        {{ line_box(
+            "incidents_by_source_trends",
+            "Incidents by source trends",
+            resources["incidents_by_source_trends"]["data"],
+            "day",
+            resources["incidents_by_source_trends"]["ykeys"],
+            resources["incidents_by_source_trends"]["labels"]
+        ) }}
+    </div>
 </div>
 <div class="row">
-	<div class="col">
-		{{ line_box(
-			"incidents_by_action_trends",
-			"Incidents by action trends",
-			resources["incidents_by_action_trends"]["data"],
-			"day",
-			resources["incidents_by_action_trends"]["ykeys"],
-			resources["incidents_by_action_trends"]["labels"]
-		) }}
-	</div>
+    <div class="col">
+        {{ line_box(
+            "incidents_by_action_trends",
+            "Incidents by action trends",
+            resources["incidents_by_action_trends"]["data"],
+            "day",
+            resources["incidents_by_action_trends"]["ykeys"],
+            resources["incidents_by_action_trends"]["labels"]
+        ) }}
+    </div>
 </div>
 {{ request_missing_resources(resource_names, resources, active_params) }}
 {% endblock %}
