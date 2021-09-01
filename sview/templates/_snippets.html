@@ -198,9 +198,9 @@
 
 {%- macro big_period_buttons(resource_names, periods, active_params) -%}
 	<div class="col">
-		<div class="btn-group-toggle sview-big-time-buttons" data-toggle="buttons">
+		<div class="btn-group-toggle pb-4 d-flex flex-row justify-content-center flex-wrap align-items-center" data-toggle="buttons">
 {%		for period, period_params in periods.items() %}
-				<label class="btn btn-outline-secondary js-required">
+				<label class="btn btn-outline-secondary btn js-required m-1">
 					<input type="radio" name="options" autocomplete="off"
 {%					if period==active_params["period"] %}
 							checked
@@ -233,10 +233,10 @@
 {%- macro graph_period_buttons(resource_name, periods, active_params) -%}
 			<div class="container">
 				<div class="row justify-content-end">
-					<div class="col-4">
+					<div class="m-auto mr-md-4">
 						<div class="btn-group btn-group-toggle" data-toggle="buttons">
 {%					for period in periods %}
-							<label class="btn btn-outline-secondary">
+							<label class="btn btn-outline-secondary btn-sm">
 								<input type="radio" name="options" autocomplete="off"
 {%								if period==active_params["period"] %}
 										checked
