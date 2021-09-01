@@ -7,57 +7,54 @@
 {%- from "_snippets.html" import request_missing_resources with context -%}
 {% extends "layout.html" %}
 {% block body %}
-<div class="card mb-3 border">
+<div class="row">
+	<div class="col" >
+		<div class="card mb-4">
 	<div class="card-header">
 		My devices
 	</div>
 	<div class="card-body" style="position:relative"></ul>
-		<div class="js-required">
-			<table class="table table-striped">
-				<tbody>
-					{% for device_token in session["devices"] %}
-					<tr>
+		<table class="table table-borderless mb-0">
+			<tbody>
+				<tr class="{{'border-bottom' if session['devices'] }}">
+					<form action="/api/device/add" method="post">
 						<td>
-							<form action="/api/device/delete" method="post">
-								<div class="form-row justify-content-between">
-									<div class="col-md-7">
-										<div class="form-group mx-sm-3 mb-2">
-											<label for="inputDeviceToken" class="sr-only">Device Token</label>
-											<input type="text" class="form-control" name="device_token" id="inputDeviceToken" placeholder={{ device_token }} value={{ device_token }} readonly>
-										</div>
-									</div>
-									<div class="col-md-2">
-										<button type="submit" class="btn btn-danger mb-2">Remove device</button>
-									</div>
-								</div>
-							</form>
+							<label for="inputDeviceToken" class="sr-only">Device Token</label>
+							<input type="text" class="form-control" name="device_token" id="inputDeviceToken" placeholder="Device token" required pattern="^[a-z0-9]*$" minlength="64" maxlength="64" aria-describedby="inputDeviceTokenHelp" autofocus>
+							<small id="inputDeviceTokenHelp" class="form-text text-muted">
+								Your device token must be 64 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+							</small>
 						</td>
-					</tr>
-					{% endfor %}
-					<tr>
+						<td class="text-right">
+							<button type="submit" class="btn btn-outline-success mb-2 btn-block">Add<span class="d-none d-lg-inline"> device</span></button>
+						</td>
+					</form>
+				</tr>
+				{% for device_token in session["devices"] %}
+				<tr>
+					<form action="/api/device/delete" method="post">
 						<td>
-							<form action="/api/device/add" method="post">
-								<div class="form-row justify-content-between">
-									<div class="col-md-7">
-										<div class="form-group mx-sm-3 mb-2">
-											<label for="inputDeviceToken" class="sr-only">Device Token</label>
-											<input type="text" class="form-control" name="device_token" id="inputDeviceToken" placeholder="Device token" required pattern="^[a-z0-9]*$" minlength="64" maxlength="64">
-										</div>
-									</div>
-									<div class="col-md-2">
-										<button type="submit" class="btn btn-success mb-2">Add device</button>
-									</div>
-								</div>
-							</form>
+							<div class="input-group">
+							<label for="inputDeviceToken" class="sr-only">Device Token</label>
+							<input type="text" class="form-control " name="device_token" id="inputDeviceToken" placeholder={{ device_token }} value={{ device_token }} disabled>
+							</div>
 						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+						<td class="text-right">
+							<button type="submit" class="btn btn-outline-danger btn-block">Remove<span class="d-none d-lg-inline"> device</span></button>
+						</td>
+					</form>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
 	</div>
 </div>
 <div class="row">
+	<div class="col">
 	{{ big_period_buttons(resource_names, periods, active_params) }}
+	</div>
 </div>
 <div class="row">
 	<div class="col">
