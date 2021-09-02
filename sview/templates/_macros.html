@@ -8,7 +8,7 @@
 	{%- endif %}
 						<li class="nav-item">
 							<a class="nav-link{{ active }}" {%- if target_blank %} target="_blank" {%- endif %} href="{{ url_for(endpoint) }}">
-								{{ text }}
+								{{ text }}{%- if target_blank %}<sup><i class="fas fa-external-link-alt fa-xs ml-1"></i></sup>{%- endif %}
 							</a>
 						</li>
 {%- endmacro -%}
