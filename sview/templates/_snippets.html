@@ -55,11 +55,9 @@
 {%- endmacro -%}
 
 {%- macro data_box(id, name, source, data_attr) -%}
-	<div class="card mb-3">
-		<div class="card-header">
-			{{ name }}
-		</div>
-		<div class="card-body" style="position:relative"></ul>
+	<div class="card mb-4 shadow-sm">
+		<div class="card-body">
+			<h5 class="card-title">{{ name }}</h5>
 			{{ spinner_overlay("spinner-{}".format(id)) }}
 			<div id="{{ id }}" class="table-responsive">
 			{% if source %}
@@ -85,11 +83,9 @@
 {%- endmacro -%}
 
 {%- macro pair_data_box(id, name, source, data_attr1, data_attr2) -%}
-	<div class="card mb-3">
-		<div class="card-header">
-			{{ name }}
-		</div>
-		<div class="card-body" style="position:relative"></ul>
+	<div class="card mb-4 shadow-sm">
+		<div class="card-body">
+			<h5 class="card-title">{{ name }}</h5>
 			{{ spinner_overlay("spinner-{}".format(id)) }}
 			<div id="{{ id }}" class="table-responsive">
 				{% if source %}
@@ -136,11 +132,9 @@
 {%- endmacro -%}
 
 {%- macro line_box(id, name, source, xkey, ykey, label) -%}
-	<div class="card mb-3">
-		<div class="card-header">
-			{{ name }}
-		</div>
-		<div class="card-body" style="position:relative"></ul>
+	<div class="card mb-4 shadow-sm">
+		<div class="card-body">
+			<h5 class="card-title">{{ name }}</h5>
 			<div class="js-required">
 				{{ spinner_overlay("spinner-{}".format(id)) }}
 				<div id="{{ id }}">
@@ -157,11 +151,9 @@
 {%- endmacro -%}
 
 {%- macro button_line_box(id, name, periods, params, source, xkey, ykey, label) -%}
-	<div class="card mb-3">
-		<div class="card-header">
-			{{ name }}
-		</div>
-		<div class="card-body"></ul>
+	<div class="card mb-4 shadow-sm">
+		<div class="card-body">
+			<h5 class="card-title">{{ name }}</h5>
 			<div class="js-required">
 				{{ spinner_overlay("spinner-{}".format(id)) }}
 				{{ graph_period_buttons(id, periods, params) }}
