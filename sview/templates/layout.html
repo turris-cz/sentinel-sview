@@ -29,7 +29,7 @@
 		</noscript>
 	</head>
 	<body>
-	<header class="mb-3">
+	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
 			<div class="container">
 				<a class="navbar-brand" href="{{ url_for("statistics.dashboard") }}">
@@ -40,7 +40,7 @@
 				</button>
 				<div class="collapse navbar-collapse" id="main-menu">
 					<ul class="navbar-nav">
-						{{ nav_link("statistics.dashboard", _("Home")) }}
+						{{ nav_link("statistics.dashboard", _("Overview")) }}
 						{{ nav_link("statistics.incidents", _("Incidents")) }}
 						{{ nav_link("statistics.attackers", _("Attackers")) }}
 						{{ nav_link("statistics.passwords", _("Passwords")) }}
@@ -70,6 +70,7 @@
 					{%- endfor %}
 				{%- endif %}
 			{%- endwith %}
+			<h1>{{page_title}}</h1>
 			{%- if breadcrumbs|length > 1 %}
 			<nav class="mb-4" aria-label="breadcrumb">
 				<ol class="breadcrumb">
