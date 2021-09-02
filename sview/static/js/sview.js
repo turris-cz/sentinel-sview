@@ -444,3 +444,27 @@ redraw_callbacks = {
         create_data_box(data, createCombinedRow);
     },
 };
+
+const basicScrollTop = function () {
+    const toTopBtn = document.querySelector("#goTop");
+
+    const btnReveal = function () {
+        if (window.scrollY >= 300) {
+            toTopBtn.classList.add("is-visible");
+        } else {
+            toTopBtn.classList.remove("is-visible");
+        }
+    };
+
+    const scrollToTop = function () {
+        if (window.scrollY != 0) {
+            setTimeout(function () {
+                window.scrollTo(0, window.scrollY - 30);
+                scrollToTop();
+            }, 5);
+        }
+    };
+
+    window.addEventListener("scroll", btnReveal);
+    toTopBtn.addEventListener("click", scrollToTop);
+};

@@ -43,6 +43,24 @@ body {
     border-color: #6c757d;
 }
 
+#goTop {
+    position: fixed;
+    z-index: 1001;
+    right: 15px;
+    top: 95%;
+    transform: translateY(-50%);
+    padding: 10px 15px;
+    color: #fff;
+    background: rgb(52 58 64 / 49%);
+    border: none;
+    opacity: 0;
+    border-radius: 0.25rem;
+    transition: opacity 0.4s linear;
+}
+#goTop.is-visible {
+    opacity: 1;
+}
+
 @-webkit-keyframes rotation {
     from {
         -webkit-transform: rotate(0deg);

@@ -82,3 +82,6 @@
     background-color: rgb(35, 38, 39);
 }
 
+[data-theme="dark"] #goTop {
+    background-color: rgb(88 95 99);
+}
