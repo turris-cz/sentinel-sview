@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""This is only a development tool and is not needed for deployment.
+This script fills InfluxDB buckets with meaningful but random data.
+The timestamps are created fresh, according to normal distribution
+so all the buckets shall be filled reasonably.
+"""
 
 import argparse
 import datetime
@@ -9,23 +14,50 @@ import influxdb_client
 import configparser
 
 PASSWORDS = [
-    "heslo", "pass", "password", "123", "00000", "123456", "passw0rd", "tajneheslo",
-    "this is very secret", "super long and very secret password", "jetojedno",
-    "it's one", "Can I use these: #$@;'?", "I can't  think of any more"
-    ]
+    "heslo",
+    "pass",
+    "password",
+    "123",
+    "00000",
+    "123456",
+    "passw0rd",
+    "tajneheslo",
+    "this is very secret",
+    "super long and very secret password",
+    "jetojedno",
+    "it's one",
+    "Can I use these: #$@;'?",
+    "I can't  think of any more",
+]
 USERNAMES = [
-    "Michal", "Karel", "Vojta", "Robin", "Pepe", "Alex", "Martin", "Mirek", "Filip",
-    "Marek", "user", "someuser", "myself", "admin", "ubnt", "root"
+    "Michal",
+    "Karel",
+    "Vojta",
+    "Robin",
+    "Pepe",
+    "Alex",
+    "Martin",
+    "Mirek",
+    "Filip",
+    "Marek",
+    "user",
+    "someuser",
+    "myself",
+    "admin",
+    "ubnt",
+    "root",
 ]
 COUNTRIES = ["CZ", "DE", "SK", "US", "GB", "TW", "PL"]
-DEVICE_TOKENS = ["a"*64, "b"*64, "c"*64, "d"*64, "e"*64, "f"*64, "g"*64]
+DEVICE_TOKENS = ["a" * 64, "b" * 64, "c" * 64, "d" * 64, "e" * 64, "f" * 64, "g" * 64]
 MONTH = 30 * 24 * 60 * 60  # seconds
 
 
-class InfluxStorage():
+class InfluxStorage:
     def __init__(self, url, token, org):
         client = influxdb_client.InfluxDBClient(url=url, token=token)
-        self.write_api = client.write_api(write_options=influxdb_client.client.write_api.SYNCHRONOUS)
+        self.write_api = client.write_api(
+            write_options=influxdb_client.client.write_api.SYNCHRONOUS
+        )
         self.org = org
 
     @classmethod
@@ -36,50 +68,28 @@ class InfluxStorage():
             raise Exception(f"InfluxDB {exc} not provided in configuration.") from exc
 
     def _store_password(self, ts, password, username):
-            self._write_point(
-                "password_count",
-                password,
-                1,
-                ts,
-                username=username  # tag
-            )
+        self._write_point("password_count", password, 1, ts, username=username)  # tag
 
     def _store_port(self, ts, port, proto):
-            self._write_point(
-                "port_count",
-                port,
-                1,
-                ts,
-                protocol=proto  # tag
-            )
+        self._write_point("port_count", port, 1, ts, protocol=proto)  # tag
 
     def _store_general_incident(self, ts, source, action):
-            self._write_point(
-                "incident_count",
-                source,
-                1,
-                ts,
-                action=action  # tag
-            )
+        self._write_point("incident_count", source, 1, ts, action=action)  # tag
 
     def _store_attacker_incident(self, ts, src_addr, country):
-            self._write_point(
-                "attacker_incident_count",
-                src_addr,
-                1,
-                ts,
-                country=country  # tag
-            )
+        self._write_point(
+            "attacker_incident_count", src_addr, 1, ts, country=country  # tag
+        )
 
     def _store_user_incident(self, ts, device_token, country, source):
-            self._write_point(
-                "user_incident_count",
-                device_token,
-                1,
-                ts,
-                country=country,  # tag
-                source=source  # tag
-            )
+        self._write_point(
+            "user_incident_count",
+            device_token,
+            1,
+            ts,
+            country=country,  # tag
+            source=source,  # tag
+        )
 
     def _populate_ports(self, ts, port_count):
         for i in range(port_count):
@@ -90,9 +100,9 @@ class InfluxStorage():
             print(f"Populating {i}/{count}")
             timedelta = datetime.timedelta(seconds=abs(numpy.random.normal()) * MONTH)
             ts = datetime.datetime.utcnow() - timedelta
-            source = random.choice([
-                "minipot_telnet", "minipot_smtp", "minipot_ftp", "fwlogs"
-            ])
+            source = random.choice(
+                ["minipot_telnet", "minipot_smtp", "minipot_ftp", "fwlogs"]
+            )
             action = random.choice(["login", "connect"])
             address = f"192.0.2.{random.randint(1, 254)}"
             country = random.choice(COUNTRIES)
@@ -101,7 +111,9 @@ class InfluxStorage():
             self._store_attacker_incident(ts, address, country)
             self._store_user_incident(ts, random.choice(DEVICE_TOKENS), country, source)
             if action == "login":
-                self._store_password(ts, random.choice(PASSWORDS), random.choice(USERNAMES))
+                self._store_password(
+                    ts, random.choice(PASSWORDS), random.choice(USERNAMES)
+                )
             if source == "fwlogs":
                 self._populate_ports(ts, random.randint(10, 100))
 
@@ -113,33 +125,33 @@ class InfluxStorage():
         for tag_name, tag_value in tags.items():
             point = point.tag(tag_name, tag_value)
 
-        for bucket in ["sentinel-base", "sentinel-minutely", "sentinel-hourly", "sentinel-daily"]:
+        for bucket in [
+            "sentinel-base",
+            "sentinel-minutely",
+            "sentinel-hourly",
+            "sentinel-daily",
+        ]:
             self.write_api.write(bucket, self.org, point)
 
 
 def add_parser_args(parser):
     parser.add_argument(
-        "-c",
-        "--config",
-        default="dumper.ini",
-        help="Path to configuration file"
+        "-c", "--config", default="dumper.ini", help="Path to configuration file"
     )
     parser.add_argument(
         "-t",
         "--token",
-        help="InfluxDB access token. Overwrites value defined in config file."
+        help="InfluxDB access token. Overwrites value defined in config file.",
     )
     parser.add_argument(
-        "-u",
-        "--url",
-        help="InfluxDB URL. Overwrites value defined in config file."
+        "-u", "--url", help="InfluxDB URL. Overwrites value defined in config file."
     )
     parser.add_argument(
         "-m",
         "--measurements",
         default=200,
         type=int,
-        help="Number of measurements to create."
+        help="Number of measurements to create.",
     )
 
 
@@ -147,11 +159,13 @@ def prepare_config():
     conf = configparser.ConfigParser()
 
     conf.add_section("influx")
-    conf["influx"].update({
-        "url": "http://127.0.0.1:8086",
-        "org": "myorganization",
-        "token": "some-secret-token",
-    })
+    conf["influx"].update(
+        {
+            "url": "http://127.0.0.1:8086",
+            "org": "myorganization",
+            "token": "some-secret-token",
+        }
+    )
 
     return conf
 
