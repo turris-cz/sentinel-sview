@@ -76,3 +76,9 @@
     background-color: rgb(88, 95, 99);
     border-color: #495057;
 }
+
+[data-theme="dark"] .breadcrumb {
+    list-style-image: initial;
+    background-color: rgb(35, 38, 39);
+}
+

@@ -11,14 +11,17 @@ from flask import url_for
 from .resources import get_resource
 from .queries import PERIODS, DEFAULT_PERIOD
 from .view_helpers import get_tokens_hash
+from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 
 
 statistics = Blueprint("statistics", __name__)
+default_breadcrumb_root(statistics, ".")
 
 
 @statistics.route("/")
+@register_breadcrumb(statistics, ".", "Overview")
 def dashboard():
-    page_title = "Home"
+    page_title = "Overview"
     resource_names = [
         "incidents_map",
         "attackers",
@@ -45,6 +48,7 @@ def dashboard():
 
 
 @statistics.route("/attackers/")
+@register_breadcrumb(statistics, ".attacker", "Attackers")
 def attackers():
     page_title = "Attackers"
     resource_names = [
@@ -73,6 +77,7 @@ def attackers():
 
 
 @statistics.route("/attackers/details/ip/<string:ip>")
+@register_breadcrumb(statistics, ".attacker.ip", "Attacker Details")
 def attacker_details(ip):
     page_title = "Attacker Details"
     resource_names = [
@@ -100,6 +105,7 @@ def attacker_details(ip):
 
 
 @statistics.route("/passwords/")
+@register_breadcrumb(statistics, ".passwords", "Passwords")
 def passwords():
     page_title = "Passwords"
     resource_names = [
@@ -134,6 +140,7 @@ def _decode_password(encoded_password):
 
 
 @statistics.route("/passwords/details/<string:encoded_password>")
+@register_breadcrumb(statistics, ".passwords.details", "Password Details")
 def password_details(encoded_password):
     page_title = "Password Details"
     password = _decode_password(encoded_password)
@@ -172,6 +179,7 @@ def password_details(encoded_password):
 
 
 @statistics.route("/incidents/")
+@register_breadcrumb(statistics, ".incidents", "Incidents")
 def incidents():
     page_title = "Incidents"
     resource_names = [
@@ -197,11 +205,12 @@ def incidents():
         periods=PERIODS,
         active_params=params,
         resources=resources,
-        page_title=page_title
+        page_title=page_title,
     )
 
 
 @statistics.route("/ports/")
+@register_breadcrumb(statistics, ".ports", "Ports")
 def ports():
     page_title = "Ports"
     resource_names = [
@@ -228,8 +237,9 @@ def ports():
 
 
 @statistics.route("/devices/")
+@register_breadcrumb(statistics, ".devices", "My Devices")
 def devices():
-    page_title = "Devices"
+    page_title = "My Devices"
     resource_names = [
         "my_incidents_graph",
         "my_incidents_by_source_trends",

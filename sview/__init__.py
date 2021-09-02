@@ -1,6 +1,7 @@
 from logging.config import dictConfig
 
 from flask import Flask
+from flask_breadcrumbs import Breadcrumbs
 
 
 def setup_logging():
@@ -14,6 +15,8 @@ def setup_logging():
 
 def create_app(additional_config=None):
     app = Flask(__name__, instance_relative_config=True)
+
+    Breadcrumbs(app=app)
 
     from . import default_settings
     app.config.from_object(default_settings)
