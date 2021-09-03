@@ -288,6 +288,7 @@ function create_graph(id, xkey, ykeys, labels, data) {
         labels: labels,
         resize: true,
         data: data,
+        hideHover: "auto",
     });
 }
 
