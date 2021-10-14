@@ -32,7 +32,6 @@ setup(
         "websockets",
         "jsonschema",
         "peewee",
-        "rsa",
     ],
     extras_require={
         "tests": [

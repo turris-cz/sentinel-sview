@@ -4,7 +4,8 @@ db = DatabaseProxy()
 
 
 def populate_database(file):
-    """Actually just for testing purpose as the db is poulated by users i prod"""
+    """Actually just for testing purpose
+    as the db is poulated by users in prod"""
     with open(file, "r") as f:
         commands = f.readlines()
 

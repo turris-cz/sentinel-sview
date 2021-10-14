@@ -1,4 +1,3 @@
-import re
 from flask import Flask, request
 from base import load_dev
 
@@ -8,10 +7,8 @@ app = Flask(__name__)
 load_dev()
 
 
-@app.route("/api/register/", methods=['POST'])
+@app.route("/api/register/", methods=["POST"])
 def index():
-    
-
     pass
 
 

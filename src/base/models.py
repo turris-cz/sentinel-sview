@@ -22,7 +22,8 @@ class Password(BaseModel):
 
 
 class AnonymousUser(BaseModel):
-    last_used = TimestampField(null=False)  # in case of retention (you don't need to hold it forever)
+    last_used = TimestampField(null=False)
+    # in case of retention (you don't need to hold it forever)
     pub_key = CharField(null=False)
 
     class Meta:
