@@ -1,24 +1,20 @@
 from flask import Flask, request
-from base import load_dev
+from .database import load_dev
 
-from base.models import Password
+from .backend import proc_leaked, proc_leaked_advanced
 
 app = Flask(__name__)
+# temporary
 load_dev()
-
-
-@app.route("/api/register/", methods=["POST"])
-def index():
-    pass
 
 
 @app.route("/api/leaked/", methods=["POST"])
 def leaked():
-    pwd = request.json["password"]
-    q = Password.select().where(Password.password == pwd)
-    if q.count() < 1:
-        return {"status": "SAFE"}, 200
-    else:
-        res = q.get().count
-        return {"status": "USED", "count": res}, 200
-    return 500
+    """Route to select from database without hashed"""
+    return proc_leaked(**request.json)
+
+
+@app.route("/api/leaked_advanced/", methods=['POST'])
+def leaked_advanced():
+    """Route for selecting passwords from advanced database"""
+    return proc_leaked_advanced(**request.json)

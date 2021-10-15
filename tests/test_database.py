@@ -1,9 +1,10 @@
 import pytest
-from base.models import Password
+
+from passy.database.models import Password
 
 
 def test_testing_data_count(client):
-    """Test if `testing_data.sql` got loadded correctly to `:memory: database`"""
+    """Test if `testing_data.sql` got loaded correctly to `:memory: database`"""
     d = Password.select().count()
     assert d == 1041
 

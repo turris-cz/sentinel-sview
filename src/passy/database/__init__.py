@@ -1,20 +1,22 @@
 from peewee import DatabaseProxy, PostgresqlDatabase, SqliteDatabase
 
+# provides option to switch `db` object on the run
+# works great with flask testing
+# http://docs.peewee-orm.com/en/latest/peewee/database.html?highlight=DatabaseProxy#dynamically-defining-a-database
 db = DatabaseProxy()
-
 
 def populate_database(file):
     """Actually just for testing purpose
     as the db is poulated by users in prod"""
     with open(file, "r") as f:
-        commands = f.readlines()
+        commands = f.readlines()  # sqlite is only able run one command at the time
 
     for command in commands:
-        db.execute_sql(command)
+        db.execute_sql(command)  # each command is also commited
 
 
 def create_testing(file) -> None:
-    """Links the DatabaseProxy object `db` to memory"""
+    """Links proxy to database in memory"""
     db.initialize(SqliteDatabase(":memory:"))
     populate_database(file)
 
@@ -24,6 +26,6 @@ def load_production(path: str, user: str, host: str) -> None:
     db.initialize(PostgresqlDatabase(path, user, host))
 
 
-def load_dev():
-    """Links proxy to local database"""
-    db.initialize(SqliteDatabase("base.db"))
+def load_dev(path=None):
+    """Links proxy to local database, provide path, or not"""
+    db.initialize(SqliteDatabase(path or "/tmp/base.db"))
