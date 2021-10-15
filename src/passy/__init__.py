@@ -14,7 +14,7 @@ def leaked():
     return proc_leaked(**request.json)
 
 
-@app.route("/api/leaked_advanced/", methods=['POST'])
+@app.route("/api/leaked_advanced/", methods=["POST"])
 def leaked_advanced():
     """Route for selecting passwords from advanced database"""
     return proc_leaked_advanced(**request.json)

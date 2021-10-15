@@ -6,7 +6,7 @@ from . import db
 class BaseModel(Model):
     """Base database model"""
 
-    id = AutoField() # enable id for every child Model
+    id = AutoField()  # enable id for every child Model
 
     class Meta:
         database = db

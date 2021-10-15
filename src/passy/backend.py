@@ -8,11 +8,8 @@ from .utils import hash_it, check_sha256, load_schema
 _LOGGER = logging.getLogger(__name__)
 _SCHEMA = load_schema()
 
-_STATUS = {
-    1: "SUCCESS",
-    2: "NO_QUERY",
-    3: "VALIDATION_ERROR"
-}
+_STATUS = {1: "SUCCESS", 2: "NO_QUERY", 3: "VALIDATION_ERROR"}
+
 
 def _validate(func):
     def wrapper(**json_data):
@@ -21,6 +18,7 @@ def _validate(func):
             return func(**json_data)
         except ValidationError as e:
             return compose_message(3, error=e, status_code=400)
+
     return wrapper
 
 
@@ -29,10 +27,10 @@ def compose_message(status, data=None, error=None, status_code=200):
     :retval: tuple with load and response code"""
     response_load = {
         "msg_type": "response",
-        "status":_STATUS[status],
+        "status": _STATUS[status],
     }
     if data:
-        response_load.update({"data":data})
+        response_load.update({"data": data})
     if error:
         response_load.update({"error": error})
     # validate outgoing log error to logger
@@ -49,15 +47,18 @@ def proc_leaked(**json_data):
     else:
         return compose_message(1, result)
 
+
 @_validate
 def proc_leaked_advanced(**json_data):
     """Processing request from client"""
     stub = json_data["hash"]
     data = []
-    sel = PasswordWithHash.select().where(PasswordWithHash._hash==stub)
+    sel = PasswordWithHash.select().where(PasswordWithHash._hash == stub)
     if sel.count() < 1:
         return compose_message(2)
     else:
-        for item in sel.iterator():  # pewee select object provides nice `iterator()` method
-            data.append({"hash":hash_it(item.password), "count": item.count})
+        for (
+            item
+        ) in sel.iterator():  # pewee select object provides nice `iterator()` method
+            data.append({"hash": hash_it(item.password), "count": item.count})
         return compose_message(1, data)

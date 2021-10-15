@@ -208,3 +208,59 @@ state of jobs, cache and other things. The following commands are implemented:
   - View running, failed, removed or other jobs.
 - `flask view-timeouts`
   - View resource refresh timeouts and aggregation timeouts
+
+## Have i been pawned backend implementation.
+
+### Workflow
+
+1. Client (frontend) hashes password using `sha256`
+2. then sends to `API` 6 bytes of his hash
+3. server receives this stub and either
+    - selects hash from table (optimal performance, big database)
+    - filters all password and evaluete if any starts with those `6` bytes (one column less)
+4. eventually those which get through filter are sent back
+5. Client detemines if his hash is in response
+
+step 3. is heavily influenced by how the schema is planned.
+
+### Table choices
+
+There are serval options to discuss on topic of schema
+
+#### Password, [hash], count
+
+Initial idea was to store
+
+| id     | password | count |
+| ------ | -------- | ----- |
+| bigint | varchar  | int   |
+
+However, it would be nice not to have count on select hash for each password.
+
+| id     | password | hash       | count |
+| ------ | -------- | ---------- | ----- |
+| bigint | varchar  | Varchar(6) | int   |
+
+pros:
+ - having count how many times password used
+
+cons:
+ - unneccessary data
+
+#### Password, [hash]
+
+Optimal solution would be to have at least full password and hash
+
+| id     | password | hash       |
+| ------ | -------- | ---------- |
+| bigint | varchar  | Varchar(6) |
+
+Superslim table would lack the advantage of precomputed hash
+
+| id     | password |
+| ------ | -------- |
+| bigint | varchar  |
+
+#### Message schema
+
+Refer to [schema](schema/passy.json)

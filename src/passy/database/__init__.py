@@ -5,6 +5,7 @@ from peewee import DatabaseProxy, PostgresqlDatabase, SqliteDatabase
 # http://docs.peewee-orm.com/en/latest/peewee/database.html?highlight=DatabaseProxy#dynamically-defining-a-database
 db = DatabaseProxy()
 
+
 def populate_database(file):
     """Actually just for testing purpose
     as the db is poulated by users in prod"""
