@@ -1,20 +1,24 @@
 from flask import Flask, request
-from .database import load_dev
+from .database import load_dev, load_production
 
-from .backend import proc_leaked, proc_leaked_advanced
+from .backend import proc_leaked
+from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 
 app = Flask(__name__)
-# temporary
-load_dev()
+if app.config['ENV'] == 'development':
+    app.config.from_object(DevelopmentConfig)
+    db_settings = {key:value for key, value in app.config.items() if key.startswith("DB")}
+    load_dev(**db_settings)
+
+elif app.config['ENV'] == 'testing':
+    app.config.from_object(TestingConfig)
+else:
+    app.config.from_object(ProductionConfig)
+    load_production()
 
 
 @app.route("/api/leaked/", methods=["POST"])
-def leaked():
-    """Route to select from database without hashed"""
-    return proc_leaked(**request.json)
-
-
-@app.route("/api/leaked_advanced/", methods=["POST"])
 def leaked_advanced():
     """Route for selecting passwords from advanced database"""
-    return proc_leaked_advanced(**request.json)
+    return proc_leaked(**request.json)
+

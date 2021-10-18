@@ -1,9 +1,9 @@
-from hashlib import sha256
+from hashlib import sha1
 
 
 def hash_it(string, k=6):
     """Retruns `k` long slice and hash."""
-    hashed = sha256(string.encode()).hexdigest()
+    hashed = sha1(string.encode()).hexdigest()
     return hashed[:k], hashed
 
 

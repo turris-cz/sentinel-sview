@@ -27,6 +27,17 @@ def load_production(path: str, user: str, host: str) -> None:
     db.initialize(PostgresqlDatabase(path, user, host))
 
 
-def load_dev(path=None):
+def load_dev(path=None, **settings):
     """Links proxy to local database, provide path, or not"""
-    db.initialize(SqliteDatabase(path or "/tmp/base.db"))
+    if not settings:
+        db.initialize(SqliteDatabase(path or "/tmp/base.db"))
+    else:
+        db.initialize(
+            PostgresqlDatabase(
+                host=settings['DB_HOSTNAME'],
+                database=settings['DB_NAME'],
+                user=settings['DB_USERNAME'],
+                password=settings['DB_PASSWORD']
+            )
+        )
+

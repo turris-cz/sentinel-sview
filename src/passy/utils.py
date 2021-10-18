@@ -1,25 +1,42 @@
 from jsonschema import validate
 import json
-from hashlib import sha256
-from .database.models import Password
 
-hash_it = lambda pwd: sha256(pwd.encode()).hexdigest()
+from jsonschema import validate, ValidationError
 
-
-def check_sha256(request_stub):  # hash stub sent from frontend
-    """Check requested stub against database"""
-    resuln = []
-    passwords = Password.select()
-    for entry in passwords.iterator():
-        hexdg = sha256(entry.password.encode()).hexdigest()
-        if hexdg[: len(request_stub)] == request_stub:
-            resuln.append({"hash": hexdg, "count": entry.count})
-    return resuln
-
-
-def load_schema():
+def _load_schema():  # load json schema for validation
     """Helper function to load query schema"""
     rv = {}
     with open("schema/passy.json", "r") as f:
         rv = json.load(f)
     return rv
+
+
+_SCHEMA = _load_schema()
+
+_STATUS = {1: "SUCCESS", 2: "NO_QUERY", 3: "VALIDATION_ERROR"}
+
+
+def compose_message(status, data=None, error=None, status_code=200):
+    """Do not confuse `status` with response code, always returning `200`
+    :retval: tuple with load and response code"""
+    response_load = {
+        "msg_type": "response",
+        "status": _STATUS[status],
+    }
+    if data:
+        response_load.update({"data": data})
+    if error:
+        response_load.update({"error": error})
+    # validate outgoing log error to logger
+    return response_load, 200
+
+
+def validate_decor(func):
+    def wrapper(**json_data):
+        try:
+            validate(json_data, _SCHEMA)
+            return func(**json_data)
+        except ValidationError as e:
+            return compose_message(3, error=e, status_code=400)
+
+    return wrapper

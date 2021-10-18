@@ -28,3 +28,6 @@ instance/*
 
 # uwsgi production deployment
 /wsgi.py
+
+# passy-specific
+/src/passy/config.py
