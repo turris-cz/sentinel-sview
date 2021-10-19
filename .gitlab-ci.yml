@@ -1,4 +1,4 @@
-image: python:3.7-alpine
+image: python:3.7-slim-buster
 
 services:
   - postgres:12.2-alpine
@@ -9,10 +9,10 @@ variables:
   POSTGRES_PASSWORD: p4wn3d
 
 before_script:
-  - apk update
-  - apk add postgresql-client
+  - apt update
+  - apt install postgresql-client
   - pip install .
-  - pip install pytest
+  - pip install pytest psycopg2-binary
   - export PGPASSWORD=$POSTGRES_PASSWORD
   - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < data/scheme.sql
   - python data/import.py --username=$POSTGRES_USER --host="postgres" --dbname="$POSTGRES_DB" data/passwords.csv
