@@ -1,48 +1,55 @@
+# Graph of all scanned ports
 all_scans_graph = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="port_count")
-        |> group()
-        |> window(every: {window})
-        |> sum()
-        |> rename(columns: {{"_value":"count"}})
-        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
-        |> keep(columns: ["day", "count"])
+    SELECT
+        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
+        COUNT(*) as count
+    FROM ports
+    WHERE
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY day
+    ORDER BY day
 """
-port_trends = """
-    top_ports=from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r)=>r._measurement=="port_count")
-        |> group(columns: ["_field"])
-        |> sum()
-        |> group()
-        |> sort(desc:true)
-        |> limit(n: {top_n})
-        |> findColumn(fn: (key)=>true, column: "_field")
 
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r)=>r._measurement=="port_count"
-            and contains(value: r._field, set:top_ports)
-            )
-        |> group()
-        |> window(every: {window})
-        |> group(columns: ["_field", "_start"])
-        |> sum()
-        |> group(columns: ["_start"])
-        |> rename(columns: {{"_value":"count", "_field": "port"}})
-        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
-        |> keep(columns: ["day", "count", "port"])
+# Graph of top ports by (number of) scans
+port_trends = """
+    SELECT
+        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
+        CONCAT(protocol, '/', port) AS port,
+        COUNT(port) as count
+    FROM ports
+    WHERE
+        now() - INTERVAL :interval < time AND time < now()
+        AND
+        (port, protocol) IN (
+            SELECT
+                port,
+                protocol
+            FROM (
+                SELECT
+                    port,
+                    protocol,
+                    COUNT(port) AS count_inner
+                FROM ports
+                WHERE
+                    now() - INTERVAL :interval < time AND time < now()
+                GROUP BY port, protocol
+                ORDER BY count_inner DESC
+                LIMIT :limit
+            ) AS foo
+        )
+    GROUP BY day, port, protocol
+    ORDER BY day
 """
+
+# Table of top ports by scans
 top_ports = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="port_count")
-        |> group(columns:["_field"])
-        |> sum()
-        |> rename(columns: {{"_value": "count", "_field": "port"}})
-        |> keep(columns: ["port", "count"])
-        |> group()
-        |> sort(columns: ["count"], desc: true)
-        |> limit(n: {limit})
+    SELECT
+        CONCAT(protocol, '/', port) AS port,
+        COUNT(port) AS count
+    FROM ports
+    WHERE
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY port, protocol
+    ORDER BY count DESC
+    LIMIT :limit
 """

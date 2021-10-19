@@ -1,86 +1,126 @@
+# List of top passwords by ussages
 top_passwords = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="password_count")
-        |> group(columns:["_field"])
-        |> sum()
-        |> rename(columns: {{"_field": "password", "_value":"count"}})
-        |> keep(columns: ["password", "count"])
-        |> group()
-        |> sort(columns: ["count"], desc: true)
-        |> limit(n: {limit})
+    SELECT
+        password,
+        count(*) AS count
+    FROM passwords
+    WHERE
+        password IS NOT NULL
+        AND
+        password <> ''
+        AND
+        password <> '\n'
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY password
+    ORDER BY count DESC
+    LIMIT :limit
 """
 
+# List of top usernames by ussages
 top_usernames = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="password_count")
-        |> group(columns:["username"])
-        |> sum()
-        |> rename(columns: {{"_value": "count"}})
-        |> keep(columns: ["username", "count"])
-        |> group()
-        |> sort(columns: ["count"], desc: true)
-        |> limit(n: {limit})
+    SELECT
+        username,
+        count(*) AS count
+    FROM passwords
+    WHERE
+        username IS NOT NULL
+        AND
+        username <> ''
+        AND
+        username <> '\n'
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY username
+    ORDER BY count DESC
+    LIMIT :limit
 """
 
+# List of top combinations by ussages
 top_combinations = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="password_count")
-        |> sum()
-        |> rename(columns: {{"_field": "password", "_value":"count"}})
-        |> keep(columns: ["username", "password", "count"])
-        |> group()
-        |> sort(columns: ["count"], desc: true)
-        |> limit(n: {limit})
+    SELECT
+        username,
+        password,
+        count(*) AS count
+    FROM passwords
+    WHERE
+        username IS NOT NULL
+        AND
+        username <> ''
+        AND
+        username <> '\n'
+        AND
+        password IS NOT NULL
+        AND
+        password <> ''
+        AND
+        password <> '\n'
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY username, password
+    ORDER BY count DESC
+    LIMIT :limit
 """
 
+# Graph of top passwords by ussages
 top_passwords_popularity = """
-    top_passwords=from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r)=>r._measurement=="password_count")
-        |> group(columns: ["_field"])
-        |> sum()
-        |> group()
-        |> sort(desc:true)
-        |> limit(n: {top_n})
-        |> findColumn(fn: (key)=>true, column: "_field")
-
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r)=>r._measurement=="password_count" and contains(value: r._field, set:top_passwords))
-        |> group()
-        |> window(every: {window})
-        |> group(columns: ["_field", "_start"])
-        |> sum()
-        |> group(columns: ["_start"])
-        |> rename(columns: {{"_field": "password", "_value":"count"}})
-        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
-        |> keep(columns: ["day", "count", "password"])
+    SELECT
+        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
+        password,
+        COUNT(*) as count
+    FROM passwords
+    WHERE
+        password IN (
+            SELECT
+                password
+            FROM (
+                SELECT
+                    password,
+                    COUNT(*) AS count_inner
+                FROM passwords
+                WHERE
+                    password IS NOT NULL
+                    AND
+                    password <> ''
+                    AND
+                    password <> '\n'
+                    AND
+                    now() - INTERVAL :interval < time AND time < now()
+                GROUP BY password
+                ORDER BY count_inner DESC
+                LIMIT :limit
+            ) AS foo
+        )
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY day, password
+    ORDER BY day
 """
 
+# Graph of selected passwords's ussages
 password_activity_graph = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
-        |> group()
-        |> window(every: {window})
-        |> sum()
-        |> rename(columns: {{"_value":"count"}})
-        |> map(fn:(r) => ({{ r with day: string(v: r._start) }}))
-        |> keep(columns: ["day", "count"])
-        |> group()
+    SELECT
+        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
+        COUNT(*) as count
+    FROM passwords
+    WHERE
+        password = :password
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY day
+    ORDER BY day
 """
+
+# List of logins by ussages by selected password
 logins_of_password = """
-    from(bucket: "{bucket}")
-        |> range(start: {start})
-        |> filter(fn: (r) =>r._measurement=="password_count" and r._field=="{password}")
-        |> group(columns: ["username"])
-        |> sum()
-        |> group()
-        |> sort(desc: true)
-        |> limit(n: 20)
-        |> rename(columns: {{"_value":"count"}})
-        |> keep(columns: ["username", "count"])
+    SELECT
+        username,
+        COUNT(username) AS count
+    FROM passwords
+    WHERE
+        password = :password
+        AND
+        now() - INTERVAL :interval < time AND time < now()
+    GROUP BY username
+    ORDER BY count DESC
 """
