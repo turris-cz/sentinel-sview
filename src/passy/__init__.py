@@ -5,6 +5,7 @@ from .backend import proc_leaked
 from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 
 app = Flask(__name__)
+
 if app.config['ENV'] == 'development':
     app.config.from_object(DevelopmentConfig)
     db_settings = {key:value for key, value in app.config.items() if key.startswith("DB")}
@@ -21,4 +22,3 @@ else:
 def leaked_advanced():
     """Route for selecting passwords from advanced database"""
     return proc_leaked(**request.json)
-

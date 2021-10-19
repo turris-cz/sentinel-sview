@@ -19,5 +19,5 @@ psql --username=... --host=... --dbname=... < data/scheme.sql
 Import example data to database:
 
 ```
-python3 --username=... --host=... --dbname=... data/passwords.csv
+python3 data/import.py --username=... --host=... --dbname=... data/passwords.csv
 ```

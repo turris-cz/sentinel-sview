@@ -8,6 +8,7 @@ class BaseModel(Model):
     class Meta:
         database = db
 
+
 class Password(BaseModel):
     count = pg.BigIntegerField(null=True)
     id = pg.BigAutoField()

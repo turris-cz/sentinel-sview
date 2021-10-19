@@ -1,8 +1,21 @@
 image: python:3.7-alpine
 
+services:
+  - postgres:12.2-alpine
+
+variables:
+  POSTGRES_DB: have_i
+  POSTGRES_USER: been
+  POSTGRES_PASSWORD: p4wn3d
+
 before_script:
+  - apk update
+  - apk add postgresql-client
   - pip install .
   - pip install pytest
+  - export PGPASSWORD=$POSTGRES_PASSWORD
+  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < data/scheme.sql
+  - python data/import.py --username=$POSTGRES_USER --host="postgres" --dbname="$POSTGRES_DB" data/passwords.csv
 
 test:
   script: pytest --verbose
