@@ -55,4 +55,4 @@ def filter_dictionary(source: dict, startstring: str):
 
 def conform_arguments(dict, _map=_ARG_MAP):
     """By default conform pg arguments."""
-    return {_map[k]:v for k, v in dict.items()}
+    return {_map[k]:v for k, v in dict.items() if k in _map.keys()}

@@ -1,7 +1,7 @@
 from re import I
 from flask import Flask, request
-from passy.utils import filter_dictionary, get_postgres_envvars
-from .database import load_dev, load_postgres, db
+from passy.utils import filter_dictionary
+from .database import load_postgres
 
 from .backend import proc_leaked
 
@@ -21,9 +21,9 @@ if app.config['ENV'] == 'development':
     app.config.from_object(DevelopmentConfig)
 
 elif app.config['ENV'] == 'testing':
-    pg_settings = filter_dictionary(os.environ, "POSTGRESS")
+    pg_settings = filter_dictionary(os.environ, "POSTGRES")
     app.config.from_mapping(pg_settings)
-    app.config['POSTGRES_HOSTNAME']
+    app.config['POSTGRES_HOSTNAME'] = "postgres"
 else:
     app.config.from_object(ProductionConfig)
 

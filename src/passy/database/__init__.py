@@ -30,4 +30,4 @@ db = DatabaseProxy()
 
 def load_postgres(**settings):
     """Links proxy to local database, provide path, or not"""
-    db.initialize(PostgresqlDatabase(**conform_arguments(**settings)))
+    db.initialize(PostgresqlDatabase(**conform_arguments(settings)))

@@ -4,8 +4,13 @@ from utils import hash_it
 from passy import app
 import psycopg2 as pg
 
+from passy.utils import filter_dictionary, conform_arguments
+
+
 _INSERT_STMNT = "INSERT INTO passwords (count, password_hash, password_source) " \
 "values (%s, %s, %s::data_source[]);"
+
+_DB_SETTINGS = filter_dictionary(app.config, "POSTGRES")
 
 
 def _parse_sources(ls: list) -> str:
@@ -23,16 +28,14 @@ def _insert(cur, *args):
     )
 
 
-def insert_password(password: str, count: int, sources: list):
+def insert_password(password: str, count: int, sources: list) -> str:
     """Helper function to insert data in database."""
-    _hash, _ =  hash_it(password)
-    con  = pg.connect
-    with con.cursor() as cur:
-        for pword in g:
-            _hash = _hash_it(pword)
-            _sources = sample(_TYPE, randint(1,5))
-            _count = randint(1,250)
-            print(_insert(cur, _count,_hash,_sources))
-        cur.commit()
+    _stub, _hash =  hash_it(password)
+    _sources = _parse_sources(sources)
 
+    con  = pg.connect(**conform_arguments(_DB_SETTINGS))
+    with con.cursor() as cur:
+        _insert(cur, count, _hash,_sources)
+    con.commit()
     con.close()
+    return _stub
