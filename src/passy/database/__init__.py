@@ -22,7 +22,7 @@ def create_testing(file) -> None:
     populate_database(file)
 
 
-def load_production(path: str, user: str, host: str) -> None:
+def load_postgres(path: str, user: str, host: str) -> None:
     """Links proxy to live database"""
     db.initialize(PostgresqlDatabase(path, user, host))
 

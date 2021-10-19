@@ -7,10 +7,11 @@ variables:
   POSTGRES_DB: have_i
   POSTGRES_USER: been
   POSTGRES_PASSWORD: p4wn3d
+  FLASK_ENV: testing
 
 before_script:
   - apt update
-  - apt install postgresql-client
+  - apt install -y postgresql-client
   - pip install .
   - pip install pytest psycopg2-binary
   - export PGPASSWORD=$POSTGRES_PASSWORD
