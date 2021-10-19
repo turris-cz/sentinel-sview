@@ -1,6 +1,7 @@
+from enum import Enum
 from jsonschema import validate
 import json
-
+import re
 from jsonschema import validate, ValidationError
 
 
@@ -12,47 +13,66 @@ def _load_schema():  # load json schema for validation
     return rv
 
 
-_SCHEMA = _load_schema()
-
-_STATUS = {1: "SUCCESS", 2: "NO_QUERY", 3: "VALIDATION_ERROR"}
-
+_SOURCES_RE = re.compile(
+    r"telnet|smtp|ftp|http|haas"
+)  # split sources "{ftp,http}" etc.
+_SCHEMA = _load_schema()  # unfortunatelly we have to have `_load_schema()` before
+# we need to map envvars to key names that are suitable for psycopg2 connection method
 _ARG_MAP = {
     "POSTGRES_HOSTNAME": "host",
-    "POSTGRES_DB" : "database",
+    "POSTGRES_DB": "database",
     "POSTGRES_USER": "user",
-    "POSTGRES_PASSWORD": "password"
+    "POSTGRES_PASSWORD": "password",
 }
 
+
+class Status(str, Enum):
+    """Enumerator to make better control of the response status"""
+
+    success = "SUCCESS"
+    no_query = "NO_QUERY"
+    validation_err = "VALIDATION_ERROR"
+
+
 def compose_message(status, data=None, error=None, status_code=200):
-    """Do not confuse `status` with response code, always returning `200`
+    """Compose response message
+    :status: status of the result action, enumerator _STATUS
     :retval: tuple with load and response code"""
     response_load = {
         "msg_type": "response",
-        "status": _STATUS[status],
+        "status": status,
     }
     if data:
         response_load.update({"data": data})
     if error:
         response_load.update({"error": error})
     # validate outgoing log error to logger
-    return response_load, 200
+    return response_load, status_code
 
 
 def validate_decor(func):
+    """Schema validation decorator"""
+
     def wrapper(**json_data):
         try:
             validate(json_data, _SCHEMA)
             return func(**json_data)
         except ValidationError as e:
-            return compose_message(3, error=e, status_code=400)
+            return compose_message(Status.validation_err, error=e, status_code=400)
 
     return wrapper
 
 
 def filter_dictionary(source: dict, startstring: str):
-   return  {k: v for k, v in source.items() if k.startswith(startstring)}
+    """Filter dictionary, or any object that have items method"""
+    return {k: v for k, v in source.items() if k.startswith(startstring)}
 
 
 def conform_arguments(dict, _map=_ARG_MAP):
-    """By default conform pg arguments."""
-    return {_map[k]:v for k, v in dict.items() if k in _map.keys()}
+    """By default conform pg arguments. Else remap keys based on provided ``_map``"""
+    return {_map[k]: v for k, v in dict.items() if k in _map.keys()}
+
+
+def unfold_pg_array(sources: str) -> list:
+    """Unfold string that is result of pg.ARRAY `'{value,value,value}'` to list"""
+    return _SOURCES_RE.findall(sources)

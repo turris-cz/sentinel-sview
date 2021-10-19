@@ -21,7 +21,7 @@ def test_unsafe_password(client):
 
 
 def test_safe_password(client):
-    """Test if sent hash corresponds to some we have"""
+    """Test if sent hash does not correspond to any"""
 
     def _f(x):
         return x["hash"] == full_hash

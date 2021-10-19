@@ -13,7 +13,7 @@ class Password(BaseModel):
     count = pg.BigIntegerField(null=True)
     id = pg.BigAutoField()
     password_hash = pg.TextField()
-    password_source = pg.ArrayField(pg.TextField) # ARRAY
+    password_source = pg.ArrayField(pg.TextField)  # ARRAY
 
     class Meta:
-        table_name = 'passwords'
+        table_name = "passwords"
