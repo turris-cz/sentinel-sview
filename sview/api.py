@@ -32,9 +32,7 @@ def get_resource_view():
             params[param_name] = param
 
     if "devices" in session:
-        params["my_device_tokens"] = str(session["devices"]).replace("'", '"')
-    else:
-        params["my_device_tokens"] = "[]"
+        params["my_device_tokens"] = tuple(session["devices"])
 
     try:
         data = get_resource(resource_name, params)

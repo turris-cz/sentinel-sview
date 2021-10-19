@@ -22,7 +22,6 @@ setup(
         "Flask-Redis",
         "Flask-RQ2",
         "Flask-Breadcrumbs",
-        "influxdb-client",
         "psycopg2-binary",
         "pycountry",
         "python-dotenv",

@@ -1,8 +1,7 @@
 BABEL_DEFAULT_LOCALE = "en"
 
-INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN =  "secret token"
-INFLUXDB_ORGANIZATION = "sentinel"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = "sqlite:///gitc.db"
 
 CACHE_TYPE = "filesystem"
 CACHE_DIR = "/tmp/sview_cache"

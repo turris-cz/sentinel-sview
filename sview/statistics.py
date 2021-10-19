@@ -278,11 +278,11 @@ def devices():
         {"period": period, "token": tokens_hash} if tokens_hash else {"period": period}
     )
 
-    tokens_string = str(session.get("devices", [])).replace("'", '"')
+    tokens = tuple(session.get("devices", []))
 
     resources = {
         resource_name: get_resource(
-            resource_name, {**params, "my_device_tokens": tokens_string}
+            resource_name, {**params, "my_device_tokens": tokens}
         )
         for resource_name in resource_names
     }

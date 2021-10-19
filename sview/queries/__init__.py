@@ -5,35 +5,35 @@ from .limits import limit_dashboard
 from .limits import limit_long
 from .limits import limit_plot
 
-from .flux.passwords import top_passwords
-from .flux.passwords import top_usernames
-from .flux.passwords import top_combinations
-from .flux.passwords import top_passwords_popularity
-from .flux.passwords import password_activity_graph
-from .flux.passwords import logins_of_password
+from .sql.passwords import top_passwords
+from .sql.passwords import top_usernames
+from .sql.passwords import top_combinations
+from .sql.passwords import top_passwords_popularity
+from .sql.passwords import password_activity_graph
+from .sql.passwords import logins_of_password
 
-from .flux.incidents import all_incidents_graph
-from .flux.incidents import top_incident_types
-from .flux.incidents import incidents_by_source_trends
-from .flux.incidents import incidents_by_action_trends
+from .sql.incidents import all_incidents_graph
+from .sql.incidents import top_incident_types
+from .sql.incidents import incidents_by_source_trends
+from .sql.incidents import incidents_by_action_trends
 
-from .flux.attacker_incidents import attackers_by_day
-from .flux.attacker_incidents import attacker_ips
-from .flux.attacker_incidents import attackers_activity_graph
-from .flux.attacker_incidents import top_countries_by_incidents_table
-from .flux.attacker_incidents import top_countries_by_attackers_table
-from .flux.attacker_incidents import incidents_map
-from .flux.attacker_incidents import attackers_map
-from .flux.attacker_incidents import top_countries_trends
-from .flux.attacker_incidents import incidents_by_country_trends
+from .sql.incidents import attackers_by_day
+from .sql.incidents import attacker_ips
+from .sql.incidents import attackers_activity_graph
+from .sql.incidents import top_countries_by_incidents_table
+from .sql.incidents import top_countries_by_attackers_table
+from .sql.incidents import incidents_map
+from .sql.incidents import attackers_map
+from .sql.incidents import top_countries_trends
+from .sql.incidents import incidents_by_country_trends
 
-from .flux.user_incidents import my_incidents_graph
-from .flux.user_incidents import my_incidents_by_country_trends
-from .flux.user_incidents import my_incidents_by_source_trends
+from .sql.incidents import my_incidents_graph
+from .sql.incidents import my_incidents_by_country_trends
+from .sql.incidents import my_incidents_by_source_trends
 
-from .flux.ports import all_scans_graph
-from .flux.ports import top_ports
-from .flux.ports import port_trends
+from .sql.ports import all_scans_graph
+from .sql.ports import top_ports
+from .sql.ports import port_trends
 
 KNOWN_PARAMS = {
     "period": "1y",
@@ -52,51 +52,44 @@ DEFAULT_PERIOD = "1y"
 PERIODS = {
     "1h": {
         "label": "Hour",
-        "flux_start": "-1h",
-        "flux_window": "1m",
-        "bucket": "sentinel-base",
+        "interval": "1 hour",
+        "bucket": "1 minute",
         "cache_ttl": 30,
     },
     "12h": {
         "label": "12 Hours",
-        "flux_start": "-12h",
-        "flux_window": "15m",
-        "bucket": "sentinel-minutely",
+        "interval": "12 hours",
+        "bucket": "15 minutes",
         "cache_ttl": 450,
     },
     "1d": {
         "label": "Day",
-        "flux_start": "-1d",
-        "flux_window": "30m",
-        "bucket": "sentinel-minutely",
+        "interval": "1 day",
+        "bucket": "30 minutes",
         "cache_ttl": 900,
     },
     "1w": {
         "label": "Week",
-        "flux_start": "-1w",
-        "flux_window": "3h",
-        "bucket": "sentinel-hourly",
+        "interval": "7 days",
+        "bucket": "3 hours",
         "cache_ttl": 5400,
     },
     "1m": {
         "label": "Month",
-        "flux_start": "-1mo",
-        "flux_window": "1d",
-        "bucket": "sentinel-hourly",
+        "interval": "1 month",
+        "bucket": "1 day",
         "cache_ttl": 432000,
     },
     "3m": {
         "label": "3 Months",
-        "flux_start": "-3mo",
-        "flux_window": "2d",
-        "bucket": "sentinel-hourly",
+        "interval": "3 months",
+        "bucket": "2 days",
         "cache_ttl": 864000,
     },
     "1y": {
         "label": "Year",
-        "flux_start": "-1y",
-        "flux_window": "1w",
-        "bucket": "sentinel-daily",
+        "interval": "1 year",
+        "bucket": "14 days",
         "cache_ttl": 302400,
     },
 }
@@ -173,42 +166,42 @@ RESOURCE_QUERIES = {
     },
     "attackers_trends": {
         "query": top_countries_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
     "incidents_by_country_trends": {
         "query": incidents_by_country_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
     "incidents_by_source_trends": {
         "query": incidents_by_source_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
     },
     "my_incidents_by_country_trends": {
         "query": my_incidents_by_country_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
     "my_incidents_by_source_trends": {
         "query": my_incidents_by_source_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
     },
     "incidents_by_action_trends": {
         "query": incidents_by_action_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "action"),
     },
     "port_trends": {
         "query": port_trends,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "port"),
     },
     "top_passwords_popularity": {
         "query": top_passwords_popularity,
-        "params": {"top_n": limit_plot},
+        "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(
             d, "day", "count", "password"
         ),
