@@ -1,6 +1,7 @@
 from re import I
 from flask import Flask, request
-from .database import load_dev, load_postgres
+from passy.utils import filter_dictionary, get_postgres_envvars
+from .database import load_dev, load_postgres, db
 
 from .backend import proc_leaked
 
@@ -16,21 +17,18 @@ except ImportError as e:
     else:
         raise ImportError(f'You need to setup `config.py` to be able to run this app. Error:{e}' ) from e 
 
-
 if app.config['ENV'] == 'development':
     app.config.from_object(DevelopmentConfig)
-    db_settings = {key:value for key, value in app.config.items() if key.startswith("DB")}
-    load_dev(**db_settings)
 
 elif app.config['ENV'] == 'testing':
-    app.config['DB_NAME'] = os.getenv('POSTGRES_DB')
-    app.config['DB_USERNAME'] = os.getenv('POSTGRES_USER')
-    app.config['DB_PASSWORD'] = os.getenv('POSTGRES_PASSWORD')
-    app.config['DB_HOSTNAME'] = "postgres"
-    load_postgres()
+    pg_settings = filter_dictionary(os.environ, "POSTGRESS")
+    app.config.from_mapping(pg_settings)
+    app.config['POSTGRES_HOSTNAME']
 else:
     app.config.from_object(ProductionConfig)
-    load_postgres()
+
+db_settings = filter_dictionary(app.config, "POSTGRES")
+load_postgres(**db_settings)
 
 
 @app.route("/api/leaked/", methods=["POST"])

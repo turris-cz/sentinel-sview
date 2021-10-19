@@ -3,6 +3,7 @@ import json
 
 from jsonschema import validate, ValidationError
 
+
 def _load_schema():  # load json schema for validation
     """Helper function to load query schema"""
     rv = {}
@@ -15,6 +16,12 @@ _SCHEMA = _load_schema()
 
 _STATUS = {1: "SUCCESS", 2: "NO_QUERY", 3: "VALIDATION_ERROR"}
 
+_ARG_MAP = {
+    "POSTGRES_HOSTNAME": "host",
+    "POSTGRES_DB" : "database",
+    "POSTGRES_USER": "user",
+    "POSTGRES_PASSWORD": "password"
+}
 
 def compose_message(status, data=None, error=None, status_code=200):
     """Do not confuse `status` with response code, always returning `200`
@@ -40,3 +47,12 @@ def validate_decor(func):
             return compose_message(3, error=e, status_code=400)
 
     return wrapper
+
+
+def filter_dictionary(source: dict, startstring: str):
+   return  {k: v for k, v in source.items() if k.startswith(startstring)}
+
+
+def conform_arguments(dict, _map=_ARG_MAP):
+    """By default conform pg arguments."""
+    return {_map[k]:v for k, v in dict.items()}

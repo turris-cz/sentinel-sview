@@ -10,7 +10,7 @@ def test_unsafe_password(client):
     def _f(x):
         return x["hash"] == full_hash
 
-    pword = "abAuXwyvR"
+    pword = "hikvision"
     stub, full_hash = hash_it(pword)
     res = client.post("/api/leaked/", json=message_it(stub))
     assert res.json["status"] == "SUCCESS"

@@ -213,54 +213,49 @@ state of jobs, cache and other things. The following commands are implemented:
 
 ### Workflow
 
-1. Client (frontend) hashes password using `sha256`
-2. then sends to `API` 6 bytes of his hash
-3. server receives this stub and either
-    - selects hash from table (optimal performance, big database)
-    - filters all password and evaluete if any starts with those `6` bytes (one column less)
-4. eventually those which get through filter are sent back
-5. Client detemines if his hash is in response
+1. Recieves request in form of json posted to `http://page.xyz/api/leaked`
+2. Selects hashes in database that starts with request hash.
+3. Return matching hashes with counts.
 
 step 3. is heavily influenced by how the schema is planned.
 
-### Table choices
-
-There are serval options to discuss on topic of schema
-
-#### Password, [hash], count
-
-Initial idea was to store
-
-| id     | password | count |
-| ------ | -------- | ----- |
-| bigint | varchar  | int   |
-
-However, it would be nice not to have count on select hash for each password.
-
-| id     | password | hash       | count |
-| ------ | -------- | ---------- | ----- |
-| bigint | varchar  | Varchar(6) | int   |
-
-pros:
- - having count how many times password used
-
-cons:
- - unneccessary data
-
-#### Password, [hash]
-
-Optimal solution would be to have at least full password and hash
-
-| id     | password | hash       |
-| ------ | -------- | ---------- |
-| bigint | varchar  | Varchar(6) |
-
-Superslim table would lack the advantage of precomputed hash
-
-| id     | password |
-| ------ | -------- |
-| bigint | varchar  |
-
-#### Message schema
+## Request/response json schema
 
 Refer to [schema](schema/passy.json)
+
+## Table schema
+
+The schema for `passwords` is as follows
+
+| id        | password_hash | count      | password_source |
+| --------- | ------------- | ---------- | --------------- |
+| BIGSERIAL | TEXT          | BIGINT     | ARRAY(ENUM)     |
+
+```sql
+------ common passwords database scheme
+--
+
+CREATE TYPE data_source AS ENUM ('telnet', 'smtp', 'ftp', 'http', 'haas');
+CREATE TABLE IF NOT EXISTS passwords(
+    id BIGSERIAL PRIMARY KEY,
+    password_hash TEXT NOT NULL,
+    count BIGINT CHECK (count > 0),
+    password_source data_source[]
+);
+```
+
+# Development (local test)
+
+- create virtual environment
+- install ``pip install -e .``
+- install `pip install pytest psycopg2`
+- create postgres database
+    - install in system
+    - Docker image (that's actually pretty flawless)
+- setup the database
+- use [config_example.py](config_example.py) as template for setting database credentials for application
+- follow procedure to populate the database with testing data in `/data/README.md` 
+- run
+```sh
+export FLASK_ENV=development
+```

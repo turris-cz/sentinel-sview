@@ -6,7 +6,7 @@ from passy.database.models import Password
 def test_testing_data_count(client):
     """Test if `testing_data.sql` got loaded correctly to `:memory: database`"""
     d = Password.select().count()
-    assert d == 1041
+    assert d == 115
 
 
 def test_database(client):
