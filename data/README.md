@@ -13,7 +13,7 @@ pip install psycopg2
 Prepare database scheme:
 
 ```
-psql --username=... --host=... --dbname=... < data/scheme.sql
+psql --username=... --host=... --dbname=... [database] < data/scheme.sql
 ```
 
 Import example data to database:

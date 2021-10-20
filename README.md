@@ -258,4 +258,5 @@ CREATE TABLE IF NOT EXISTS passwords(
 - run
 ```sh
 export FLASK_ENV=development
+export FLASK_APP=src/passy
 ```

@@ -3,15 +3,16 @@ class Config(object):
     TESTING = False
 
 class ProductionConfig(Config):
-    DB_NAME = ""
-    DB_USERNAME = ""
-
+    POSTGRES_HOSTNAME = "postgres"
+    POSTGRES_DB = "pwned"
+    POSTGRES_USER = ""
+    POSTGRES_PASSWORD = ""
 
 class DevelopmentConfig(Config):
-    DB_HOSTNAME = "127.0.0.1"
-    DB_NAME = "hapi"
-    DB_USERNAME = "hapi_user"
-    DB_PASSWORD = "hapi-secret"
+    POSTGRES_HOSTNAME = "127.0.0.1"
+    POSTGRES_DB = "pwned-test"
+    POSTGRES_USER = "pwned-user"
+    POSTGRES_PASSWORD = "pwned-secret"
 
     DEBUG = True
 

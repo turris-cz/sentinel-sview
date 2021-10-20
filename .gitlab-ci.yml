@@ -16,7 +16,9 @@ before_script:
   - pip install pytest psycopg2-binary
   - export PGPASSWORD=$POSTGRES_PASSWORD
   - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < data/scheme.sql
-  - python data/import.py --username=$POSTGRES_USER --host="postgres" --dbname="$POSTGRES_DB" data/passwords.csv
+  
 
 test:
   script: pytest --verbose
+
+after_script:
