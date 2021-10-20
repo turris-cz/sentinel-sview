@@ -221,7 +221,7 @@ step 3. is heavily influenced by how the schema is planned.
 
 ## Request/response json schema
 
-Refer to [schema](schema/passy.json)
+Refer to [schema](schema/pwned.json)
 
 ## Table schema
 
@@ -258,5 +258,5 @@ CREATE TABLE IF NOT EXISTS passwords(
 - run
 ```sh
 export FLASK_ENV=development
-export FLASK_APP=src/passy
+export FLASK_APP=src/pwned
 ```

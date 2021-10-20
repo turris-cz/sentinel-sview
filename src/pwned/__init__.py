@@ -1,5 +1,5 @@
 from flask import Flask, request
-from passy.utils import filter_dictionary
+from pwned.utils import filter_dictionary
 from .database import load_postgres
 
 from .backend import proc_leaked

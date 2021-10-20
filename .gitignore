@@ -30,4 +30,4 @@ instance/*
 /wsgi.py
 
 # passy-specific
-/src/passy/config.py
+/src/pwned/config.py

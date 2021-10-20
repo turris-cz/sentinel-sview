@@ -4,8 +4,8 @@ from typing import Tuple
 
 from utils import hash_it
 
-from passy import app
-from passy.utils import filter_dictionary, conform_arguments
+from pwned import app
+from pwned.utils import filter_dictionary, conform_arguments
 
 # watch the special treatment of pg.ARRAY
 _INSERT_STATEMENT = (
@@ -13,7 +13,7 @@ _INSERT_STATEMENT = (
     "values (%s, %s, %s::data_source[]);"
 )
 
-# reference to passy.__init__ settings
+# reference to pwned.__init__ settings
 DB_SETTINGS = filter_dictionary(app.config, "POSTGRES")  # DB_CONN settings
 
 

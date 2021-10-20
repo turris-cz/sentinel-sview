@@ -8,7 +8,7 @@ from jsonschema import validate, ValidationError
 def _load_schema():  # load json schema for validation
     """Helper function to load query schema"""
     rv = {}
-    with open("schema/passy.json", "r") as f:
+    with open("schema/pwned.json", "r") as f:
         rv = json.load(f)
     return rv
 

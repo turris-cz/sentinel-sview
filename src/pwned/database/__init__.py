@@ -1,5 +1,5 @@
 from peewee import DatabaseProxy, PostgresqlDatabase, SqliteDatabase
-from passy.utils import conform_arguments
+from pwned.utils import conform_arguments
 
 # provides option to switch `db` object on the run
 # works great with flask testing

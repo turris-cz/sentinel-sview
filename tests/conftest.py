@@ -1,6 +1,6 @@
 import pytest
 
-from passy import app
+from pwned import app
 from utils import hash_it
 from pg_manager import reset_passwords_table, insert_password
 

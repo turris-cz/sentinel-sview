@@ -1,8 +1,7 @@
 import pytest
 
-from passy.database.models import Password
+from pwned.database.models import Password
 from pg_manager import insert_password
-from utils import hash_it
 
 
 def test_testing_data_count(client):

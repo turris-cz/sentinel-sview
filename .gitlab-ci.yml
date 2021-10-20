@@ -13,7 +13,7 @@ before_script:
   - apt update
   - apt install -y postgresql-client
   - pip install .
-  - pip install pytest psycopg2-binary
+  - pip install pytest
   - export PGPASSWORD=$POSTGRES_PASSWORD
   - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < data/scheme.sql
   

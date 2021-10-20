@@ -1,5 +1,5 @@
 import pytest
-from passy.database.models import Password
+from pwned.database.models import Password
 from functools import partial
 
 from utils import hash_it, message_it
@@ -62,6 +62,9 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     data = res.json["data"]
     received_hashes = [i['hash'] for i in data]
     assert set(db_hashes) == set(received_hashes)
+
+    # we did not save the hashes, but we know the counts
+    # of passwords usage
 
     morris = filter_on_count(1, data)
     korys = filter_on_count(25, data)
