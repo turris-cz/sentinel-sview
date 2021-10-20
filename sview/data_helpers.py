@@ -1,21 +1,67 @@
+import sqlalchemy
+import re
+
+from flask import current_app
+
 from .extensions import db
 from .queries import PERIODS
 from .queries import RESOURCE_QUERIES
 
 
+class QueryFiller:
+    def __init__(self, query_frame, params):
+        self.query_frame = query_frame
+        self.params = params
+
+    def __str__(self):
+        return _fill_query(self.query_frame, self.params)
+
+
+def _fill_query(query, params):
+    """Fill params into sql query. Omly for debug purposes."""
+
+    def replace(match):
+        param_name = match.group(0)[1:]
+        if param_name == "MI":
+            return ":MI"
+
+        try:
+            param = params[param_name]
+        except KeyError:
+            raise Exception(f"Unknown param '{param_name}' requested in query: {query}")
+
+        if type(param) is str:
+            return f"'{param}'"
+        elif type(param) is int or type(param) is tuple:
+            return str(param)
+        else:
+            raise Exception(
+                f"""Unsupported param type of '{param_name}' requested
+                    in query: {query}\n. The available params are: {params}"""
+            )
+
+    return re.sub(r":[\w_]+", replace, query)
+
+
 def process_query(resource_name, params):
-    query_frame = RESOURCE_QUERIES[resource_name]["query"]
+    query = RESOURCE_QUERIES[resource_name]["query"]
     params.update(RESOURCE_QUERIES[resource_name].get("params", {}))
     params["interval"] = PERIODS[params["period"]]["interval"]
     params["bucket"] = PERIODS[params["period"]]["bucket"]
 
     result = []
 
-    full_query = query_frame.format(**params)
     try:
-        data = db.session.execute(full_query)
-    except Exception as exc:
+        data = db.session.execute(query, params)
+        current_app.logger.debug(
+            f"Fetching resource '%s' with query: %s",
+            resource_name,
+            QueryFiller(query, params),
+        )
+    except sqlalchemy.exc.SQLAlchemyError as exc:
+        full_query = _fill_query(query, params)
         raise Exception(f"Failed to execute query: {full_query}") from exc
+
     for row in data:
         result.append(dict(row.items()))
 
