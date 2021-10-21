@@ -30,7 +30,7 @@ def _fltr(on, val, item):
 
 
 def test_safe_password(client):
-    """Test if sent hash does not correspond to any"""
+    """Test if sent hash does not correspond to niether one in database"""
 
     def _f(x):
         return x["hash"] == full_hash
@@ -79,6 +79,7 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
 
 
 def test_validation_on_request(client):
+    """Test message sent by client"""
     stub, _ = hash_it("secret")
     stub = stub[:-1]
     res = client.post("/api/leaked/", json=message_it(stub))

@@ -1,6 +1,16 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from pwned.utils import filter_dictionary
 from .database import load_postgres
+
+_HEADERS = {
+    'Content-Type': 'application/json; charset=utf-8'
+}
+
+from logging import Logger
+
+_logger = Logger(__name__)
+
+import json
 
 from .backend import proc_leaked
 
@@ -34,5 +44,13 @@ load_postgres(**db_settings)
 
 @app.route("/api/leaked/", methods=["POST"])
 def leaked_advanced():
-    """Route for selecting passwords from advanced database"""
-    return proc_leaked(**request.json)
+    """Route for selecting passwords from database"""
+    if not request.json:
+        args = json.loads(request.get_data())
+    else:
+        args = request.json
+    try:
+        data, code = proc_leaked(**args)
+        return data, code, _HEADERS
+    except Exception as e:
+        _logger.error(f'Error: {e}.')

@@ -31,6 +31,7 @@ def _insert(cur, *args) -> int:
 
 
 def reset_passwords_table() -> None:
+    """Get the table to initial state"""
     con = pg.connect(**conform_arguments(DB_SETTINGS))
     cur = con.cursor()
     cur.execute("DELETE FROM passwords;")

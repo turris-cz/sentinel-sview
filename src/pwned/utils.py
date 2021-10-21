@@ -2,16 +2,19 @@ from enum import Enum
 import json
 import re
 from jsonschema import validate, ValidationError
+from flask import make_response, jsonify
 
 from logging import Logger
 
-log = Logger(__name__)
+logger = Logger(__name__)
+
+
 
 _SOURCES_RE = re.compile(
     r"telnet|smtp|ftp|http|haas"
 )  # split sources "{ftp,http}" etc.
 
-# we need to map envvars to key names that are suitable for psycopg2 connection method
+# we need to map envvars to key names that are suitable for psycopg2 `connect` method
 _ARG_MAP = {
     "POSTGRES_HOSTNAME": "host",
     "POSTGRES_DB": "database",
@@ -21,7 +24,7 @@ _ARG_MAP = {
 
 
 def _load_schema(msg_type):  # load json schema for validation
-    """Helper function to load query schema"""
+    """Helper function to load given `msg_type` schema"""
     rv = {}
     with open(f"schema/{msg_type}.json", "r") as f:
         rv = json.load(f)
@@ -51,7 +54,7 @@ def compose_message(status, data=None, error=None, status_code=200):
     try:
         validate(response_load, _load_schema("response"))
     except ValidationError as e:
-        log.warning(f"message {response_load} failed to validate, Error:{e}")
+        logger.warning(f"message {response_load} failed to validate, Error:{e}")
     return response_load, status_code
 
 
@@ -69,15 +72,15 @@ def validate_decor(func):
 
 
 def filter_dictionary(source: dict, startstring: str):
-    """Filter dictionary, or any object that have items method"""
+    """Filter dictionary, or any object that have `items()` method"""
     return {k: v for k, v in source.items() if k.startswith(startstring)}
 
 
 def conform_arguments(dict, _map=_ARG_MAP):
-    """By default conform pg arguments. Else remap keys based on provided ``_map``"""
+    """By default conform `pg` arguments. Else remap keys based on provided ``_map``"""
     return {_map[k]: v for k, v in dict.items() if k in _map.keys()}
 
 
 def unfold_pg_array(sources: str) -> list:
-    """Unfold string that is result of pg.ARRAY `'{value,value,value}'` to list"""
+    """Unfold value in format of pg.ARRAY `'{value,value,value}'` to list"""
     return _SOURCES_RE.findall(sources)
