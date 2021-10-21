@@ -22,7 +22,7 @@ def test_unsafe_password(client):
 
 
 def filter_on_count(val, data):
-    return list(filter(partial(_fltr, "count", val),data))[0]
+    return list(filter(partial(_fltr, "count", val), data))[0]
 
 
 def _fltr(on, val, item):
@@ -41,16 +41,17 @@ def test_safe_password(client):
     assert res.json["status"] == "NO_QUERY"
 
 
-@pytest.mark.parametrize("extra_passwords",
+@pytest.mark.parametrize(
+    "extra_passwords",
     [
         [
             (1, "morris", ["ftp", "http", "smtp"]),
             (25, "korys", ["haas", "telnet"]),
-            (30, "sumys", ["smtp","ftp"]),
-            (50, "dennis", ["smtp", "haas"])
+            (30, "sumys", ["smtp", "ftp"]),
+            (50, "dennis", ["smtp", "haas"]),
         ]
     ],
-    indirect=True
+    indirect=True,
 )
 def test_multiple_passwords_common_hash(client, extra_passwords):
     """Test if api returns all hashes that start with provided hash"""
@@ -60,7 +61,7 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     res = client.post("/api/leaked/", json=message_it(stub))
     assert res.json["status"] == "SUCCESS"
     data = res.json["data"]
-    received_hashes = [i['hash'] for i in data]
+    received_hashes = [i["hash"] for i in data]
     assert set(db_hashes) == set(received_hashes)
 
     # we did not save the hashes, but we know the counts
@@ -75,3 +76,12 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     assert korys["sources"] == ["haas", "telnet"]
     assert sumys["sources"] == ["smtp", "ftp"]
     assert dennis["sources"] == ["smtp", "haas"]
+
+
+def test_validation_on_request(client):
+    stub, _ = hash_it("secret")
+    stub = stub[:-1]
+    res = client.post("/api/leaked/", json=message_it(stub))
+    assert res.json["status"] == "VALIDATION_ERROR"
+    error = res.json["error"]
+    assert "does not match '^[a-z0-9]{6}$'" in error

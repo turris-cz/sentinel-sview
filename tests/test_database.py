@@ -17,21 +17,22 @@ def test_database(client):
     assert t.count == 50  # do not confuse with model `count()` method
 
 
-@pytest.mark.parametrize('extra_passwords', [
+@pytest.mark.parametrize(
+    "extra_passwords",
     [
-        (50, "ruris", ["smtp", "haas"]),
-    (50, 'morris', ["ftp", "http", "smtp"]),
-    (100, 'rorys',["haas", "telnet"]),
-    (45, 'dennis', ["smtp","ftp"])
-    ]
-    ],indirect=True
+        [
+            (50, "ruris", ["smtp", "haas"]),
+            (50, "morris", ["ftp", "http", "smtp"]),
+            (100, "rorys", ["haas", "telnet"]),
+            (45, "dennis", ["smtp", "ftp"]),
+        ]
+    ],
+    indirect=True,
 )
 def test_extra_passwords_fixture(client, extra_passwords):
     """We would like to test the fixture"""
-    stub, db_hashes =  extra_passwords  # fixture generates list of inserted hashes
-    t = Password.select(
-        Password.password_hash
-    ).where(
+    stub, db_hashes = extra_passwords  # fixture generates list of inserted hashes
+    t = Password.select(Password.password_hash).where(
         Password.password_hash.startswith(stub)
     )
 
@@ -40,4 +41,4 @@ def test_extra_passwords_fixture(client, extra_passwords):
     selected_hashes = [i.password_hash for i in t.iterator()]
 
     # and hopefully wha have correct result here
-    assert db_hashes == selected_hashes 
+    assert set(db_hashes) == set(selected_hashes)

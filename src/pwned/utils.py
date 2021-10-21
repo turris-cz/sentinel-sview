@@ -1,22 +1,16 @@
 from enum import Enum
-from jsonschema import validate
 import json
 import re
 from jsonschema import validate, ValidationError
 
+from logging import Logger
 
-def _load_schema():  # load json schema for validation
-    """Helper function to load query schema"""
-    rv = {}
-    with open("schema/pwned.json", "r") as f:
-        rv = json.load(f)
-    return rv
-
+log = Logger(__name__)
 
 _SOURCES_RE = re.compile(
     r"telnet|smtp|ftp|http|haas"
 )  # split sources "{ftp,http}" etc.
-_SCHEMA = _load_schema()  # unfortunatelly we have to have `_load_schema()` before
+
 # we need to map envvars to key names that are suitable for psycopg2 connection method
 _ARG_MAP = {
     "POSTGRES_HOSTNAME": "host",
@@ -24,6 +18,14 @@ _ARG_MAP = {
     "POSTGRES_USER": "user",
     "POSTGRES_PASSWORD": "password",
 }
+
+
+def _load_schema(msg_type):  # load json schema for validation
+    """Helper function to load query schema"""
+    rv = {}
+    with open(f"schema/{msg_type}.json", "r") as f:
+        rv = json.load(f)
+    return rv
 
 
 class Status(str, Enum):
@@ -46,7 +48,10 @@ def compose_message(status, data=None, error=None, status_code=200):
         response_load.update({"data": data})
     if error:
         response_load.update({"error": error})
-    # validate outgoing log error to logger
+    try:
+        validate(response_load, _load_schema("response"))
+    except ValidationError as e:
+        log.warning(f"message {response_load} failed to validate, Error:{e}")
     return response_load, status_code
 
 
@@ -55,10 +60,10 @@ def validate_decor(func):
 
     def wrapper(**json_data):
         try:
-            validate(json_data, _SCHEMA)
+            validate(json_data, _load_schema("request"))
             return func(**json_data)
         except ValidationError as e:
-            return compose_message(Status.validation_err, error=e, status_code=400)
+            return compose_message(Status.validation_err, error=f"{e}", status_code=400)
 
     return wrapper
 

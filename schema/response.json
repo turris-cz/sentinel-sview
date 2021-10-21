@@ -4,43 +4,30 @@
             "type": "string",
             "pattern": "^[a-z0-9]{64}$"
         },
-        "stub": {
-            "type": "string",
-            "pattern": "[a-z0-9]{6}"
-        },
         "hash_item": {
             "type": "object",
             "properties": {
                 "hash": {"$ref": "#/definitions/sha264"},
-                "count": {"type": "integer", "minimum":1}
+                "count": {"type": "integer", "minimum":1},
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum" : ["telnet", "smtp", "ftp", "http", "haas"]
+                    }
+                }
             },
-            "required": ["hash", "count"],
+            "required": ["hash", "count", "sources"],
             "additionalProperties": false
         }
     },
     "oneOf": [
         {
             "type":"object",
-            "description": "Api message request",
-            "properties": {
-                "msg_type": {
-                    "enum": ["request"]
-                },
-                "hash": {"$ref": "#/definitions/stub"}
-            },
-            "required" : ["hash", "msg_type"],
-            "additionalProperties": false
-        },
-        {
-            "type":"object",
             "description": "Api message response with data",
             "properties": {
-                "msg_type": {
-                    "enum": ["response"]
-                },
-                "status" : {
-                    "enum": ["SUCCESS"]
-                },
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["SUCCESS"]},
                 "data": {
                     "type": "array",
                     "items": {"$ref": "#/definitions/hash_item"},
@@ -55,16 +42,22 @@
             "type":"object",
             "description": "Api message response hash not found",
             "properties": {
-                "msg_type": {
-                    "enum": ["response"]
-                },
-                "status" : {
-                    "enum": ["NO_QUERY"]
-                }
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["NO_QUERY"]}
             },
             "required": ["status", "msg_type"],
             "additionalProperties": false
+        },
+        {
+            "type":"object",
+            "description": "Input data validation error",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status": {"enum": ["VALIDATION_ERROR"]},
+                "error": {"type": "string"}
+            },
+            "required": ["msg_type", "status", "error"],
+            "additionalProperties": false
         }
     ]
-
 }

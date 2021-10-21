@@ -1,4 +1,4 @@
-from peewee import DatabaseProxy, PostgresqlDatabase, SqliteDatabase
+from peewee import DatabaseProxy, PostgresqlDatabase
 from pwned.utils import conform_arguments
 
 # provides option to switch `db` object on the run

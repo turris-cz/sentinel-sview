@@ -40,11 +40,10 @@ def reset_passwords_table() -> None:
         _ = next(reader)  # skip the header
         for row in reader:
             count, password, sources_str = row
-            sources = f'{{{sources_str}}}'
+            sources = f"{{{sources_str}}}"
             _, _hash = hash_it(password)
             _insert(cur, count, _hash, sources)
     con.commit()
-
 
 
 def insert_password(

@@ -1,4 +1,4 @@
-from peewee import IntegerField, Model, TextField
+from peewee import Model
 import playhouse.postgres_ext as pg
 
 from . import db
