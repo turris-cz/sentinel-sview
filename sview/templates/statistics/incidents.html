@@ -17,7 +17,7 @@
 </div>
 <div class="row">
     <div class="col">
-        {{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "day", "count", "Incidents") }}
+        {{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "bucket", "count", "Incidents") }}
     </div>
 </div>
 <div class="row">
@@ -36,7 +36,7 @@
             "top_countries_by_incidents_graph",
             "Incidents by country trends",
             resources["top_countries_by_incidents_graph"]["data"],
-            "day",
+            "bucket",
             resources["top_countries_by_incidents_graph"]["ykeys"],
             resources["top_countries_by_incidents_graph"]["labels"] ) }}
     </div>
@@ -47,7 +47,7 @@
             "top_traps_by_incidents_graph",
             "Incidents by source trends",
             resources["top_traps_by_incidents_graph"]["data"],
-            "day",
+            "bucket",
             resources["top_traps_by_incidents_graph"]["ykeys"],
             resources["top_traps_by_incidents_graph"]["labels"]
         ) }}
@@ -59,7 +59,7 @@
             "top_actions_by_incidents_graph",
             "Incidents by action trends",
             resources["top_actions_by_incidents_graph"]["data"],
-            "day",
+            "bucket",
             resources["top_actions_by_incidents_graph"]["ykeys"],
             resources["top_actions_by_incidents_graph"]["labels"]
         ) }}

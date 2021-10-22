@@ -54,17 +54,17 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("my_all_incidents_graph", "All incidents recorded on my devices", resources["my_all_incidents_graph"], "day", "count", "Incidents") }}
+		{{ line_box("my_all_incidents_graph", "All incidents recorded on my devices", resources["my_all_incidents_graph"], "bucket", "count", "Incidents") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("my_top_traps_by_incidents_graph", "Incidents by source recorded on my devices", resources["my_top_traps_by_incidents_graph"], "day", "count", "Incidents") }}
+		{{ line_box("my_top_traps_by_incidents_graph", "Incidents by source recorded on my devices", resources["my_top_traps_by_incidents_graph"], "bucket", "count", "Incidents") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("my_top_countries_by_incidents_graph", "Incidents by country recorded on my devices", resources["my_top_countries_by_incidents_graph"], "day", "count", "Incidents") }}
+		{{ line_box("my_top_countries_by_incidents_graph", "Incidents by country recorded on my devices", resources["my_top_countries_by_incidents_graph"], "bucket", "count", "Incidents") }}
 	</div>
 </div>
 {{ request_missing_resources(resource_names, resources, active_params) }}

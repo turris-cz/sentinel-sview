@@ -117,6 +117,7 @@ function resource_poll(url, resource_name, params) {
 }
 
 function process_response(response) {
+    console.log(response);
     if ("error" in response) {
         console.log("Error occured in server response:");
         console.log(response);
@@ -275,7 +276,7 @@ function draw_graph(id, data, ykeys, labels) {
     if (data === undefined || data.length == 0) {
         insert_no_data_infobox(graph_div);
     } else {
-        create_graph(id, "day", ykeys, labels, data);
+        create_graph(id, "bucket", ykeys, labels, data);
     }
 }
 

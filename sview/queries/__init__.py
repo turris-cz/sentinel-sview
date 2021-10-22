@@ -170,43 +170,55 @@ RESOURCE_QUERIES = {
     "top_countries_by_attackers_graph": {
         "query": top_countries_by_attackers_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "country"
+        ),
     },
     "top_countries_by_incidents_graph": {
         "query": top_countries_by_incidents_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "country"
+        ),
     },
     "top_traps_by_incidents_graph": {
         "query": top_traps_by_incidents_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "source"
+        ),
     },
     "my_top_countries_by_incidents_graph": {
         "query": my_top_countries_by_incidents_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "country"
+        ),
     },
     "my_top_traps_by_incidents_graph": {
         "query": my_top_traps_by_incidents_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "source"
+        ),
     },
     "top_actions_by_incidents_graph": {
         "query": top_actions_by_incidents_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "action"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "bucket", "count", "action"
+        ),
     },
     "top_ports_by_scans_graph": {
         "query": top_ports_by_scans_graph,
         "params": {"limit": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "port"),
+        "post_process": lambda d: as_multiline_graph_data(d, "bucket", "count", "port"),
     },
     "top_passwords_by_usages_graph": {
         "query": top_passwords_by_usages_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(
-            d, "day", "count", "password"
+            d, "bucket", "count", "password"
         ),
     },
     "selected_attacker_incidents_graph": {
