@@ -9,7 +9,7 @@
 {% block body %}
 <div class="row">
 	<div class="col mb-4">
-		{{ map_box("all_countries_by_incidents_list", "Most evil countries", resources["all_countries_by_incidents_list"]) }}
+		{{ map_box("all_countries_by_incidents_list", "Countries by incidents", resources["all_countries_by_incidents_list"]) }}
 	</div>
 </div>
 <div class="row">
@@ -17,17 +17,17 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("all_attackers_graph", "All the attackers during the time", resources["all_attackers_graph"], "bucket", "count", "Unique IP addresses") }}
+		{{ line_box("all_attackers_graph", "Number of unique attackers during the time", resources["all_attackers_graph"], "bucket", "count", "Unique IP addresses") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("all_incidents_graph", "All the recorded incidents during the time", resources["all_incidents_graph"], "bucket", "count", "Incidents") }}
+		{{ line_box("all_incidents_graph", "Number of recorded incidents during the time", resources["all_incidents_graph"], "bucket", "count", "Incidents") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries_by_incidents_list", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_list"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_incidents_list", "Top countries by recorded incidents", resources["top_countries_by_incidents_list"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>

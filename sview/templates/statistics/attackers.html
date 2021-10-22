@@ -9,7 +9,7 @@
 {% block body %}
 <div class="row">
 	<div class="col mb-4">
-		{{ map_box("all_countries_by_attackers_list", "Most evil countries", resources["all_countries_by_attackers_list"]) }}
+		{{ map_box("all_countries_by_attackers_list", "Top countries by unique attackers", resources["all_countries_by_attackers_list"]) }}
 	</div>
 </div>
 <div class="row">
@@ -17,17 +17,17 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("all_attackers_graph", "All the attackers during the time", resources["all_attackers_graph"], "bucket", "count", "Unique IP addresses") }}
+		{{ line_box("all_attackers_graph", "Number of unique attackers during the time", resources["all_attackers_graph"], "bucket", "count", "Unique IP addresses") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries_by_attackers_list_long", "Top countries with the highest number of unique attackers", resources["top_countries_by_attackers_list_long"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_attackers_list_long", "Top countries by unique attackers", resources["top_countries_by_attackers_list_long"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{% call(data_item) data_box("top_attackers_by_incidents_list_long", "Top IP addresses with the highest number of recorded incidents", resources["top_attackers_by_incidents_list_long"], "ip") -%}
+		{% call(data_item) data_box("top_attackers_by_incidents_list_long", "Top attackers by recorded incidents", resources["top_attackers_by_incidents_list_long"], "ip") -%}
 			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
 				{{ data_item }}
 			</a>
@@ -38,7 +38,7 @@
 	<div class="col">
 		{{ line_box(
 			"top_countries_by_attackers_graph",
-			"Attackers by country trends",
+			"Top countries by unique attackers",
 			resources["top_countries_by_attackers_graph"]["data"],
 			"bucket",
 			resources["top_countries_by_attackers_graph"]["ykeys"],
