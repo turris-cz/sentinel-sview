@@ -6,7 +6,7 @@ from .extensions import redis
 
 
 # OK, This is very poor class but I don't want to duplicate some pieces of code
-class RLimit():
+class RLimit:
     def __init__(self):
         self.ban_time = current_app.config["RLIMIT_BAN_TIME"]
         self.max_hits = current_app.config["RLIMIT_MAX_HITS"]
@@ -19,7 +19,7 @@ class RLimit():
         pipe.expire(self.key, self.ban_time)
         pipe_result = pipe.execute()
 
-        hits = (pipe_result[1])
+        hits = pipe_result[1]
         if hits > self.max_hits:
             self._ban()
 

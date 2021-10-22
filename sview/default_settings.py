@@ -7,7 +7,7 @@ INFLUXDB_ORGANIZATION = "sentinel"
 CACHE_TYPE = "filesystem"
 CACHE_DIR = "/tmp/sview_cache"
 CACHE_THRESHOLD = 1024
-CACHE_DEFAULT_TIMEOUT = 60*60
+CACHE_DEFAULT_TIMEOUT = 60 * 60
 
 REDIS_URL = "redis://localhost:6379/0"
 RQ_REDIS_URL = "redis://localhost:6379/0"

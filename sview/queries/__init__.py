@@ -209,7 +209,9 @@ RESOURCE_QUERIES = {
     "top_passwords_popularity": {
         "query": top_passwords_popularity,
         "params": {"top_n": limit_plot},
-        "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "password"),
+        "post_process": lambda d: as_multiline_graph_data(
+            d, "day", "count", "password"
+        ),
     },
     "attacker_activity": {
         "query": attackers_activity_graph,
@@ -238,13 +240,23 @@ PRECACHED_RESOURCES = [
     ("incidents_map", {"period": "1y"}),
     ("attackers", {"period": "1y"}),
     ("attackers_trends", {"period": "1y"}),
-    ("top_passwords_popularity", {"period": "1y"})
+    ("top_passwords_popularity", {"period": "1y"}),
 ]
 
 
 def get_job_handler_key(resource_name, params):
-    return "job_id:{}".format(":".join([resource_name] + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]))
+    return "job_id:{}".format(
+        ":".join(
+            [resource_name]
+            + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
+        )
+    )
 
 
 def get_cached_data_key(resource_name, params):
-    return "cached:{}".format(":".join([resource_name] + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]))
+    return "cached:{}".format(
+        ":".join(
+            [resource_name]
+            + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
+        )
+    )

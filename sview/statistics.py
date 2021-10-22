@@ -35,7 +35,10 @@ def dashboard():
 
     params = {"period": period}
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/dashboard.html",
@@ -64,7 +67,10 @@ def attackers():
 
     params = {"period": period}
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/attackers.html",
@@ -92,7 +98,10 @@ def attacker_details(ip):
         "ip": ip,
     }
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/attacker_details.html",
@@ -120,7 +129,10 @@ def passwords():
 
     params = {"period": period}
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/passwords.html",
@@ -166,7 +178,10 @@ def password_details(encoded_password):
         "password": password,
     }
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/password_details.html",
@@ -197,7 +212,10 @@ def incidents():
 
     params = {"period": period}
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/incidents.html",
@@ -224,7 +242,10 @@ def ports():
 
     params = {"period": period}
 
-    resources = {resource_name: get_resource(resource_name, params) for resource_name in resource_names}
+    resources = {
+        resource_name: get_resource(resource_name, params)
+        for resource_name in resource_names
+    }
 
     return render_template(
         "statistics/ports.html",

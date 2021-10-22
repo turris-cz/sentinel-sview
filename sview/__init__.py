@@ -5,12 +5,14 @@ from flask_breadcrumbs import Breadcrumbs
 
 
 def setup_logging():
-    dictConfig({
-        "version": 1,
-        "root": {
-            "level": "INFO",
-        },
-    })
+    dictConfig(
+        {
+            "version": 1,
+            "root": {
+                "level": "INFO",
+            },
+        }
+    )
 
 
 def create_app(additional_config=None):
@@ -19,6 +21,7 @@ def create_app(additional_config=None):
     Breadcrumbs(app=app)
 
     from . import default_settings
+
     app.config.from_object(default_settings)
     app.config.from_pyfile("local.cfg", silent=True)
     app.config.from_envvar("FLASK_APP_SETTINGS", silent=True)
@@ -31,6 +34,7 @@ def create_app(additional_config=None):
     from .api import api
     from .opendata import opendata
     from .web import web
+
     app.register_blueprint(statistics)
     app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(opendata, url_prefix="/opendata")
@@ -51,9 +55,11 @@ def create_app(additional_config=None):
     rq.init_app(app)
 
     from .filters import register_filters
+
     register_filters(app)
 
     from .cli import register_cli_commands
+
     register_cli_commands(app)
 
     return app
