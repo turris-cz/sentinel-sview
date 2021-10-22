@@ -1,4 +1,4 @@
-# Sentinel:View
+# Sentinel View
 
 A component visualising data gathered by **Sentinel**.
 
