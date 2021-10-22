@@ -1,5 +1,5 @@
 # List of top passwords by ussages
-top_passwords = """
+top_passwords_by_usages_list = """
     SELECT
         password,
         count(*) AS count
@@ -18,7 +18,7 @@ top_passwords = """
 """
 
 # List of top usernames by ussages
-top_usernames = """
+top_usernames_by_usages_list = """
     SELECT
         username,
         count(*) AS count
@@ -37,7 +37,7 @@ top_usernames = """
 """
 
 # List of top combinations by ussages
-top_combinations = """
+top_combinations_by_usages_list = """
     SELECT
         username,
         password,
@@ -63,7 +63,7 @@ top_combinations = """
 """
 
 # Graph of top passwords by ussages
-top_passwords_popularity = """
+top_passwords_by_usages_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         password,
@@ -98,7 +98,7 @@ top_passwords_popularity = """
 """
 
 # Graph of selected passwords's ussages
-password_activity_graph = """
+selected_password_by_usages_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         COUNT(*) as count
@@ -112,7 +112,7 @@ password_activity_graph = """
 """
 
 # List of logins by ussages by selected password
-logins_of_password = """
+logins_of_password_by_usages_list = """
     SELECT
         username,
         COUNT(username) AS count

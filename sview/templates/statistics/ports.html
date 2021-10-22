@@ -12,23 +12,23 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("all_scans_graph", "Number of all scanned ports during the time", resources["all_scans_graph"], "day", "count", "Scanned ports") }}
+		{{ line_box("all_ports_by_scans_graph", "Number of all scanned ports during the time", resources["all_ports_by_scans_graph"], "day", "count", "Scanned ports") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
-		{{ data_box("top_ports_long", "Most scanned ports", resources["top_ports_long"], "port") }}
+		{{ data_box("top_ports_by_scans_list_long", "Most scanned ports", resources["top_ports_by_scans_list_long"], "port") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col">
 		{{ line_box(
-			"port_trends",
+			"top_ports_by_scans_graph",
 			"Port trends",
-			resources["port_trends"]["data"],
+			resources["top_ports_by_scans_graph"]["data"],
 			"day",
-			resources["port_trends"]["ykeys"],
-			resources["port_trends"]["labels"]
+			resources["top_ports_by_scans_graph"]["ykeys"],
+			resources["top_ports_by_scans_graph"]["labels"]
 		) }}
 	</div>
 </div>

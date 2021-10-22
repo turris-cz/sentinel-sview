@@ -23,11 +23,11 @@ default_breadcrumb_root(statistics, ".")
 def dashboard():
     page_title = "Overview"
     resource_names = [
-        "incidents_map",
-        "attackers",
+        "all_countries_by_incidents_list",
+        "all_attackers_graph",
         "all_incidents_graph",
-        "top_countries_by_incidents_table",
-        "top_passwords",
+        "top_countries_by_incidents_list",
+        "top_passwords_by_usages_list",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -55,11 +55,11 @@ def dashboard():
 def attackers():
     page_title = "Attackers"
     resource_names = [
-        "attackers_map",
-        "attackers",
-        "attackers_trends",
-        "top_countries_by_attackers_table_long",
-        "top_ips_long",
+        "all_countries_by_attackers_list",
+        "all_attackers_graph",
+        "top_countries_by_attackers_graph",
+        "top_countries_by_attackers_list_long",
+        "top_attackers_by_incidents_list_long",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -87,7 +87,7 @@ def attackers():
 def attacker_details(ip):
     page_title = "Attacker Details"
     resource_names = [
-        "attacker_activity",
+        "selected_attacker_incidents_graph",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -118,10 +118,10 @@ def attacker_details(ip):
 def passwords():
     page_title = "Passwords"
     resource_names = [
-        "top_passwords_popularity",
-        "top_passwords_long",
-        "top_usernames_long",
-        "top_combinations_long",
+        "top_passwords_by_usages_graph",
+        "top_passwords_by_usages_list_long",
+        "top_usernames_by_usages_list_long",
+        "top_combinations_by_usages_list_long",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -160,8 +160,8 @@ def password_details(encoded_password):
         return "Unable to decode password", 400
 
     resource_names = [
-        "password_logins",
-        "password_in_time",
+        "logins_of_password_by_usages_list",
+        "selected_password_by_usages_graph",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -198,13 +198,13 @@ def password_details(encoded_password):
 def incidents():
     page_title = "Incidents"
     resource_names = [
-        "incidents_map",
+        "all_countries_by_incidents_list",
         "all_incidents_graph",
-        "top_countries_by_incidents_table",
-        "top_incident_types",
-        "incidents_by_country_trends",
-        "incidents_by_source_trends",
-        "incidents_by_action_trends",
+        "top_countries_by_incidents_list",
+        "top_incident_types_by_incidents_list",
+        "top_countries_by_incidents_graph",
+        "top_traps_by_incidents_graph",
+        "top_actions_by_incidents_graph",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -232,9 +232,9 @@ def incidents():
 def ports():
     page_title = "Ports"
     resource_names = [
-        "all_scans_graph",
-        "top_ports_long",
-        "port_trends",
+        "all_ports_by_scans_graph",
+        "top_ports_by_scans_list_long",
+        "top_ports_by_scans_graph",
     ]
     period = request.args.get("period")
     if period not in PERIODS:
@@ -262,9 +262,9 @@ def ports():
 def devices():
     page_title = "My Devices"
     resource_names = [
-        "my_incidents_graph",
-        "my_incidents_by_source_trends",
-        "my_incidents_by_country_trends",
+        "my_all_incidents_graph",
+        "my_top_traps_by_incidents_graph",
+        "my_top_countries_by_incidents_graph",
     ]
     tokens_hash = get_tokens_hash(session.get("devices"))
 

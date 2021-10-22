@@ -9,7 +9,7 @@
 {% block body %}
 <div class="row">
 	<div class="col mb-4">
-		{{ map_box("incidents_map", "Most evil countries", resources["incidents_map"]) }}
+		{{ map_box("all_countries_by_incidents_list", "Most evil countries", resources["all_countries_by_incidents_list"]) }}
 	</div>
 </div>
 <div class="row">
@@ -17,7 +17,7 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers", "All the attackers during the time", resources["attackers"], "day", "count", "Unique IP addresses") }}
+		{{ line_box("all_attackers_graph", "All the attackers during the time", resources["all_attackers_graph"], "day", "count", "Unique IP addresses") }}
 	</div>
 </div>
 <div class="row">
@@ -27,12 +27,12 @@
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries_by_incidents_table", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_table"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_incidents_list", "Top countries with the highest number of recorded incidents", resources["top_countries_by_incidents_list"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{% call(data_item) data_box("top_passwords", "Most abused passwords", resources["top_passwords"], "password") %}
+		{% call(data_item) data_box("top_passwords_by_usages_list", "Most abused passwords", resources["top_passwords_by_usages_list"], "password") %}
 			<a href="{{ url_for("statistics.password_details", encoded_password=data_item|b64) }}">
 				{{ data_item }}
 			</a>

@@ -1,5 +1,5 @@
 # Graph of all scanned ports
-all_scans_graph = """
+all_ports_by_scans_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         COUNT(*) as count
@@ -11,7 +11,7 @@ all_scans_graph = """
 """
 
 # Graph of top ports by (number of) scans
-port_trends = """
+top_ports_by_scans_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         CONCAT(protocol, '/', port) AS port,
@@ -42,7 +42,7 @@ port_trends = """
 """
 
 # Table of top ports by scans
-top_ports = """
+top_ports_by_scans_list = """
     SELECT
         CONCAT(protocol, '/', port) AS port,
         COUNT(port) AS count

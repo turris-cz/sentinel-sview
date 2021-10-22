@@ -10,9 +10,9 @@ from .queries import get_job_handler_key
 from .rlimit import rlimit
 
 USER_SPECIFIC_RESOURCES = (
-    "my_incidents_graph",
-    "my_incidents_by_country_trends",
-    "my_incidents_by_source_trends",
+    "my_all_incidents_graph",
+    "my_top_countries_by_incidents_graph",
+    "my_top_traps_by_incidents_graph",
 )
 
 

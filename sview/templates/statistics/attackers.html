@@ -9,7 +9,7 @@
 {% block body %}
 <div class="row">
 	<div class="col mb-4">
-		{{ map_box("attackers_map", "Most evil countries", resources["attackers_map"]) }}
+		{{ map_box("all_countries_by_attackers_list", "Most evil countries", resources["all_countries_by_attackers_list"]) }}
 	</div>
 </div>
 <div class="row">
@@ -17,17 +17,17 @@
 </div>
 <div class="row">
 	<div class="col">
-		{{ line_box("attackers", "All the attackers during the time", resources["attackers"], "day", "count", "Unique IP addresses") }}
+		{{ line_box("all_attackers_graph", "All the attackers during the time", resources["all_attackers_graph"], "day", "count", "Unique IP addresses") }}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md">
-		{% call(data_item) data_box("top_countries_by_attackers_table_long", "Top countries with the highest number of unique attackers", resources["top_countries_by_attackers_table_long"], "country") -%}
+		{% call(data_item) data_box("top_countries_by_attackers_list_long", "Top countries with the highest number of unique attackers", resources["top_countries_by_attackers_list_long"], "country") -%}
 			{{ country_code_item(data_item) }}
 		{%- endcall %}
 	</div>
 	<div class="col-md">
-		{% call(data_item) data_box("top_ips_long", "Top IP addresses with the highest number of recorded incidents", resources["top_ips_long"], "ip") -%}
+		{% call(data_item) data_box("top_attackers_by_incidents_list_long", "Top IP addresses with the highest number of recorded incidents", resources["top_attackers_by_incidents_list_long"], "ip") -%}
 			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
 				{{ data_item }}
 			</a>
@@ -37,12 +37,12 @@
 <div class="row">
 	<div class="col">
 		{{ line_box(
-			"attackers_trends",
+			"top_countries_by_attackers_graph",
 			"Attackers by country trends",
-			resources["attackers_trends"]["data"],
+			resources["top_countries_by_attackers_graph"]["data"],
 			"day",
-			resources["attackers_trends"]["ykeys"],
-			resources["attackers_trends"]["labels"]
+			resources["top_countries_by_attackers_graph"]["ykeys"],
+			resources["top_countries_by_attackers_graph"]["labels"]
 		) }}
 	</div>
 </div>

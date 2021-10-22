@@ -294,19 +294,19 @@ function create_graph(id, xkey, ykeys, labels, data) {
 
 intervals = {};
 redraw_callbacks = {
-    incidents_map: function (data) {
+    all_countries_by_incidents_list: function (data) {
         $("#" + data["resource_name"])
             .contents()
             .remove();
         draw_map("#" + data["resource_name"], data["data"], "incidents");
     },
-    attackers_map: function (data) {
+    all_countries_by_attackers_list: function (data) {
         $("#" + data["resource_name"])
             .contents()
             .remove();
         draw_map("#" + data["resource_name"], data["data"], "attackers");
     },
-    attackers: function (data) {
+    all_attackers_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"],
@@ -322,7 +322,7 @@ redraw_callbacks = {
             ["Incidents"]
         );
     },
-    my_incidents_graph: function (data) {
+    my_all_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"],
@@ -330,7 +330,7 @@ redraw_callbacks = {
             ["Incidents"]
         );
     },
-    all_scans_graph: function (data) {
+    all_ports_by_scans_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"],
@@ -338,10 +338,10 @@ redraw_callbacks = {
             ["Scanned ports"]
         );
     },
-    attacker_activity: function (data) {
+    selected_attacker_incidents_graph: function (data) {
         draw_graph(data["resource_name"], data["data"], ["count"], ["Events"]);
     },
-    attackers_trends: function (data) {
+    top_countries_by_attackers_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -349,7 +349,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    incidents_by_country_trends: function (data) {
+    top_countries_by_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -357,7 +357,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    incidents_by_source_trends: function (data) {
+    top_traps_by_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -365,7 +365,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    my_incidents_by_country_trends: function (data) {
+    my_top_countries_by_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -373,7 +373,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    my_incidents_by_source_trends: function (data) {
+    my_top_traps_by_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -381,7 +381,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    incidents_by_action_trends: function (data) {
+    top_actions_by_incidents_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -389,7 +389,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    port_trends: function (data) {
+    top_ports_by_scans_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -397,7 +397,7 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    top_passwords_popularity: function (data) {
+    top_passwords_by_usages_graph: function (data) {
         draw_graph(
             data["resource_name"],
             data["data"]["data"],
@@ -405,43 +405,43 @@ redraw_callbacks = {
             data["data"]["labels"]
         );
     },
-    password_in_time: function (data) {
+    selected_password_by_usages_graph: function (data) {
         draw_graph(data["resource_name"], data["data"], ["count"], ["IPs"]);
     },
-    top_countries_by_incidents_table: function (data) {
+    top_countries_by_incidents_list: function (data) {
         create_data_box(data, createCountryRow);
     },
-    top_countries_by_incidents_table_long: function (data) {
+    top_countries_by_incidents_list_long: function (data) {
         create_data_box(data, createCountryRow);
     },
-    top_countries_by_attackers_table: function (data) {
+    top_countries_by_attackers_list: function (data) {
         create_data_box(data, createCountryRow);
     },
-    top_countries_by_attackers_table_long: function (data) {
+    top_countries_by_attackers_list_long: function (data) {
         create_data_box(data, createCountryRow);
     },
-    top_passwords: function (data) {
+    top_passwords_by_usages_list: function (data) {
         create_data_box(data, createPasswordRow);
     },
-    top_incident_types: function (data) {
+    top_incident_types_by_incidents_list: function (data) {
         create_data_box(data, createIncidentTypeRow);
     },
-    top_passwords_long: function (data) {
+    top_passwords_by_usages_list_long: function (data) {
         create_data_box(data, createPasswordRow);
     },
-    top_usernames_long: function (data) {
+    top_usernames_by_usages_list_long: function (data) {
         create_data_box(data, createUsernameRow);
     },
-    top_ports_long: function (data) {
+    top_ports_by_scans_list_long: function (data) {
         create_data_box(data, createPortRow);
     },
-    password_logins: function (data) {
+    logins_of_password_by_usages_list: function (data) {
         create_data_box(data, createUsernameRow);
     },
-    top_ips_long: function (data) {
+    top_attackers_by_incidents_list_long: function (data) {
         create_data_box(data, createIPRow);
     },
-    top_combinations_long: function (data) {
+    top_combinations_by_usages_list_long: function (data) {
         create_data_box(data, createCombinedRow);
     },
 };

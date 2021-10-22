@@ -5,35 +5,35 @@ from .limits import limit_dashboard
 from .limits import limit_long
 from .limits import limit_plot
 
-from .sql.passwords import top_passwords
-from .sql.passwords import top_usernames
-from .sql.passwords import top_combinations
-from .sql.passwords import top_passwords_popularity
-from .sql.passwords import password_activity_graph
-from .sql.passwords import logins_of_password
+from .sql.passwords import top_passwords_by_usages_list
+from .sql.passwords import top_usernames_by_usages_list
+from .sql.passwords import top_combinations_by_usages_list
+from .sql.passwords import top_passwords_by_usages_graph
+from .sql.passwords import selected_password_by_usages_graph
+from .sql.passwords import logins_of_password_by_usages_list
 
 from .sql.incidents import all_incidents_graph
-from .sql.incidents import top_incident_types
-from .sql.incidents import incidents_by_source_trends
-from .sql.incidents import incidents_by_action_trends
+from .sql.incidents import top_incident_types_by_incidents_list
+from .sql.incidents import top_traps_by_incidents_graph
+from .sql.incidents import top_actions_by_incidents_graph
 
-from .sql.incidents import attackers_by_day
-from .sql.incidents import attacker_ips
-from .sql.incidents import attackers_activity_graph
-from .sql.incidents import top_countries_by_incidents_table
-from .sql.incidents import top_countries_by_attackers_table
-from .sql.incidents import incidents_map
-from .sql.incidents import attackers_map
-from .sql.incidents import top_countries_trends
-from .sql.incidents import incidents_by_country_trends
+from .sql.incidents import all_attackers_graph
+from .sql.incidents import top_attackers_by_incidents_list
+from .sql.incidents import selected_attacker_incidents_graph
+from .sql.incidents import top_countries_by_incidents_list
+from .sql.incidents import top_countries_by_attackers_list
+from .sql.incidents import all_countries_by_incidents_list
+from .sql.incidents import all_countries_by_attackers_list
+from .sql.incidents import top_countries_by_attackers_graph
+from .sql.incidents import top_countries_by_incidents_graph
 
-from .sql.incidents import my_incidents_graph
-from .sql.incidents import my_incidents_by_country_trends
-from .sql.incidents import my_incidents_by_source_trends
+from .sql.incidents import my_all_incidents_graph
+from .sql.incidents import my_top_countries_by_incidents_graph
+from .sql.incidents import my_top_traps_by_incidents_graph
 
-from .sql.ports import all_scans_graph
-from .sql.ports import top_ports
-from .sql.ports import port_trends
+from .sql.ports import all_ports_by_scans_graph
+from .sql.ports import top_ports_by_scans_list
+from .sql.ports import top_ports_by_scans_graph
 
 KNOWN_PARAMS = {
     "period": "1y",
@@ -99,141 +99,141 @@ RESOURCE_QUERIES = {
     "all_incidents_graph": {
         "query": all_incidents_graph,
     },
-    "my_incidents_graph": {
-        "query": my_incidents_graph,
+    "my_all_incidents_graph": {
+        "query": my_all_incidents_graph,
     },
-    "all_scans_graph": {
-        "query": all_scans_graph,
+    "all_ports_by_scans_graph": {
+        "query": all_ports_by_scans_graph,
     },
-    "top_passwords": {
-        "query": top_passwords,
+    "top_passwords_by_usages_list": {
+        "query": top_passwords_by_usages_list,
         "params": {"limit": limit_dashboard},
     },
-    "top_passwords_long": {
-        "query": top_passwords,
+    "top_passwords_by_usages_list_long": {
+        "query": top_passwords_by_usages_list,
         "params": {"limit": limit_long},
     },
-    "top_usernames": {
-        "query": top_usernames,
+    "top_usernames_by_usages_list": {
+        "query": top_usernames_by_usages_list,
         "params": {"limit": limit_dashboard},
     },
-    "top_usernames_long": {
-        "query": top_usernames,
+    "top_usernames_by_usages_list_long": {
+        "query": top_usernames_by_usages_list,
         "params": {"limit": limit_long},
     },
-    "top_ports_long": {
-        "query": top_ports,
+    "top_ports_by_scans_list_long": {
+        "query": top_ports_by_scans_list,
         "params": {"limit": limit_long},
     },
-    "top_countries_by_incidents_table": {
-        "query": top_countries_by_incidents_table,
+    "top_countries_by_incidents_list": {
+        "query": top_countries_by_incidents_list,
         "params": {"limit": limit_dashboard},
     },
-    "top_countries_by_incidents_table_long": {
-        "query": top_countries_by_incidents_table,
+    "top_countries_by_incidents_list_long": {
+        "query": top_countries_by_incidents_list,
         "params": {"limit": limit_long},
     },
-    "top_countries_by_attackers_table": {
-        "query": top_countries_by_attackers_table,
+    "top_countries_by_attackers_list": {
+        "query": top_countries_by_attackers_list,
         "params": {"limit": limit_dashboard},
     },
-    "top_countries_by_attackers_table_long": {
-        "query": top_countries_by_attackers_table,
+    "top_countries_by_attackers_list_long": {
+        "query": top_countries_by_attackers_list,
         "params": {"limit": limit_long},
     },
-    "top_ips_long": {
-        "query": attacker_ips,
+    "top_attackers_by_incidents_list_long": {
+        "query": top_attackers_by_incidents_list,
         "params": {"limit": limit_long},
     },
-    "top_combinations_long": {
-        "query": top_combinations,
+    "top_combinations_by_usages_list_long": {
+        "query": top_combinations_by_usages_list,
         "params": {"limit": limit_long},
     },
-    "top_incident_types": {
-        "query": top_incident_types,
+    "top_incident_types_by_incidents_list": {
+        "query": top_incident_types_by_incidents_list,
         "params": {"limit": limit_dashboard},
     },
-    "incidents_map": {
-        "query": incidents_map,
+    "all_countries_by_incidents_list": {
+        "query": all_countries_by_incidents_list,
         "post_process": lambda d: as_map_data(d, "country", "count"),
     },
-    "attackers_map": {
-        "query": attackers_map,
+    "all_countries_by_attackers_list": {
+        "query": all_countries_by_attackers_list,
         "post_process": lambda d: as_map_data(d, "country", "count"),
     },
-    "attackers": {
-        "query": attackers_by_day,
+    "all_attackers_graph": {
+        "query": all_attackers_graph,
     },
-    "attackers_trends": {
-        "query": top_countries_trends,
+    "top_countries_by_attackers_graph": {
+        "query": top_countries_by_attackers_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
-    "incidents_by_country_trends": {
-        "query": incidents_by_country_trends,
+    "top_countries_by_incidents_graph": {
+        "query": top_countries_by_incidents_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
-    "incidents_by_source_trends": {
-        "query": incidents_by_source_trends,
+    "top_traps_by_incidents_graph": {
+        "query": top_traps_by_incidents_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
     },
-    "my_incidents_by_country_trends": {
-        "query": my_incidents_by_country_trends,
+    "my_top_countries_by_incidents_graph": {
+        "query": my_top_countries_by_incidents_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "country"),
     },
-    "my_incidents_by_source_trends": {
-        "query": my_incidents_by_source_trends,
+    "my_top_traps_by_incidents_graph": {
+        "query": my_top_traps_by_incidents_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "source"),
     },
-    "incidents_by_action_trends": {
-        "query": incidents_by_action_trends,
+    "top_actions_by_incidents_graph": {
+        "query": top_actions_by_incidents_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "action"),
     },
-    "port_trends": {
-        "query": port_trends,
+    "top_ports_by_scans_graph": {
+        "query": top_ports_by_scans_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "day", "count", "port"),
     },
-    "top_passwords_popularity": {
-        "query": top_passwords_popularity,
+    "top_passwords_by_usages_graph": {
+        "query": top_passwords_by_usages_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(
             d, "day", "count", "password"
         ),
     },
-    "attacker_activity": {
-        "query": attackers_activity_graph,
+    "selected_attacker_incidents_graph": {
+        "query": selected_attacker_incidents_graph,
     },
-    "password_in_time": {
-        "query": password_activity_graph,
+    "selected_password_by_usages_graph": {
+        "query": selected_password_by_usages_graph,
     },
-    "password_logins": {
-        "query": logins_of_password,
+    "logins_of_password_by_usages_list": {
+        "query": logins_of_password_by_usages_list,
     },
 }
 
 
 PRECACHED_RESOURCES = [
-    ("top_passwords", {"period": "1y"}),
-    ("top_passwords_long", {"period": "1y"}),
-    ("top_usernames", {"period": "1y"}),
-    ("top_usernames_long", {"period": "1y"}),
-    ("top_countries_by_attackers_table", {"period": "1y"}),
-    ("top_countries_by_attackers_table_long", {"period": "1y"}),
-    ("top_countries_by_incidents_table", {"period": "1y"}),
-    ("top_countries_by_incidents_table_long", {"period": "1y"}),
-    ("top_ips_long", {"period": "1y"}),
-    ("top_combinations_long", {"period": "1y"}),
-    ("attackers_map", {"period": "1y"}),
-    ("incidents_map", {"period": "1y"}),
-    ("attackers", {"period": "1y"}),
-    ("attackers_trends", {"period": "1y"}),
-    ("top_passwords_popularity", {"period": "1y"}),
+    ("top_passwords_by_usages_list", {"period": "1y"}),
+    ("top_passwords_by_usages_list_long", {"period": "1y"}),
+    ("top_usernames_by_usages_list", {"period": "1y"}),
+    ("top_usernames_by_usages_list_long", {"period": "1y"}),
+    ("top_countries_by_attackers_list", {"period": "1y"}),
+    ("top_countries_by_attackers_list_long", {"period": "1y"}),
+    ("top_countries_by_incidents_list", {"period": "1y"}),
+    ("top_countries_by_incidents_list_long", {"period": "1y"}),
+    ("top_attackers_by_incidents_list_long", {"period": "1y"}),
+    ("top_combinations_by_usages_list_long", {"period": "1y"}),
+    ("all_countries_by_attackers_list", {"period": "1y"}),
+    ("all_countries_by_incidents_list", {"period": "1y"}),
+    ("all_attackers_graph", {"period": "1y"}),
+    ("top_countries_by_attackers_graph", {"period": "1y"}),
+    ("top_passwords_by_usages_graph", {"period": "1y"}),
 ]
 
 

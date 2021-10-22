@@ -11,7 +11,7 @@ all_incidents_graph = """
 """
 
 # List of top incident types by incidents
-top_incident_types = """
+top_incident_types_by_incidents_list = """
     SELECT
         count(*) as count,
         trap as source,
@@ -25,7 +25,7 @@ top_incident_types = """
 """
 
 # Graph of top traps by incidents
-incidents_by_source_trends = """
+top_traps_by_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         trap as source,
@@ -56,7 +56,7 @@ incidents_by_source_trends = """
 """
 
 # Graph of top actions by incidents
-incidents_by_action_trends = """
+top_actions_by_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         action,
@@ -87,7 +87,7 @@ incidents_by_action_trends = """
 """
 
 # List of top attackers by incidents
-attacker_ips = """
+top_attackers_by_incidents_list = """
     SELECT
         ip,
         count(ip) AS count
@@ -102,7 +102,7 @@ attacker_ips = """
 """
 
 # Graph of all attackers
-attackers_by_day = """
+all_attackers_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         COUNT(DISTINCT ip) as count
@@ -114,7 +114,7 @@ attackers_by_day = """
 """
 
 # Graph of selected attacker's incidents
-attackers_activity_graph = """
+selected_attacker_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         COUNT(*) as count
@@ -128,7 +128,7 @@ attackers_activity_graph = """
 """
 
 # List of top countries by incidents
-top_countries_by_incidents_table = """
+top_countries_by_incidents_list = """
     SELECT
         country,
         count(country) AS count
@@ -143,7 +143,7 @@ top_countries_by_incidents_table = """
 """
 
 # List of top countries by attackers
-top_countries_by_attackers_table = """
+top_countries_by_attackers_list = """
     SELECT
         country,
         count(distinct(ip)) AS count
@@ -158,7 +158,7 @@ top_countries_by_attackers_table = """
 """
 
 # List of all countries by incidents
-incidents_map = """
+all_countries_by_incidents_list = """
     SELECT
         country,
         count(*) AS count
@@ -171,7 +171,7 @@ incidents_map = """
 """
 
 # List of all countries by attackers
-attackers_map = """
+all_countries_by_attackers_list = """
     SELECT
         country,
         count(distinct(ip)) AS count
@@ -186,7 +186,7 @@ attackers_map = """
 """
 
 # Graph of top countries by attackers
-top_countries_trends = """
+top_countries_by_attackers_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         country,
@@ -216,7 +216,7 @@ top_countries_trends = """
 """
 
 # Graph of top countries by incidents
-incidents_by_country_trends = """
+top_countries_by_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         country,
@@ -247,7 +247,7 @@ incidents_by_country_trends = """
 """
 
 # Graph of top countries by incidents reported by selected devices
-my_incidents_by_country_trends = """
+my_top_countries_by_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         incidents.country AS country,
@@ -286,7 +286,7 @@ my_incidents_by_country_trends = """
 """
 
 # Graph of top traps by incidents reported by selected devices
-my_incidents_by_source_trends = """
+my_top_traps_by_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         incidents.trap AS source,
@@ -325,7 +325,7 @@ my_incidents_by_source_trends = """
 """
 
 # Graph of all incidents reported by selected devices
-my_incidents_graph = """
+my_all_incidents_graph = """
     SELECT
         to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS day,
         COUNT(*) as count
