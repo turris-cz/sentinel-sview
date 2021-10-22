@@ -35,6 +35,9 @@ from .sql.ports import all_ports_by_scans_graph
 from .sql.ports import top_ports_by_scans_list
 from .sql.ports import top_ports_by_scans_graph
 
+REDIS_JOB_PREFIX = "sview_job_id"
+REDIS_CACHE_PREFIX = "sview_cached"
+
 KNOWN_PARAMS = {
     "period": "1y",
     "ip": None,
@@ -238,18 +241,20 @@ PRECACHED_RESOURCES = [
 
 
 def get_job_handler_key(resource_name, params):
-    return "job_id:{}".format(
+    return "{}:{}".format(
+        REDIS_JOB_PREFIX,
         ":".join(
             [resource_name]
             + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
-        )
+        ),
     )
 
 
 def get_cached_data_key(resource_name, params):
-    return "cached:{}".format(
+    return "{}:{}".format(
+        REDIS_CACHE_PREFIX,
         ":".join(
             [resource_name]
             + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
-        )
+        ),
     )

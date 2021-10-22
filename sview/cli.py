@@ -6,6 +6,8 @@ from flask.cli import with_appcontext
 from .jobs import cache_resource
 from .queries import PRECACHED_RESOURCES
 from .queries import get_cached_data_key
+from .queries import REDIS_CACHE_PREFIX
+
 
 from .extensions import redis
 
@@ -23,6 +25,17 @@ def clear_cache():
     cache.clear()
 
     click.echo("Cache cleared")
+
+
+@click.command()
+@with_appcontext
+def clear_redis():
+    """Clear Redis cache"""
+    keys = redis.keys(f"{REDIS_CACHE_PREFIX}*")
+    for key in keys:
+        redis.delete(key)
+
+    click.echo(f"Cleared {len(keys)} keys")
 
 
 @click.command()
@@ -86,3 +99,4 @@ def register_cli_commands(app):
     app.cli.add_command(queue_queries)
     app.cli.add_command(queue_query)
     app.cli.add_command(check_redis)
+    app.cli.add_command(clear_redis)
