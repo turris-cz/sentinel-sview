@@ -5,6 +5,7 @@ function draw_map() {
     map = new jvm.Map({
         container: $("#world_map"),
         map: "world_mill",
+        zoomOnScroll: false,
         backgroundColor: "transparent",
         regionStyle: {
             initial: {

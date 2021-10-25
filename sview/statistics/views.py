@@ -29,7 +29,7 @@ DEVICE_TOKEN_LENGTH = 64
 @register_breadcrumb(
     statistics,
     ".",
-    "Overview",
+    "Threat Detection",
     endpoint_arguments_constructor=endpoint_arguments_constructor,
 )
 def dashboard():

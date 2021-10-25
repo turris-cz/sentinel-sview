@@ -1,5 +1,5 @@
 body {
-    padding: 4.5rem 0;
+    padding: 4.5rem 0 0 0;
 }
 
 .sview-spinner {
@@ -29,6 +29,16 @@ body {
     background-color: rgba(0, 0, 0, 0);
     z-index: 2;
     cursor: pointer;
+}
+
+/* Sticky footer */
+main > .container {
+    padding: 60px 15px 0;
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 .world-map {

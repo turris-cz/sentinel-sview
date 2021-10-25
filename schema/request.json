@@ -1,0 +1,13 @@
+{
+    "type":"object",
+    "description": "Api message request",
+    "properties": {
+        "msg_type": {"enum": ["request"]},
+        "hash": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{6}$"
+        }
+    },
+    "required" : ["hash", "msg_type"],
+    "additionalProperties": false
+}

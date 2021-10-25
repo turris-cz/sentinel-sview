@@ -1,4 +1,4 @@
-{%- macro nav_link(endpoint, text, target_blank=False, period_dependant=True) -%}
+{%- macro nav_link(endpoint, text, target_blank=False, period_dependant=True, dropdown=True) -%}
 	{%- if request.endpoint.split(".")[1] == endpoint.split(".")[1] %}
 		{%- set active = " active" %}
 	{%- elif endpoint.split(".")[1][:-1] in request.endpoint.split(".")[1] %}
@@ -6,15 +6,23 @@
 	{%- else %}
 		{%- set active = "" %}
 	{%- endif %}
-						<li class="nav-item">
-							<a class="nav-link{{ active }}{% if period_dependant %} period_dependant_link{% endif %}"
-								 {%- if target_blank %}target="_blank"{%- endif %}
-								 href={% if period_dependant and active_params is defined
-									%}"{{ url_for(endpoint, period=active_params['period']) }}"{% else %}"{{ url_for(endpoint) }}"{% endif %}>
-								{{ text }}{%- if target_blank %}<sup><i class="fas fa-external-link-alt fa-xs ml-1"></i></sup>{%- endif %}
-							</a>
-						</li>
+{%- if dropdown %}
+<a class="dropdown-item{{ active }}{% if period_dependant %} period_dependant_link{% endif %}"
+            href={% if period_dependant and active_params is defined %}"{{ url_for(endpoint, period=active_params['period']) }}"{% else %}"{{ url_for(endpoint) }}"{% endif %}>
+            {{ text }}
+</a>
+{%- else %}
+<li class="nav-item">
+    <a class="nav-link{{ active }}{% if period_dependant %} period_dependant_link{% endif %}"
+            {%- if target_blank %}target="_blank"{%- endif %}
+            href={% if period_dependant and active_params is defined %}"{{ url_for(endpoint, period=active_params['period']) }}"{% else %}"{{ url_for(endpoint) }}"{% endif %}>
+            {{ text }}
+            {%- if target_blank %}<sup><i class="fas fa-external-link-alt fa-xs ml-1"></i></sup>{%- endif %}
+    </a>
+</li>
+{%- endif %}
 {%- endmacro -%}
+
 {%- macro common_form(form, target, submit_caption, file=False) -%}
 <form method="post" action="{{ target }}" class="form-vertical"{% if file %} enctype="multipart/form-data"{% endif %}>
 	{% for field in form %}
@@ -36,4 +44,16 @@
 			{{ submit_caption }}
 		</button>
 </form>
+{%- endmacro -%}
+
+{%- macro nav_dropdown_item(name, items) -%}
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+	{{ name }} </a>
+	<div class="dropdown-menu">
+		{% for navitem in items %}
+		{{ navitem }}
+		{% endfor -%}
+	</div>
+</li>
 {%- endmacro -%}

@@ -30,14 +30,10 @@ setup(
         "geoip2",
         "sn@git+https://gitlab.nic.cz/turris/sentinel/sn.git",
         "websockets",
+        "jsonschema",
     ],
     extras_require={
-        "tests": [
-            "pytest",
-            "coverage",
-            "pytest-cov",
-            "flake8",
-        ],
+        "tests": ["pytest", "coverage", "pytest-cov", "flake8", "black"],
     },
     zip_safe=False,
     include_package_data=True,

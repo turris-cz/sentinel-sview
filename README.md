@@ -216,3 +216,17 @@ Run the following
 ```sh
 dynfw-backend --server --port --cert-file --geoip-db
 ```
+
+## Have i been pawned backend implementation.
+
+### Workflow
+
+1. Recieves request in form of json posted to `http://page.xyz/api/leaked`
+2. Selects hashes in database that starts with request hash.
+3. Return matching hashes with counts.
+
+step 3. is heavily influenced by how the schema is planned.
+
+## Request/response json schema
+
+Refer to [schema](schema/pwned.json)

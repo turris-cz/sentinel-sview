@@ -1,6 +1,7 @@
 function draw_map(elem_handler, scores, label) {
     $(elem_handler).vectorMap({
         map: "world_mill",
+        zoomOnScroll: false,
         backgroundColor: "transparent",
         regionStyle: {
             initial: {

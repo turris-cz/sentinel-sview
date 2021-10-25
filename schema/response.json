@@ -1,0 +1,63 @@
+{
+    "definitions": {
+        "sha1": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{40}$"
+        },
+        "hash_item": {
+            "type": "object",
+            "properties": {
+                "hash": {"$ref": "#/definitions/sha1"},
+                "count": {"type": "integer", "minimum":1},
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum" : ["telnet", "smtp", "ftp", "http", "haas"]
+                    }
+                }
+            },
+            "required": ["hash", "count", "sources"],
+            "additionalProperties": false
+        }
+    },
+    "oneOf": [
+        {
+            "type":"object",
+            "description": "Api message response with data",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["SUCCESS"]},
+                "data": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/hash_item"},
+                    "minItems": 1
+                },
+                "hash": {"$ref": "#/definitions/sha1"}
+            },
+            "required": ["status", "msg_type", "data"],
+            "additionalProperties": false
+        },
+        {
+            "type":"object",
+            "description": "Api message response hash not found",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["NO_QUERY"]}
+            },
+            "required": ["status", "msg_type"],
+            "additionalProperties": false
+        },
+        {
+            "type":"object",
+            "description": "Input data validation error",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status": {"enum": ["VALIDATION_ERROR"]},
+                "error": {"type": "string"}
+            },
+            "required": ["msg_type", "status", "error"],
+            "additionalProperties": false
+        }
+    ]
+}

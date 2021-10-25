@@ -4,10 +4,12 @@
 # Files for packaging
 MANIFEST
 dist
+build
 
 # Cache files and folders
 *.pyc
 __pycache__
+**/__pycache__
 *.egg-info/
 
 # Tests
@@ -19,6 +21,8 @@ __pycache__
 
 # Flask
 .env
+.venv**
+venv*
 instance/*
 !instance/.placeholder
 

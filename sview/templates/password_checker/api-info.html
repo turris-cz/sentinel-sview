@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block body %}
+<p>You can use the API interface to query the first six bytes of the <code>sha1</code> hash of your password.</p>
+<p>For example <i>password </i><code>secret</code> has <code>sha1</code> hash
+hexdigest value of <code>e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4</code> and you
+will strip the first 6 characters, thus <code>e5e9fa</code>.</p>
+<h2>Schema for API request</h2>
+<p>A message should look like the following:</p>
+<p><code>{ "msg_type":"request","hash":"e5e9fa" }</code></p>
+</div>
+<h3>Request JSON schema</h3>
+<button
+    class="btn btn-primary btn-sm mb-3"
+    type="button"
+    data-toggle="collapse"
+    data-target="#requestSchema"
+    aria-expanded="false"
+    aria-controls="requestSchema"
+>Click to expand</button>
+<div class="collapse mb-3" id="requestSchema">
+    <div class="card p-4">
+        <pre class="mb-0">{
+    "type":"object",
+    "description": "Api message request",
+    "properties": {
+        "msg_type": {"enum": ["request"]},
+        "hash": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{6}$"
+        }
+    },
+    "required" : ["hash", "msg_type"],
+    "additionalProperties": false
+}</pre>
+    </div>
+</div>
+<p>You will get either <samp>..."status":"SUCCESS"</samp> response, which
+indicates that we have some entries for the start of your hash. You should
+compare your full hash against the list we sent you in that case. Eventually,
+you'll get <samp>..."status":"NO_QUERY"</samp> that indicates there is no entry
+in our database that starts with the <code>sha1</code> hash stub you provided.</p>
+<h3>Response JSON schema</h3>
+<button
+    class="btn btn-primary btn-sm mb-3"
+    type="button"
+    data-toggle="collapse"
+    data-target="#responseSchema"
+    aria-expanded="false"
+    aria-controls="responseSchema"
+>Click to expand</button>
+<div class="collapse mb-3" id="responseSchema">
+    <div class="card p-4">
+        <pre class="mb-0">{
+    "definitions": {
+        "sha1": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{40}$"
+        },
+        "hash_item": {
+            "type": "object",
+            "properties": {
+                "hash": {"$ref": "#/definitions/sha1"},
+                "count": {"type": "integer", "minimum":1},
+                "sources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum" : ["telnet", "smtp", "ftp", "http", "haas"]
+                    }
+                }
+            },
+            "required": ["hash", "count", "sources"],
+            "additionalProperties": false
+        }
+    },
+    "oneOf": [
+        {
+            "type":"object",
+            "description": "Api message response with data",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["SUCCESS"]},
+                "data": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/hash_item"},
+                    "minItems": 1
+                },
+                "hash": {"$ref": "#/definitions/sha1"}
+            },
+            "required": ["status", "msg_type", "data"],
+            "additionalProperties": false
+        },
+        {
+            "type":"object",
+            "description": "Api message response hash not found",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status" : {"enum": ["NO_QUERY"]}
+            },
+            "required": ["status", "msg_type"],
+            "additionalProperties": false
+        },
+        {
+            "type":"object",
+            "description": "Input data validation error",
+            "properties": {
+                "msg_type": {"enum": ["response"]},
+                "status": {"enum": ["VALIDATION_ERROR"]},
+                "error": {"type": "string"}
+            },
+            "required": ["msg_type", "status", "error"],
+            "additionalProperties": false
+        }
+    ]
+}</pre>
+    </div>
+</div>
+<h2>Endpoint:</h2>
+<p>Send your request to:</p>
+<p><a href="{{ url_for('pcheck.apiv1.endpoint')}}">{{ url_for("pcheck.apiv1.endpoint")}}</a></p>
+<p>You should check result hashes with your original hash than.</p>
+{% endblock %}
