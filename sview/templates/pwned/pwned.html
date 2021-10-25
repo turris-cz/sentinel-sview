@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1 id="header"></h1>
+<form action="javascript:post()">
+    <input type="text" id="password"></input>
+    <button type="submit">Submit</button>
+</form>
+<script type="text/javascript">
+	let connection = {{ pwned_connection | safe }};
+	let server = connection.server;
+	let port = connection.port;
+</script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/pwned.js") | autoversion }}"></script>
+{% endblock %}

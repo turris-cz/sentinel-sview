@@ -34,11 +34,13 @@ def create_app(additional_config=None):
     from .opendata import opendata
     from .web import web
     from .dynfw import dynfw
+    from .pwned import pwned
 
     app.register_blueprint(statistics)
     app.register_blueprint(opendata, url_prefix="/opendata")
     app.register_blueprint(web)
     app.register_blueprint(dynfw)
+    app.register_blueprint(pwned, url_prefix="/pwned")
 
     from .extensions import babel
     from .extensions import cache
