@@ -1,16 +1,19 @@
-function request_data(passwordHash) {
-    fetch('http://' + server + ':' + port + '/api/leaked/',
+async function request_data(passwordHash) {
+    const res = await fetch('http://' + server + ':' + port + '/api/leaked/',
         {
             mode: 'no-cors',
             method: 'post',
             headers: {
-            'Accept': 'application/json, text/plain, */*',
+            'Accept': 'application/json, text/json',
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': true
             },
             body: JSON.stringify({"msg_type": "request", "hash": passwordHash.toString().slice(0,6)})
         }
-    ).then(response => console.log(response));
+    );
+    const data = await res.json();
+    console.log(data)
+    //.then(response => {console.log(response);})//.then(response => console.log(response)).catch(error=> {console.log(error)});
 }
 
 async function post() {
@@ -18,7 +21,7 @@ async function post() {
     let hexdigest = await digestMessage(password.value);
     let header = document.getElementById("header");
     header.textContent = hexdigest;
-    request_data(hexdigest);
+    await request_data(hexdigest);
 }
 
 async function digestMessage(message) {
