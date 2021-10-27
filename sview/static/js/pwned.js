@@ -5,23 +5,20 @@ async function request_data(passwordHash) {
             method: 'post',
             headers: {
             'Accept': 'application/json, text/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': true
+            'Content-Type': 'application/json'
             },
             body: JSON.stringify({"msg_type": "request", "hash": passwordHash.toString().slice(0,6)})
-        }
-    );
-    const data = await res.json();
-    console.log(data)
-    //.then(response => {console.log(response);})//.then(response => console.log(response)).catch(error=> {console.log(error)});
+        });//.then(res => {return res.json();}).then(res => console.log(res)).catch(error=> {console.log(error)});
+    return await res.json();
 }
 
 async function post() {
-    let password = document.getElementById("password");
-    let hexdigest = await digestMessage(password.value);
-    let header = document.getElementById("header");
+    const password = document.getElementById("password");
+    const hexdigest = await digestMessage(password.value);
+    const header = document.getElementById("header");
     header.textContent = hexdigest;
-    await request_data(hexdigest);
+    const data = await request_data(hexdigest);
+    console.log(data); 
 }
 
 async function digestMessage(message) {

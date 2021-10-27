@@ -1,14 +1,61 @@
 {% extends "layout.html" %}
 {% block body %}
-<h1 id="header"></h1>
-<form action="javascript:post()">
-    <input type="text" id="password"></input>
-    <button type="submit">Submit</button>
-</form>
-<script type="text/javascript">
-	let connection = {{ pwned_connection | safe }};
-	let server = connection.server;
-	let port = connection.port;
+<div class="content">
+	<h2>Have I Been Pwned</h2>
+	<p>Check if your password had been used by hackers to access minipots on Turris routers.</p>
+	<p>The tags indicate the sources of accidents had been captured onto.</p>
+	<div class="well">
+		<ul style="display: inline;">
+				<li class="btn btn-primary">http</li>
+				<li class="btn btn-secondary">smtp</li>
+				<li class="btn btn-success">ftp</li>
+				<li class="btn btn-warning">telnet</li>
+				<li class="btn btn-info">haas</li>
+		</ul>
+	</div>
+</div>
+<div style="text-align: center; margin-top: 30%">
+	<form id="formElem">
+		<input
+			id="myPassword"
+			type="text"
+			name="password"
+			placeholder="Enter your password"
+			autofocus
+		/>
+		<button type="submit">Submit!</button>
+	</form>
+</div>
+<script>
+	const conn = {{ conn_params | safe }};
+	const url = 'http://' + conn.server + ':' + conn.port + '/api/leaked/';
+	formElem.onsubmit = async (e) => {
+		e.preventDefault();
+
+		const enteredPassword =
+			document.getElementById("myPassword").value;
+
+
+		// const msgUint8 = new TextEncoder().encode(enteredPassword);
+		// const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
+		// const hashArray = Array.from(new Uint8Array(hashBuffer));
+		// const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toString().slice(0,6);
+
+		const response = await fetch(url, {
+			mode: 'no-cors',
+			method: 'post',
+			headers: {
+				'Accept': 'application/json, text/json',
+				'Content-Type': 'application/json'
+				},
+			body: JSON.stringify({"msg_type": "request", "hash": enteredPassword.slice(0,6)}),
+		});
+
+		const result = await response.json();
+
+		alert(JSON.stringify(result)); // transform to text, otherwise will print [Object][object]
+		// or
+		console.log(result);
+	};
 </script>
-<script type="text/javascript" src="{{ url_for("static", filename="js/pwned.js") | autoversion }}"></script>
 {% endblock %}

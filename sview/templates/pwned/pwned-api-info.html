@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="mb-4"></div>
+<h1>Sentinel - Pwned Api description</h1>
+
+<p>You are able to use API interface to query first six bytes of <code>sha1</code> hash of you password.</p>
+<p>For example <i>password</i> <code>secret</code> has <code>sha1</code> hash hexdigest value of <code>e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4</code> and you will strip the first 6 characters, thus <code>e5e9fa</code>.</p>
+<br/>
+<h2>Schema for API request</h3>
+<p>Message should look like following:</p>
+<code>
+{ "msg_type":"request","hash":"e5e9fa" }
+</code>
+<br>
+<h3>JSON schema:</h4>
+<pre><code>
+{
+    "type":"object",
+    "description": "Api message request",
+    "properties": {
+        "msg_type": {"enum": ["request"]},
+        "hash": {
+            "type": "string",
+            "pattern": "^[a-z0-9]{6}$"
+        }
+    },
+    "required" : ["hash", "msg_type"],
+    "additionalProperties": false
+}
+</code></pre>
+<p>You will get either <samp>..."status":"SUCCESS"</samp> response, which indicates that we ineed have some entries for the start of your hash.
+You should compare your full hash against the list we sent you in that case. Eventually you'll get <samp>..."status":"NO_QUERY"</samp> that
+indicates, there is no entry in our database, that starts with <code>sha1</code> hash stub you provided.</p>
+<br/>
+<h2>Endpoint:</h2>
+<p>Send your request to: <code>http://view.sentinel.turris.cz/pwned/api/leaked</code></p>
+</div>
+{% endblock %}
