@@ -45,7 +45,7 @@ function get_ws_url() {
 	let proto = window.location.protocol === "https:" ? "wss://" : "ws://";
 	let host = window.location.hostname;
 	let port = "";
-	if (host == window.location.host) {
+	if (host != window.location.host) { // the application uses a custom port
 		let port = ":" + ws_port;
 	}
 	let path = "/ws";
