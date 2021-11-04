@@ -33,10 +33,12 @@ def create_app(additional_config=None):
     from .statistics import statistics
     from .opendata import opendata
     from .web import web
+    from .dynfw import dynfw
 
     app.register_blueprint(statistics)
     app.register_blueprint(opendata, url_prefix="/opendata")
     app.register_blueprint(web)
+    app.register_blueprint(dynfw)
 
     from .extensions import babel
     from .extensions import cache
