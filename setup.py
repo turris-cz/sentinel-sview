@@ -13,6 +13,7 @@ setup(
     author_email="packaging@turris.cz",
     url="https://gitlab.nic.cz/turris/sentinel/sview",
     packages=find_packages(),
+    entry_points={"console_scripts": ["dynfw-backend=dynfw_backend.__main__:main"]},
     install_requires=[
         "Flask",
         "Flask-Babel",
@@ -26,6 +27,8 @@ setup(
         "pycountry",
         "python-dotenv",
         "simplejson",
+        "geoip2",
+        "websockets",
     ],
     extras_require={
         "tests": [
