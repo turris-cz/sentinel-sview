@@ -63,7 +63,7 @@ def process_query(resource_name, params):
         raise Exception(f"Failed to execute query: {full_query}") from exc
 
     for row in data:
-        result.append(dict(row.items()))
+        result.append(dict(row))
 
     post_process = RESOURCE_QUERIES[resource_name].get("post_process")
     if post_process and callable(post_process):
