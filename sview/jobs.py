@@ -6,9 +6,10 @@ from .queries import PERIODS
 from .queries import get_cached_data_key
 
 USER_TTL = 120  # Seconds
+JOB_TIMEOUT = 600  # Seconds
 
 
-@rq.job(result_ttl=10, timeout=600)
+@rq.job(result_ttl=10, timeout=JOB_TIMEOUT)
 def cache_resource(resource_name, params):
     """Precache the most used and default resources"""
     resource = process_query(resource_name, params)

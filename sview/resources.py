@@ -2,7 +2,7 @@ import json
 
 from .exceptions import ResourceError
 from .extensions import redis, rq
-from .jobs import cache_resource
+from .jobs import cache_resource, JOB_TIMEOUT
 from .queries import PERIODS
 from .queries import RESOURCE_QUERIES
 from .queries import get_cached_data_key
@@ -49,7 +49,7 @@ def _run_caching_job(resource_name, params):
     @rlimit
     def _queue_job():
         job = cache_resource.queue(resource_name, params)
-        redis.set(job_handler_key, job.id, ex=job.result_ttl)
+        redis.set(job_handler_key, job.id, ex=JOB_TIMEOUT)
 
     job_id = redis.get(job_handler_key)
     if job_id:
