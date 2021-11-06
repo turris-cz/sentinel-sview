@@ -28,7 +28,7 @@
 	</div>
 	<div class="col-md">
 		{% call(data_item) data_box("top_attackers_by_incidents_list_long", "Top attackers by recorded incidents", resources["top_attackers_by_incidents_list_long"], "ip") -%}
-			<a href="{{ url_for("statistics.attacker_details", ip=data_item) }}">
+			<a href="{{ url_for("statistics.attacker_details", ip=data_item, period=active_params['period']) }}">
 				{{ data_item }}
 			</a>
 		{%- endcall %}
