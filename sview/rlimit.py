@@ -10,7 +10,9 @@ class RLimit:
     def __init__(self):
         self.ban_time = current_app.config["RLIMIT_BAN_TIME"]
         self.max_hits = current_app.config["RLIMIT_MAX_HITS"]
-        self.key = "rate-limit:{}:{}".format(request.endpoint, request.remote_addr)
+        self.key = "sview_rate_limit;{};{}".format(
+            request.endpoint, request.remote_addr
+        )
 
     def count(self):
         pipe = redis.pipeline(transaction=True)

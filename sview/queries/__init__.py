@@ -253,9 +253,9 @@ PRECACHED_RESOURCES = [
 
 
 def get_job_handler_key(resource_name, params):
-    return "{}:{}".format(
+    return "{};{}".format(
         REDIS_JOB_PREFIX,
-        ":".join(
+        ";".join(
             [resource_name]
             + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
         ),
@@ -263,9 +263,9 @@ def get_job_handler_key(resource_name, params):
 
 
 def get_cached_data_key(resource_name, params):
-    return "{}:{}".format(
+    return "{};{}".format(
         REDIS_CACHE_PREFIX,
-        ":".join(
+        ";".join(
             [resource_name]
             + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
         ),
