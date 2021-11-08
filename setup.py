@@ -28,6 +28,7 @@ setup(
         "python-dotenv",
         "simplejson",
         "geoip2",
+        "sn@git+https://gitlab.nic.cz/turris/sentinel/sn.git",
         "websockets",
     ],
     extras_require={
