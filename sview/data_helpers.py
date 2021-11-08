@@ -52,12 +52,12 @@ def process_query(resource_name, params):
     result = []
 
     try:
-        data = db.session.execute(query, params)
         current_app.logger.debug(
-            f"Fetching resource '%s' with query: %s",
+            "Fetching resource '%s' with query: %s",
             resource_name,
             QueryFiller(query, params),
         )
+        data = db.session.execute(query, params)
     except sqlalchemy.exc.SQLAlchemyError as exc:
         full_query = _fill_query(query, params)
         raise Exception(f"Failed to execute query: {full_query}") from exc
