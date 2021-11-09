@@ -5,6 +5,21 @@ from .limits import limit_dashboard
 from .limits import limit_long
 from .limits import limit_plot
 
+from .time import HOUR
+from .time import HOUR12
+from .time import DAY
+from .time import WEEK
+from .time import MONTH
+from .time import MONTH3
+from .time import YEAR
+
+from .time import construct_last_before
+from .time import ts_last_midnight_before
+from .time import ts_last_3hour_before
+from .time import ts_last_half_before
+from .time import ts_last_quarter_before
+from .time import ts_last_minute_before
+
 from .sql.passwords import top_passwords_by_usages_list
 from .sql.passwords import top_usernames_by_usages_list
 from .sql.passwords import top_combinations_by_usages_list
@@ -55,45 +70,52 @@ DEFAULT_PERIOD = "1y"
 PERIODS = {
     "1h": {
         "label": "Hour",
-        "interval": "1 hour",
         "bucket": "1 minute",
         "cache_ttl": 30,
+        "get_start": construct_last_before(ts_last_minute_before, before=HOUR),
+        "get_finish": construct_last_before(ts_last_minute_before),
     },
     "12h": {
         "label": "12 Hours",
-        "interval": "12 hours",
         "bucket": "15 minutes",
         "cache_ttl": 450,
+        "get_start": construct_last_before(ts_last_quarter_before, before=HOUR12),
+        "get_finish": construct_last_before(ts_last_quarter_before),
     },
     "1d": {
         "label": "Day",
-        "interval": "1 day",
         "bucket": "30 minutes",
         "cache_ttl": 900,
+        "get_start": construct_last_before(ts_last_half_before, before=DAY),
+        "get_finish": construct_last_before(ts_last_half_before),
     },
     "1w": {
         "label": "Week",
-        "interval": "7 days",
         "bucket": "3 hours",
         "cache_ttl": 5400,
+        "get_start": construct_last_before(ts_last_3hour_before, before=WEEK),
+        "get_finish": construct_last_before(ts_last_3hour_before),
     },
     "1m": {
         "label": "Month",
-        "interval": "1 month",
         "bucket": "1 day",
         "cache_ttl": 432000,
+        "get_start": construct_last_before(ts_last_midnight_before, before=MONTH),
+        "get_finish": construct_last_before(ts_last_midnight_before),
     },
     "3m": {
         "label": "3 Months",
-        "interval": "3 months",
         "bucket": "2 days",
         "cache_ttl": 864000,
+        "get_start": construct_last_before(ts_last_midnight_before, before=MONTH3),
+        "get_finish": construct_last_before(ts_last_midnight_before),
     },
     "1y": {
         "label": "Year",
-        "interval": "1 year",
         "bucket": "14 days",
         "cache_ttl": 302400,
+        "get_start": construct_last_before(ts_last_midnight_before, before=YEAR),
+        "get_finish": construct_last_before(ts_last_midnight_before),
     },
 }
 

@@ -1,44 +1,50 @@
 # Graph of all scanned ports
 all_ports_by_scans_graph = """
-    SELECT
-        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS bucket,
-        COUNT(*) as count
-    FROM ports
-    WHERE
-        now() - INTERVAL :interval < time AND time < now()
-    GROUP BY bucket
-    ORDER BY bucket
+    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, count_middle AS count
+    FROM (
+        SELECT
+            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            COUNT(*) as count_middle
+        FROM ports
+        WHERE
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+        GROUP BY bucket_inner
+        ORDER BY bucket_inner
+    ) as "raw_timing"
 """
 
 # Graph of top ports by (number of) scans
 top_ports_by_scans_graph = """
-    SELECT
-        to_char(time_bucket(:bucket, time), 'YYYY-MM-DD HH24:MI') AS bucket,
-        CONCAT(protocol, '/', port) AS port,
-        COUNT(port) as count
-    FROM ports
-    WHERE
-        now() - INTERVAL :interval < time AND time < now()
-        AND
-        (port, protocol) IN (
-            SELECT
-                port,
-                protocol
-            FROM (
+    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, port, count_middle AS count
+    FROM (
+        SELECT
+            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            CONCAT(protocol, '/', port) AS port,
+            COUNT(port) as count_middle
+        FROM ports
+        WHERE
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            AND
+            (port, protocol) IN (
                 SELECT
                     port,
-                    protocol,
-                    COUNT(port) AS count_inner
-                FROM ports
-                WHERE
-                    now() - INTERVAL :interval < time AND time < now()
-                GROUP BY port, protocol
-                ORDER BY count_inner DESC
-                LIMIT :limit
-            ) AS foo
-        )
-    GROUP BY bucket, port, protocol
-    ORDER BY bucket
+                    protocol
+                FROM (
+                    SELECT
+                        port,
+                        protocol,
+                        COUNT(port) AS count_inner
+                    FROM ports
+                    WHERE
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                    GROUP BY port, protocol
+                    ORDER BY count_inner DESC
+                    LIMIT :limit
+                ) AS foo
+            )
+        GROUP BY bucket_inner, port, protocol
+        ORDER BY bucket_inner
+    ) as "raw_timing"
 """
 
 # Table of top ports by scans
@@ -48,7 +54,7 @@ top_ports_by_scans_list = """
         COUNT(port) AS count
     FROM ports
     WHERE
-        now() - INTERVAL :interval < time AND time < now()
+        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
     GROUP BY port, protocol
     ORDER BY count DESC
     LIMIT :limit

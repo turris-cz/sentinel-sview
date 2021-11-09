@@ -46,8 +46,9 @@ def _fill_query(query, params):
 def process_query(resource_name, params):
     query = RESOURCE_QUERIES[resource_name]["query"]
     params.update(RESOURCE_QUERIES[resource_name].get("params", {}))
-    params["interval"] = PERIODS[params["period"]]["interval"]
     params["bucket"] = PERIODS[params["period"]]["bucket"]
+    params["finish_ts"] = PERIODS[params["period"]]["get_finish"]()
+    params["start_ts"] = PERIODS[params["period"]]["get_start"]()
 
     result = []
 
