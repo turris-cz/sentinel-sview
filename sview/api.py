@@ -47,7 +47,7 @@ def get_resource_view():
     )
 
     if data is not None:
-        response.cache_control.max_age = PERIODS[params["period"]]["cache_ttl"]
+        response.cache_control.max_age = PERIODS[params["period"]]["user_cache_ttl"]
 
     return response
 

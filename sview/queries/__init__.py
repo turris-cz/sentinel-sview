@@ -5,7 +5,11 @@ from .limits import limit_dashboard
 from .limits import limit_long
 from .limits import limit_plot
 
+from .time import MINUTE
+from .time import MINUTE15
+from .time import MINUTE30
 from .time import HOUR
+from .time import HOUR3
 from .time import HOUR12
 from .time import DAY
 from .time import WEEK
@@ -14,6 +18,7 @@ from .time import MONTH3
 from .time import YEAR
 
 from .time import construct_last_before
+from .time import construct_get_refresh_timeout
 from .time import ts_last_midnight_before
 from .time import ts_last_3hour_before
 from .time import ts_last_half_before
@@ -52,6 +57,7 @@ from .sql.ports import top_ports_by_scans_graph
 
 REDIS_JOB_PREFIX = "sview_job_id"
 REDIS_CACHE_PREFIX = "sview_cached"
+REDIS_REFRESH_PREFIX = "sview_refresh_timeout"
 
 KNOWN_PARAMS = {
     "period": "1y",
@@ -71,49 +77,77 @@ PERIODS = {
     "1h": {
         "label": "Hour",
         "bucket": "1 minute",
-        "cache_ttl": 30,
+        "cache_ttl": 5 * 60,
+        "user_cache_ttl": 2 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_minute_before, after=MINUTE
+        ),
         "get_start": construct_last_before(ts_last_minute_before, before=HOUR),
         "get_finish": construct_last_before(ts_last_minute_before),
     },
     "12h": {
         "label": "12 Hours",
         "bucket": "15 minutes",
-        "cache_ttl": 450,
+        "cache_ttl": 20 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_quarter_before, after=MINUTE15
+        ),
         "get_start": construct_last_before(ts_last_quarter_before, before=HOUR12),
         "get_finish": construct_last_before(ts_last_quarter_before),
     },
     "1d": {
         "label": "Day",
         "bucket": "30 minutes",
-        "cache_ttl": 900,
+        "cache_ttl": 25 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_half_before, after=MINUTE30
+        ),
         "get_start": construct_last_before(ts_last_half_before, before=DAY),
         "get_finish": construct_last_before(ts_last_half_before),
     },
     "1w": {
         "label": "Week",
         "bucket": "3 hours",
-        "cache_ttl": 5400,
+        "cache_ttl": 3 * 60 * 60 + 10 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_3hour_before, after=HOUR3
+        ),
         "get_start": construct_last_before(ts_last_3hour_before, before=WEEK),
         "get_finish": construct_last_before(ts_last_3hour_before),
     },
     "1m": {
         "label": "Month",
         "bucket": "1 day",
-        "cache_ttl": 432000,
+        "cache_ttl": 25 * 60 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_midnight_before, after=DAY
+        ),
         "get_start": construct_last_before(ts_last_midnight_before, before=MONTH),
         "get_finish": construct_last_before(ts_last_midnight_before),
     },
     "3m": {
         "label": "3 Months",
         "bucket": "2 days",
-        "cache_ttl": 864000,
+        "cache_ttl": 25 * 60 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_midnight_before, after=DAY
+        ),
         "get_start": construct_last_before(ts_last_midnight_before, before=MONTH3),
         "get_finish": construct_last_before(ts_last_midnight_before),
     },
     "1y": {
         "label": "Year",
         "bucket": "14 days",
-        "cache_ttl": 302400,
+        "cache_ttl": 25 * 60 * 60,
+        "user_cache_ttl": 5 * 60,
+        "get_refresh_timeout": construct_get_refresh_timeout(
+            ts_last_midnight_before, after=DAY
+        ),
         "get_start": construct_last_before(ts_last_midnight_before, before=YEAR),
         "get_finish": construct_last_before(ts_last_midnight_before),
     },
@@ -287,6 +321,16 @@ def get_job_handler_key(resource_name, params):
 def get_cached_data_key(resource_name, params):
     return "{};{}".format(
         REDIS_CACHE_PREFIX,
+        ";".join(
+            [resource_name]
+            + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]
+        ),
+    )
+
+
+def get_refresh_timeout_key(resource_name, params):
+    return "{};{}".format(
+        REDIS_REFRESH_PREFIX,
         ";".join(
             [resource_name]
             + [v for k, v in params.items() if k in KNOWN_PARAMS and v is not None]

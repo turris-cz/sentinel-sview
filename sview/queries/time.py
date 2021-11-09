@@ -1,6 +1,10 @@
 import datetime
 
+MINUTE = datetime.timedelta(minutes=1)
+MINUTE15 = datetime.timedelta(minutes=15)
+MINUTE30 = datetime.timedelta(minutes=30)
 HOUR = datetime.timedelta(hours=1)
+HOUR3 = datetime.timedelta(hours=3)
 HOUR12 = datetime.timedelta(hours=12)
 DAY = datetime.timedelta(days=1)
 WEEK = datetime.timedelta(days=7)
@@ -11,6 +15,12 @@ YEAR = datetime.timedelta(days=378)  # 27 * 14 days
 
 def construct_last_before(function, before=datetime.timedelta()):
     return lambda: function(before)
+
+
+def construct_get_refresh_timeout(function, after=datetime.timedelta()):
+    return lambda: function(-after) - int(
+        datetime.datetime.now(datetime.timezone.utc).timestamp()
+    )
 
 
 def ts_last_midnight_before(before):
