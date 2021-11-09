@@ -7,7 +7,7 @@
 		{%- set active = "" %}
 	{%- endif %}
 						<li class="nav-item">
-							<a class="nav-link{{ active }}"
+							<a class="nav-link{{ active }}{% if period_dependant %} period_dependant_link{% endif %}"
 								 {%- if target_blank %}target="_blank"{%- endif %}
 								 href={% if period_dependant %}"{{ url_for(endpoint, period=active_params['period']) }}"{% else %}"{{ url_for(endpoint) }}"{% endif %}>
 								{{ text }}{%- if target_blank %}<sup><i class="fas fa-external-link-alt fa-xs ml-1"></i></sup>{%- endif %}
