@@ -3,10 +3,12 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .jobs import cache_resource
+from .resources import try_run_caching_job
 from .queries import PRECACHED_RESOURCES
+from .queries import PERIODS
 from .queries import get_cached_data_key
 from .queries import REDIS_CACHE_PREFIX
+from .queries import REDIS_REFRESH_PREFIX
 
 
 from .extensions import redis
@@ -37,14 +39,21 @@ def clear_redis():
 
     click.echo(f"Cleared {len(keys)} keys")
 
+    keys = redis.keys(f"{REDIS_REFRESH_PREFIX}*")
+    for key in keys:
+        redis.delete(key)
+
+    click.echo(f"Cleared {len(keys)} refresh timeouts")
+
 
 @click.command()
 @with_appcontext
 def queue_queries():
     """Add all cached queries to the queue"""
-    for resource_request in PRECACHED_RESOURCES:
-        click.echo("Queuing: {}".format(resource_request))
-        cache_resource.queue(*resource_request)
+    for period in PERIODS:
+        for resource_name in PRECACHED_RESOURCES:
+            click.echo(f"Asking for refresh of: {resource_name} / {period}")
+            try_run_caching_job(resource_name, {"period": period})
 
 
 @click.command()
@@ -53,8 +62,8 @@ def queue_queries():
 @with_appcontext
 def queue_query(resource_name, period):
     """Add cached query to the queue"""
-    click.echo("Queuing: {}".format((resource_name, period)))
-    cache_resource.queue(resource_name, {"period": period})
+    click.echo(f"Asking for refresh of: {resource_name} / {period}")
+    try_run_caching_job(resource_name, {"period": period})
 
 
 @click.command()
