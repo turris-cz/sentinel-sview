@@ -1,6 +1,4 @@
-from flask import current_app, request, abort
-
-from functools import wraps
+from flask import current_app, request
 
 from .extensions import redis
 
@@ -36,14 +34,10 @@ class RLimit:
         redis.expire(self.key, self.ban_time)
 
 
-def rlimit(f):
-    @wraps(f)
-    def _rlimit(*args, **kwargs):
-        rl = RLimit()
-        if rl.is_enabled():
-            rl.count()
-            return f(*args, **kwargs)
+def rate_limit_reached():
+    rl = RLimit()
+    if rl.is_enabled():
+        rl.count()
+        return False
 
-        return abort(400, "You hit the rate limit")
-
-    return _rlimit
+    return True
