@@ -3,6 +3,9 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_breadcrumbs import Breadcrumbs
 
+from pwned_backend.database import load_postgres
+from pwned_backend.utils import filter_dictionary
+
 
 def setup_logging():
     dictConfig(
@@ -13,6 +16,7 @@ def setup_logging():
             },
         }
     )
+
 
 
 def create_app(additional_config=None):
@@ -30,12 +34,17 @@ def create_app(additional_config=None):
 
     setup_logging()
 
+    db_settings = filter_dictionary(app.config, "POSTGRES")
+    load_postgres(**db_settings)
+
+    from .api import api
     from .statistics import statistics
     from .opendata import opendata
     from .web import web
     from .dynfw import dynfw
     from .pwned import pwned
 
+    app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(statistics)
     app.register_blueprint(opendata, url_prefix="/opendata")
     app.register_blueprint(web)

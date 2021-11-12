@@ -1,8 +1,10 @@
 import pytest
+import os
 
-from pwned import app
+from sview import create_app
 from utils import hash_it
 from pg_manager import reset_passwords_table, insert_password
+from pwned_backend.utils import filter_dictionary
 
 
 @pytest.fixture
@@ -28,5 +30,10 @@ def extra_passwords(client, request):
 def client():
     reset_passwords_table()
     """Flask client fixture."""
+    
+    pg_settings = filter_dictionary(os.environ, "POSTGRES")
+    pg_settings.update({"FLASK_ENV": os.environ.get["FLASK_ENV"]})
+
+    app = create_app(**pg_settings)
     with app.test_client() as client:
         yield client

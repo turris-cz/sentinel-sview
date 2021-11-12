@@ -11,7 +11,7 @@ variables:
 
 before_script:
   - apt update
-  - apt install -y postgresql-client
+  - apt install -y postgresql-client git
   - pip install .
   - pip install pytest
   - export PGPASSWORD=$POSTGRES_PASSWORD
