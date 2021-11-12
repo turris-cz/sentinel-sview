@@ -111,44 +111,48 @@ function resource_poll(url, resource_name, params) {
     $.ajax({
         method: "GET",
         url: url,
-        success: process_response,
+        success: get_period_specific_process_function(params["period"]),
         data: Object.assign({ name: resource_name }, params),
     });
 }
 
-function process_response(response) {
-    console.log(response);
-    if ("error" in response) {
-        console.log("Error occured in server response:");
-        console.log(response);
-        return;
-    }
-
-    if (!("resource_name" in response)) {
-        console.log("Missing resource name in server response:");
-        console.log(response);
-        return;
-    }
-
-    if (!(response["resource_name"] in redraw_callbacks)) {
-        console.log("Invalid resource name: " + response["resource_name"]);
-        if (response["resource_name"] in intervals) {
-            clear_interval(response["resource_name"]);
+function get_period_specific_process_function(period) {
+    function process_response(response) {
+        //console.log(response);
+        if ("error" in response) {
+            console.log("Error occured in server response:");
+            console.log(response);
+            return;
         }
-        return;
-    }
 
-    if (!response["data"]) {
-        // Data are not ready yet.
-        return;
-    }
+        if (!("resource_name" in response)) {
+            console.log("Missing resource name in server response:");
+            console.log(response);
+            return;
+        }
 
-    clear_interval(response["resource_name"]);
-    hide_spinner(response["resource_name"]);
-    redraw_callbacks[response["resource_name"]](response);
+        if (!(response["resource_name"] in redraw_callbacks)) {
+            console.log("Invalid resource name: " + response["resource_name"]);
+            if (response["resource_name"] in intervals) {
+                clear_interval(response["resource_name"]);
+            }
+            return;
+        }
+
+        if (!response["data"]) {
+            // Data are not ready yet.
+            return;
+        }
+        response["period"] = period;
+
+        clear_interval(response["resource_name"]);
+        hide_spinner(response["resource_name"]);
+        redraw_callbacks[response["resource_name"]](response);
+    }
+    return process_response;
 }
 
-function createCountryRow(row) {
+function createCountryRow(row, period) {
     td = document.createElement("td");
     let span = document.createElement("span");
     span.className = "flag-icon flag-icon-" + row["country"].toLowerCase();
@@ -161,11 +165,11 @@ function createCountryRow(row) {
     return [td];
 }
 
-function createPasswordRow(row) {
+function createPasswordRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     let a = document.createElement("a");
-    a.setAttribute("href", "/passwords/details/" + btoa(row["password"]));
+    a.setAttribute("href", "/passwords/details/" + btoa(row["password"]) + "?period=" + period);
     a.innerHTML = row["password"];
     strong.appendChild(a);
     td.appendChild(strong);
@@ -173,7 +177,7 @@ function createPasswordRow(row) {
     return [td];
 }
 
-function createIncidentTypeRow(row) {
+function createIncidentTypeRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     strong.innerHTML = row["source"].concat(" / ").concat(row["action"]);
@@ -182,7 +186,7 @@ function createIncidentTypeRow(row) {
     return [td];
 }
 
-function createUsernameRow(row) {
+function createUsernameRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     strong.innerHTML = row["username"];
@@ -191,7 +195,7 @@ function createUsernameRow(row) {
     return [td];
 }
 
-function createPortRow(row) {
+function createPortRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     strong.innerHTML = row["port"];
@@ -200,11 +204,11 @@ function createPortRow(row) {
     return [td];
 }
 
-function createIPRow(row) {
+function createIPRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     let a = document.createElement("a");
-    a.setAttribute("href", "/attackers/details/ip/" + row["ip"]);
+    a.setAttribute("href", "/attackers/details/ip/" + row["ip"] + "?period=" + period);
     a.innerHTML = row["ip"];
     strong.appendChild(a);
     td.appendChild(strong);
@@ -212,11 +216,11 @@ function createIPRow(row) {
     return [td];
 }
 
-function createCombinedRow(row) {
-    return createUsernameRow(row).concat(createPasswordRow(row));
+function createCombinedRow(row, period) {
+    return createUsernameRow(row, period).concat(createPasswordRow(row, period));
 }
 
-function create_table(rows, createRow) {
+function create_table(rows, period, createRow) {
     let table = document.createElement("table");
     table.className = "table table-borderless table-sm table-hover";
     for (var i = 0; i < rows.length; i++) {
@@ -225,7 +229,7 @@ function create_table(rows, createRow) {
         td.innerHTML = i + 1 + ".";
         tr.appendChild(td);
 
-        tds = createRow(rows[i]);
+        tds = createRow(rows[i], period);
         for (var j = 0; j < tds.length; j++) {
             tr.appendChild(tds[j]);
         }
@@ -261,7 +265,7 @@ function create_data_box(data, row_function) {
     }
 
     if (data["data"].length != 0) {
-        let table = create_table(data["data"], row_function);
+        let table = create_table(data["data"], data["period"], row_function);
         container.appendChild(table);
     } else {
         insert_no_data_infobox(container);
