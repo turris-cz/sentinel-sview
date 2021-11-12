@@ -129,4 +129,5 @@ logins_of_password_by_usages_list = """
         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
     GROUP BY username
     ORDER BY count DESC
+    LIMIT :limit
 """

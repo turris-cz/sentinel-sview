@@ -285,6 +285,7 @@ RESOURCE_QUERIES = {
     },
     "logins_of_password_by_usages_list": {
         "query": logins_of_password_by_usages_list,
+        "params": {"limit": limit_long},
     },
 }
 
