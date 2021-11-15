@@ -288,7 +288,7 @@ my_top_countries_by_incidents_graph = """
                     country_inner
                 FROM (
                     SELECT
-                        incidents.country as count_middlery_inner,
+                        incidents.country as country_inner,
                         COUNT(*) AS count_inner
                     FROM incidents, identity
                     WHERE
