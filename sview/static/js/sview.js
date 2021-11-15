@@ -282,19 +282,19 @@ function create_data_box(data, row_function) {
     }
 }
 
-function draw_graph(id, data, ykeys, labels) {
+function draw_graph(id, points_array, ykeys, labels) {
     graph_div = document.getElementById(id);
     while (graph_div.firstChild) {
         graph_div.removeChild(graph_div.firstChild);
     }
-    if (data === undefined || data.length == 0) {
+    if (points_array === undefined || points_array.length == 0) {
         insert_no_data_infobox(graph_div);
     } else {
-        create_graph(id, "bucket", ykeys, labels, data);
+        create_graph(id, "bucket", ykeys, labels, points_array);
     }
 }
 
-function create_graph(id, xkey, ykeys, labels, data) {
+function create_graph(id, xkey, ykeys, labels, points_array) {
     return Morris.Line({
         element: id,
         smooth: false,
@@ -302,7 +302,7 @@ function create_graph(id, xkey, ykeys, labels, data) {
         ykeys: ykeys,
         labels: labels,
         resize: true,
-        data: data,
+        data: points_array,
         hideHover: "auto",
     });
 }

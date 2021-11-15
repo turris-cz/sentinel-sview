@@ -250,6 +250,7 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "country"
         ),
+        "empty_response": {"data": []},
     },
     "my_top_traps_by_incidents_graph": {
         "query": my_top_traps_by_incidents_graph,
@@ -257,6 +258,7 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "source"
         ),
+        "empty_response": {"data": []},
     },
     "top_actions_by_incidents_graph": {
         "query": top_actions_by_incidents_graph,

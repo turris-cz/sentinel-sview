@@ -35,7 +35,7 @@ def get_resource(resource_name, params):
         raise ResourceError("Not a valid period")
 
     if resource_name in USER_SPECIFIC_RESOURCES and "token" not in params:
-        return []
+        return RESOURCE_QUERIES[resource_name].get("empty_response", [])
 
     try_run_caching_job(resource_name, params, rlimit_checking=True)
 
