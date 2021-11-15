@@ -60,6 +60,10 @@ def device_view(action):
     if "device_token" not in request.form:
         return "Device token not provided", 400
 
+    period = request.form.get("period", DEFAULT_PERIOD)
+    if period not in PERIODS:
+        period = DEFAULT_PERIOD
+
     if (
         not re.match(DEVICE_TOKEN_CHARS, request.form["device_token"])
         or len(request.form["device_token"]) != DEVICE_TOKEN_LENGTH
@@ -81,9 +85,7 @@ def device_view(action):
 
     token = get_tokens_hash(session.get("devices"))
     if token:
-        return redirect(
-            url_for("statistics.devices", period=DEFAULT_PERIOD, token=token)
-        )
+        return redirect(url_for("statistics.devices", period=period, token=token))
 
     else:
-        return redirect(url_for("statistics.devices", period=DEFAULT_PERIOD))
+        return redirect(url_for("statistics.devices", period=period))
