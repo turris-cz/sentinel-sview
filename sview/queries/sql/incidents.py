@@ -1,6 +1,8 @@
 # Graph of all incidents
 all_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -29,7 +31,10 @@ top_incident_types_by_incidents_list = """
 
 # Graph of top traps by incidents
 top_traps_by_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, source, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        source,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -63,7 +68,10 @@ top_traps_by_incidents_graph = """
 
 # Graph of top actions by incidents
 top_actions_by_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, action, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        action,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -112,7 +120,9 @@ top_attackers_by_incidents_list = """
 
 # Graph of all attackers
 all_attackers_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -127,7 +137,9 @@ all_attackers_graph = """
 
 # Graph of selected attacker's incidents
 selected_attacker_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -202,7 +214,10 @@ all_countries_by_attackers_list = """
 
 # Graph of top countries by attackers
 top_countries_by_attackers_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, country, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        country,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -235,7 +250,10 @@ top_countries_by_attackers_graph = """
 
 # Graph of top countries by incidents
 top_countries_by_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, country, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        country,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -269,7 +287,10 @@ top_countries_by_incidents_graph = """
 
 # Graph of top countries by incidents reported by selected devices
 my_top_countries_by_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, country, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        country,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -311,7 +332,10 @@ my_top_countries_by_incidents_graph = """
 
 # Graph of top traps by incidents reported by selected devices
 my_top_traps_by_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, source, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        source,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
@@ -353,7 +377,9 @@ my_top_traps_by_incidents_graph = """
 
 # Graph of all incidents reported by selected devices
 my_all_incidents_graph = """
-    SELECT to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket, count_middle AS count
+    SELECT
+        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
