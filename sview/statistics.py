@@ -269,10 +269,13 @@ def devices():
     tokens_hash = get_tokens_hash(session.get("devices"))
 
     period = request.args.get("period")
-    if period not in PERIODS or tokens_hash != request.args.get("token"):
+    if period not in PERIODS:
         return redirect(
             url_for(request.endpoint, period=DEFAULT_PERIOD, token=tokens_hash)
         )
+
+    if tokens_hash != request.args.get("token"):
+        return redirect(url_for(request.endpoint, period=period, token=tokens_hash))
 
     params = (
         {"period": period, "token": tokens_hash} if tokens_hash else {"period": period}
