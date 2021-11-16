@@ -9,7 +9,12 @@
 {% block body %}
 <div class="row">
 	<div class="col mb-4">
-		{{ map_box("all_countries_by_attackers_list", "Top countries by unique attackers", resources["all_countries_by_attackers_list"]) }}
+		{{ map_box(
+			"all_countries_by_attackers_list",
+			"Countries by unique attackers",
+			resources["all_countries_by_attackers_list"],
+			"attackers"
+		) }}
 	</div>
 </div>
 <div class="row">

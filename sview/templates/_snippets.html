@@ -115,18 +115,18 @@
 	</div>
 {%- endmacro -%}
 
-{%- macro map_box(id, name, source) -%}
+{%- macro map_box(id, name, source, label) -%}
 	<div id="{{ id }}" class="js-required world-map" style="position: relative; width: 900; height: 300px;"></div>
 		{{ spinner_overlay("spinner-{}".format(id)) }}
 		{{ js_required() }}
 		{% if source %}
 			<script type="text/javascript">
 				let scores = {{ source|tojson }};
-				draw_map("#{{ id }}", scores);
+				draw_map("#{{ id }}", scores, "{{ label }}");
 			</script>
 		{% else %}
 			<script type="text/javascript">
-				draw_map("#{{ id }}", {});
+				draw_map("#{{ id }}", {}, "{{ label }}");
 			</script>
 		{% endif %}
 {%- endmacro -%}
