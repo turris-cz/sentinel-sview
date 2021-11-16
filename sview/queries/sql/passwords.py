@@ -2,7 +2,7 @@
 top_passwords_by_usages_list = """
     SELECT
         password,
-        count(*) AS count
+        SUM(raw_count) AS count
     FROM passwords
     WHERE
         password IS NOT NULL
@@ -21,7 +21,7 @@ top_passwords_by_usages_list = """
 top_usernames_by_usages_list = """
     SELECT
         username,
-        count(*) AS count
+        SUM(raw_count) AS count
     FROM passwords
     WHERE
         username IS NOT NULL
@@ -41,7 +41,7 @@ top_combinations_by_usages_list = """
     SELECT
         username,
         password,
-        count(*) AS count
+        SUM(raw_count) AS count
     FROM passwords
     WHERE
         username IS NOT NULL
@@ -72,7 +72,7 @@ top_passwords_by_usages_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             password,
-            COUNT(*) as count_middle
+            SUM(raw_count) as count_middle
         FROM passwords
         WHERE
             password IN (
@@ -81,7 +81,7 @@ top_passwords_by_usages_graph = """
                 FROM (
                     SELECT
                         password,
-                        COUNT(*) AS count_inner
+                        SUM(raw_count) AS count_inner
                     FROM passwords
                     WHERE
                         password IS NOT NULL
@@ -111,7 +111,7 @@ selected_password_by_usages_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            COUNT(*) as count_middle
+            SUM(raw_count) as count_middle
         FROM passwords
         WHERE
             password = :password
@@ -126,7 +126,7 @@ selected_password_by_usages_graph = """
 logins_of_password_by_usages_list = """
     SELECT
         username,
-        COUNT(username) AS count
+        SUM(raw_count) AS count
     FROM passwords
     WHERE
         password = :password

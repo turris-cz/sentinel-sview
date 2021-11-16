@@ -1,4 +1,4 @@
-import json
+import simplejson
 
 from .extensions import redis, rq
 from .data_helpers import process_query
@@ -18,4 +18,6 @@ def cache_resource(resource_name, params):
     if "token" in params:
         ttl = min(ttl, USER_TTL)  # Do not cache user-specific resources for long
 
-    redis.set(get_cached_data_key(resource_name, params), json.dumps(resource), ex=ttl)
+    redis.set(
+        get_cached_data_key(resource_name, params), simplejson.dumps(resource), ex=ttl
+    )

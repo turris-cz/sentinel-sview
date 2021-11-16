@@ -6,7 +6,7 @@ all_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            COUNT(*) as count_middle
+            SUM(raw_count) as count_middle
         FROM incidents
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
@@ -18,7 +18,7 @@ all_incidents_graph = """
 # List of top incident types by incidents
 top_incident_types_by_incidents_list = """
     SELECT
-        count(*) as count,
+        SUM(raw_count) as count,
         trap as source,
         action
     FROM incidents
@@ -39,7 +39,7 @@ top_traps_by_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             trap as source,
-            COUNT(ip) as count_middle
+            SUM(raw_count) as count_middle
         FROM incidents
         WHERE
             trap IN (
@@ -48,7 +48,7 @@ top_traps_by_incidents_graph = """
                 FROM (
                     SELECT
                         trap,
-                        COUNT(*) AS count_inner
+                        SUM(raw_count) AS count_inner
                     FROM incidents
                     WHERE
                         trap IS NOT NULL
@@ -76,7 +76,7 @@ top_actions_by_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             action,
-            COUNT(ip) as count_middle
+            SUM(raw_count) as count_middle
         FROM incidents
         WHERE
             action IN (
@@ -85,7 +85,7 @@ top_actions_by_incidents_graph = """
                 FROM (
                     SELECT
                         action,
-                        COUNT(*) AS count_inner
+                        SUM(raw_count) AS count_inner
                     FROM incidents
                     WHERE
                         action IS NOT NULL
@@ -107,7 +107,7 @@ top_actions_by_incidents_graph = """
 top_attackers_by_incidents_list = """
     SELECT
         ip,
-        count(ip) AS count
+        SUM(raw_count) AS count
     FROM incidents
     WHERE
         ip IS NOT NULL
@@ -143,7 +143,7 @@ selected_attacker_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            COUNT(*) as count_middle
+            SUM(raw_count) as count_middle
         FROM incidents
         WHERE
             ip = :ip
@@ -158,7 +158,7 @@ selected_attacker_incidents_graph = """
 top_countries_by_incidents_list = """
     SELECT
         country,
-        count(country) AS count
+        SUM(raw_count) AS count
     FROM incidents
     WHERE
         country IS NOT NULL
@@ -173,7 +173,7 @@ top_countries_by_incidents_list = """
 top_countries_by_attackers_list = """
     SELECT
         country,
-        count(distinct(ip)) AS count
+        COUNT(distinct(ip)) AS count
     FROM incidents
     WHERE
         ip IS NOT NULL
@@ -188,7 +188,7 @@ top_countries_by_attackers_list = """
 all_countries_by_incidents_list = """
     SELECT
         country,
-        count(*) AS count
+        SUM(raw_count) AS count
     FROM incidents
     WHERE
         country IS NOT NULL
@@ -201,7 +201,7 @@ all_countries_by_incidents_list = """
 all_countries_by_attackers_list = """
     SELECT
         country,
-        count(distinct(ip)) AS count
+        COUNT(distinct(ip)) AS count
     FROM incidents
     WHERE
         country IS NOT NULL
@@ -258,7 +258,7 @@ top_countries_by_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             country,
-            COUNT(*) as count_middle
+            SUM(raw_count) as count_middle
         FROM incidents
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
@@ -269,7 +269,7 @@ top_countries_by_incidents_graph = """
                 FROM (
                     SELECT
                         country,
-                        COUNT(*) AS count_inner
+                        SUM(raw_count) AS count_inner
                     FROM incidents
                     WHERE
                         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
@@ -295,7 +295,7 @@ my_top_countries_by_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             incidents.country AS country,
-            COUNT(*) as count_middle
+            SUM(incidents.raw_count) as count_middle
         FROM incidents, identity
         WHERE
             to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
@@ -310,7 +310,7 @@ my_top_countries_by_incidents_graph = """
                 FROM (
                     SELECT
                         incidents.country as country_inner,
-                        COUNT(*) AS count_inner
+                        SUM(incidents.raw_count) AS count_inner
                     FROM incidents, identity
                     WHERE
                         to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
@@ -340,7 +340,7 @@ my_top_traps_by_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             incidents.trap AS source,
-            COUNT(*) as count_middle
+            SUM(incidents.raw_count) as count_middle
         FROM incidents, identity
         WHERE
             to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
@@ -355,7 +355,7 @@ my_top_traps_by_incidents_graph = """
                 FROM (
                     SELECT
                         incidents.trap as trap_inner,
-                        COUNT(*) AS count_inner
+                        SUM(incidents.raw_count) AS count_inner
                     FROM incidents, identity
                     WHERE
                         to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
@@ -383,7 +383,7 @@ my_all_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            COUNT(*) as count_middle
+            SUM(incidents.raw_count) as count_middle
         FROM incidents, identity
         WHERE
             to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)

@@ -25,6 +25,7 @@ setup(
         "psycopg2-binary",
         "pycountry",
         "python-dotenv",
+        "simplejson",
     ],
     extras_require={
         "tests": [
