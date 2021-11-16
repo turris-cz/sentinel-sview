@@ -7,11 +7,12 @@ from flask import redirect
 from flask import request
 from flask import session
 from flask import url_for
+from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 
 from .resources import get_resource
 from .queries import PERIODS, DEFAULT_PERIOD
 from .view_helpers import get_tokens_hash
-from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
+from .view_helpers import endpoint_arguments_constructor
 
 
 statistics = Blueprint("statistics", __name__)
@@ -19,7 +20,12 @@ default_breadcrumb_root(statistics, ".")
 
 
 @statistics.route("/")
-@register_breadcrumb(statistics, ".", "Overview")
+@register_breadcrumb(
+    statistics,
+    ".",
+    "Overview",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def dashboard():
     page_title = "Overview"
     resource_names = [
@@ -51,7 +57,12 @@ def dashboard():
 
 
 @statistics.route("/attackers/")
-@register_breadcrumb(statistics, ".attacker", "Attackers")
+@register_breadcrumb(
+    statistics,
+    ".attacker",
+    "Attackers",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def attackers():
     page_title = "Attackers"
     resource_names = [
@@ -83,7 +94,12 @@ def attackers():
 
 
 @statistics.route("/attackers/details/ip/<string:ip>")
-@register_breadcrumb(statistics, ".attacker.ip", "Attacker Details")
+@register_breadcrumb(
+    statistics,
+    ".attacker.ip",
+    "Attacker Details",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def attacker_details(ip):
     page_title = "Attacker Details"
     resource_names = [
@@ -114,7 +130,12 @@ def attacker_details(ip):
 
 
 @statistics.route("/passwords/")
-@register_breadcrumb(statistics, ".passwords", "Passwords")
+@register_breadcrumb(
+    statistics,
+    ".passwords",
+    "Passwords",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def passwords():
     page_title = "Passwords"
     resource_names = [
@@ -152,7 +173,12 @@ def _decode_password(encoded_password):
 
 
 @statistics.route("/passwords/details/<string:encoded_password>")
-@register_breadcrumb(statistics, ".passwords.details", "Password Details")
+@register_breadcrumb(
+    statistics,
+    ".passwords.details",
+    "Password Details",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def password_details(encoded_password):
     page_title = "Password Details"
     password = _decode_password(encoded_password)
@@ -194,7 +220,12 @@ def password_details(encoded_password):
 
 
 @statistics.route("/incidents/")
-@register_breadcrumb(statistics, ".incidents", "Incidents")
+@register_breadcrumb(
+    statistics,
+    ".incidents",
+    "Incidents",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def incidents():
     page_title = "Incidents"
     resource_names = [
@@ -228,7 +259,12 @@ def incidents():
 
 
 @statistics.route("/ports/")
-@register_breadcrumb(statistics, ".ports", "Ports")
+@register_breadcrumb(
+    statistics,
+    ".ports",
+    "Ports",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def ports():
     page_title = "Ports"
     resource_names = [
@@ -258,7 +294,12 @@ def ports():
 
 
 @statistics.route("/devices/")
-@register_breadcrumb(statistics, ".devices", "My Devices")
+@register_breadcrumb(
+    statistics,
+    ".devices",
+    "My Devices",
+    endpoint_arguments_constructor=endpoint_arguments_constructor,
+)
 def devices():
     page_title = "My Devices"
     resource_names = [

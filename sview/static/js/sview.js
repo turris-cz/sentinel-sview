@@ -53,6 +53,7 @@ function clear_interval(resource_name) {
 function process_new_settings(api_url, resource_names, params) {
     set_param_in_window_location("period", params["period"]);
     update_period_in_links(params["period"]);
+    update_period_in_breadcrumbs(params["period"]);
     update_period_in_form_fields(params["period"]);
     start_multi_poller(api_url, resource_names, params);
 }
@@ -70,6 +71,20 @@ function update_period_in_links(value) {
         var url = new URL(buttons[i].href);
         url.searchParams.set("period", value);
         buttons[i].setAttribute("href", url.toString());
+    }
+}
+
+function update_period_in_breadcrumbs(value) {
+    var bc = document.getElementsByClassName("breadcrumb-item");
+    for (var i = 0; i < bc.length; i++) {
+        var children = bc[i].children;
+        for (var j = 0; j < children.length; j++) {
+            if (children[j].tagName == "A") {
+                var url = new URL(children[j].href);
+                url.searchParams.set("period", value);
+                children[j].setAttribute("href", url.toString());
+            }
+        }
     }
 }
 
