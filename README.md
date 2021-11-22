@@ -44,6 +44,10 @@ user attempt to access them via web.
 
 All the data diplayed on web are dated in UTC.
 
+In graphs, the values assigned to each date refers to time period between this
+data (excuding) and the same date one period ago (including). See commit message
+for more details.
+
 ## Database
 
 TimescaleDB is used as the main storage. This section describes it's expected

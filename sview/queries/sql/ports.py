@@ -1,7 +1,7 @@
 # Graph of all scanned ports
 all_ports_by_scans_graph = """
     SELECT
-        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char((bucket_inner + INTERVAL :bucket) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
@@ -18,7 +18,7 @@ all_ports_by_scans_graph = """
 # Graph of top ports by (number of) scans
 top_ports_by_scans_graph = """
     SELECT
-        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char((bucket_inner + INTERVAL :bucket) AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         port,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
