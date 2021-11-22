@@ -87,10 +87,14 @@ state of jobs, cache and other things. The following commands are implemented:
 - `flask queue-queries`
   - Suggest caching of all precached resources. Only missing or outdated
     resources are refreshed.
+  - Using dry-run mode you can see what resources would be cached:
+    `flask queue-queries -d`. The would-be run jobs would be marked with
+    `Queueing` but new job `id` would be `None`.
 - `flask queue-query`
   - Suggest caching of a single resource. Proceed only if the resource is
     missing or outdated.
   - Resource name and period name are required
   - E.g. `flask queue-query all_attackers_graph 1h`
+  - Dry run mode available
 - `flask view-jobs`
   - View running, failed, removed or other jobs.

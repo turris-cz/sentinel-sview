@@ -93,22 +93,34 @@ def clear_redis():
 
 @click.command()
 @with_appcontext
-def queue_queries():
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not queue anything, just print what would be queued",
+)
+def queue_queries(dry_run=False):
     """Add all cached queries to the queue"""
     for period in PERIODS:
         for resource_name in PRECACHED_RESOURCES:
-            click.echo(f"Asking for refresh of: {resource_name} / {period}")
-            try_run_caching_job(resource_name, {"period": period})
+            click.echo(
+                try_run_caching_job(resource_name, {"period": period}, dry_run=dry_run)
+            )
 
 
 @click.command()
 @click.argument("resource_name", nargs=1, required=True)
 @click.argument("period", nargs=1, required=True)
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not queue anything, just print what would be queued",
+)
 @with_appcontext
-def queue_query(resource_name, period):
+def queue_query(resource_name, period, dry_run=False):
     """Add cached query to the queue"""
-    click.echo(f"Asking for refresh of: {resource_name} / {period}")
-    try_run_caching_job(resource_name, {"period": period})
+    click.echo(try_run_caching_job(resource_name, {"period": period}, dry_run=dry_run))
 
 
 @click.command()
