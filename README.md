@@ -42,6 +42,8 @@ On production, this should be run via cron.
 Data about attackers, passwords and other details are queued on-demand, when a
 user attempt to access them via web.
 
+All the data diplayed on web are dated in UTC.
+
 ## Database
 
 TimescaleDB is used as the main storage. This section describes it's expected

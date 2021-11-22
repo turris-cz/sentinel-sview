@@ -65,7 +65,7 @@ top_combinations_by_usages_list = """
 # Graph of top passwords by ussages
 top_passwords_by_usages_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         password,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -106,7 +106,7 @@ top_passwords_by_usages_graph = """
 # Graph of selected passwords's ussages
 selected_password_by_usages_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT

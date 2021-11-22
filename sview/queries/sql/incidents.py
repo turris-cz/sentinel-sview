@@ -1,7 +1,7 @@
 # Graph of all incidents
 all_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
@@ -32,7 +32,7 @@ top_incident_types_by_incidents_list = """
 # Graph of top traps by incidents
 top_traps_by_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         source,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -69,7 +69,7 @@ top_traps_by_incidents_graph = """
 # Graph of top actions by incidents
 top_actions_by_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         action,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -121,7 +121,7 @@ top_attackers_by_incidents_list = """
 # Graph of all attackers
 all_attackers_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
@@ -138,7 +138,7 @@ all_attackers_graph = """
 # Graph of selected attacker's incidents
 selected_attacker_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
@@ -215,7 +215,7 @@ all_countries_by_attackers_list = """
 # Graph of top countries by attackers
 top_countries_by_attackers_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         country,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -251,7 +251,7 @@ top_countries_by_attackers_graph = """
 # Graph of top countries by incidents
 top_countries_by_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         country,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -288,7 +288,7 @@ top_countries_by_incidents_graph = """
 # Graph of top countries by incidents reported by selected devices
 my_top_countries_by_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         country,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -333,7 +333,7 @@ my_top_countries_by_incidents_graph = """
 # Graph of top traps by incidents reported by selected devices
 my_top_traps_by_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         source,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
@@ -378,7 +378,7 @@ my_top_traps_by_incidents_graph = """
 # Graph of all incidents reported by selected devices
 my_all_incidents_graph = """
     SELECT
-        to_char(bucket_inner, 'YYYY-MM-DD HH24:MI') as bucket,
+        to_char(bucket_inner AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') as bucket,
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
