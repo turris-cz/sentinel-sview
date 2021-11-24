@@ -23,6 +23,15 @@ CREATE TABLE IF NOT EXISTS incidents (
 );
 SELECT create_hypertable('incidents', 'time');
 
+CREATE TABLE IF NOT EXISTS incidents_quarterly (LIKE incidents INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('incidents_quarterly', 'time');
+
+CREATE TABLE IF NOT EXISTS incidents_hourly (LIKE incidents INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('incidents_hourly', 'time');
+
+CREATE TABLE IF NOT EXISTS incidents_daily (LIKE incidents INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('incidents_daily', 'time');
+
 -- A scheme for saving passwords
 CREATE TABLE IF NOT EXISTS passwords (
     time TIMESTAMPTZ NOT NULL,
@@ -31,6 +40,15 @@ CREATE TABLE IF NOT EXISTS passwords (
     password TEXT NOT NULL
 );
 SELECT create_hypertable('passwords', 'time');
+
+CREATE TABLE IF NOT EXISTS passwords_quarterly (LIKE passwords INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('passwords_quarterly', 'time');
+
+CREATE TABLE IF NOT EXISTS passwords_hourly (LIKE passwords INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('passwords_hourly', 'time');
+
+CREATE TABLE IF NOT EXISTS passwords_daily (LIKE passwords INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('passwords_daily', 'time');
 
 -- A scheme for saving scanned ports
 CREATE TYPE protocol_t AS ENUM ('TCP', 'UDP', 'other');
@@ -41,3 +59,12 @@ CREATE TABLE IF NOT EXISTS ports (
     protocol protocol_t NOT NULL
 );
 SELECT create_hypertable('ports', 'time');
+
+CREATE TABLE IF NOT EXISTS ports_quarterly (LIKE ports INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('ports_quarterly', 'time');
+
+CREATE TABLE IF NOT EXISTS ports_hourly (LIKE ports INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('ports_hourly', 'time');
+
+CREATE TABLE IF NOT EXISTS ports_daily (LIKE ports INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+SELECT create_hypertable('ports_daily', 'time');
