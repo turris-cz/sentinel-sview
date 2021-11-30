@@ -4,8 +4,6 @@ import re
 from flask import current_app
 
 from .extensions import db
-from .queries import PERIODS
-from .queries import RESOURCE_QUERIES
 
 
 class QueryFiller:
@@ -43,19 +41,12 @@ def _fill_query(query, params):
     return re.sub(r":[\w_]+", replace, query)
 
 
-def process_query(resource_name, params):
-    query = RESOURCE_QUERIES[resource_name]["query"]
-    params.update(RESOURCE_QUERIES[resource_name].get("params", {}))
-    params["bucket"] = PERIODS[params["period"]]["bucket"]
-    params["finish_ts"] = PERIODS[params["period"]]["get_finish"]()
-    params["start_ts"] = PERIODS[params["period"]]["get_start"]()
-
+def process_query(query, params):
     result = []
 
     try:
         current_app.logger.debug(
-            "Fetching resource '%s' with query: %s",
-            resource_name,
+            "Executing query: %s",
             QueryFiller(query, params),
         )
         data = db.session.execute(query, params)
@@ -65,13 +56,5 @@ def process_query(resource_name, params):
 
     for row in data:
         result.append(dict(row))
-
-    post_process = RESOURCE_QUERIES[resource_name].get("post_process")
-    if post_process and callable(post_process):
-        # This is experimental feature
-        # It would be nice to have better interface
-        returned = post_process(result)
-        if returned:
-            result = returned
 
     return result

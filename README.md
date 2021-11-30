@@ -31,8 +31,10 @@ Python Package Index requirements (including the development ones) are stated in
 To see up-to-date data, one should execute:
 
 ```
-flask queue-queries
+flask refresh
 ```
+
+In production, this command should be executed every minute by cron.
 
 In application context (`dotenv` or `FLASK_APP=sview`).
 
@@ -83,24 +85,24 @@ Flask provides user-friendly command line interface. Using this interface a bunc
 of semi-useful commands was prepared. Using these commands the user can view
 state of jobs, cache and other things. The following commands are implemented:
 
-- `flask check-redis`
+- `flask view-redis-cache`
   - Check state of data in redis. Prints list of cached and missing resource
     keys.
 - `flask clear-cache`
   - Clear application cache, not the Redis cache
-- `flask clear-redis`
+- `flask clear-redis-cache`
   - Clear Redis cache
-- `flask queue-queries`
+- `flask refresh`
   - Suggest caching of all precached resources. Only missing or outdated
     resources are refreshed.
   - Using dry-run mode you can see what resources would be cached:
-    `flask queue-queries -d`. The would-be run jobs would be marked with
+    `flask refresh -d`. The would-be run jobs would be marked with
     `Queueing` but new job `id` would be `None`.
-- `flask queue-query`
+- `flask refresh-resource <resource name> <resource period> [-d]`
   - Suggest caching of a single resource. Proceed only if the resource is
     missing or outdated.
   - Resource name and period name are required
-  - E.g. `flask queue-query all_attackers_graph 1h`
+  - E.g. `flask refresh-resource all_attackers_graph 1h`
   - Dry run mode available
 - `flask view-jobs`
   - View running, failed, removed or other jobs.

@@ -2,7 +2,7 @@ import hashlib
 
 from flask import request
 
-from .queries import PERIODS, DEFAULT_PERIOD
+from .periods import PERIODS, DEFAULT_PERIOD
 
 
 def get_tokens_hash(device_tokens):

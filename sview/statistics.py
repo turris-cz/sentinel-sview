@@ -10,7 +10,7 @@ from flask import url_for
 from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 
 from .resources import get_resource
-from .queries import PERIODS, DEFAULT_PERIOD
+from .periods import PERIODS, DEFAULT_PERIOD
 from .view_helpers import get_tokens_hash
 from .view_helpers import endpoint_arguments_constructor
 

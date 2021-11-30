@@ -10,7 +10,7 @@ from flask import session
 from .exceptions import ResourceError
 from .resources import get_resource
 from .queries import KNOWN_PARAMS
-from .queries import PERIODS, DEFAULT_PERIOD
+from .periods import PERIODS, DEFAULT_PERIOD
 from .view_helpers import get_tokens_hash
 
 api = Blueprint("api", __name__)

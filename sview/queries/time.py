@@ -13,23 +13,17 @@ MONTH3 = datetime.timedelta(days=90)
 YEAR = datetime.timedelta(days=378)  # 27 * 14 days
 
 
-def construct_last_before(function, before=datetime.timedelta()):
-    return lambda: function(before)
+def utc_now_ts():
+    return int(datetime.datetime.now(datetime.timezone.utc).timestamp())
 
 
-def construct_get_refresh_timeout(function, after=datetime.timedelta()):
-    return lambda: function(-after) - int(
-        datetime.datetime.now(datetime.timezone.utc).timestamp()
-    )
-
-
-def ts_last_midnight_before(before):
+def ts_last_midnight_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     tr = datetime.datetime(dt.year, dt.month, dt.day, tzinfo=datetime.timezone.utc)
     return int(tr.timestamp())
 
 
-def ts_last_3hour_before(before):
+def ts_last_3hour_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     hour = dt.hour - dt.hour % 3
     tr = datetime.datetime(
@@ -38,7 +32,7 @@ def ts_last_3hour_before(before):
     return int(tr.timestamp())
 
 
-def ts_last_half_before(before):
+def ts_last_half_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     minute = dt.minute - dt.minute % 30
     tr = datetime.datetime(
@@ -47,7 +41,7 @@ def ts_last_half_before(before):
     return int(tr.timestamp())
 
 
-def ts_last_quarter_before(before):
+def ts_last_quarter_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     minute = dt.minute - dt.minute % 15
     tr = datetime.datetime(
@@ -56,9 +50,18 @@ def ts_last_quarter_before(before):
     return int(tr.timestamp())
 
 
-def ts_last_minute_before(before):
+def ts_last_minute_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     tr = datetime.datetime(
         dt.year, dt.month, dt.day, dt.hour, dt.minute, tzinfo=datetime.timezone.utc
     )
     return int(tr.timestamp())
+
+
+LAST_TS_BEFORE_FUNCTIONS = {
+    "ts_last_midnight_before": ts_last_midnight_before,
+    "ts_last_3hour_before": ts_last_3hour_before,
+    "ts_last_half_before": ts_last_half_before,
+    "ts_last_quarter_before": ts_last_quarter_before,
+    "ts_last_minute_before": ts_last_minute_before,
+}

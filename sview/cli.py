@@ -2,16 +2,10 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .resources import try_run_caching_job
 from .job_helpers import inspect_jobs
-from .queries import PRECACHED_RESOURCES
-from .queries import PERIODS
-from .queries import get_cached_data_key
-from .queries import REDIS_CACHE_PREFIX
-from .queries import REDIS_REFRESH_PREFIX
-from .queries import REDIS_JOB_PREFIX
-
-
+from .resources import suggest_caching
+from .resources import suggest_caching_period
+from .resources import Resource
 from .extensions import redis
 
 
@@ -39,15 +33,15 @@ def clear_cache():
 
 @click.command()
 @with_appcontext
-def clear_redis():
+def clear_redis_cache():
     """Clear Redis cache"""
-    keys = redis.keys(f"{REDIS_CACHE_PREFIX}*")
+    keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
     for key in keys:
         redis.delete(key)
 
     click.echo(f"Cleared {len(keys)} keys")
 
-    keys = redis.keys(f"{REDIS_REFRESH_PREFIX}*")
+    keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX}*")
     for key in keys:
         redis.delete(key)
 
@@ -62,13 +56,25 @@ def clear_redis():
     is_flag=True,
     help="Do not queue anything, just print what would be queued",
 )
-def queue_queries(dry_run=False):
-    """Add all cached queries to the queue"""
-    for period in PERIODS:
-        for resource_name in PRECACHED_RESOURCES:
-            click.echo(
-                try_run_caching_job(resource_name, {"period": period}, dry_run=dry_run)
-            )
+def refresh(dry_run=False):
+    """Suggest refresh of all outdated resources"""
+    for result in suggest_caching_period("1h", dry_run=dry_run):
+        click.echo(result)
+
+    for result in suggest_caching_period("12h", dry_run=dry_run):
+        click.echo(result)
+    for result in suggest_caching_period("1d", dry_run=dry_run):
+        click.echo(result)
+
+    for result in suggest_caching_period("1w", dry_run=dry_run):
+        click.echo(result)
+
+    for result in suggest_caching_period("1m", dry_run=dry_run):
+        click.echo(result)
+    for result in suggest_caching_period("3m", dry_run=dry_run):
+        click.echo(result)
+    for result in suggest_caching_period("1y", dry_run=dry_run):
+        click.echo(result)
 
 
 @click.command()
@@ -81,38 +87,28 @@ def queue_queries(dry_run=False):
     help="Do not queue anything, just print what would be queued",
 )
 @with_appcontext
-def queue_query(resource_name, period, dry_run=False):
-    """Add cached query to the queue"""
-    click.echo(try_run_caching_job(resource_name, {"period": period}, dry_run=dry_run))
+def refresh_resource(resource_name, period, dry_run=False):
+    """Suggest refresh of a resource"""
+    click.echo(suggest_caching(resource_name, {"period": period}, dry_run=dry_run))
 
 
 @click.command()
 @with_appcontext
-def check_redis():
-    """Check state of data in redis"""
+def view_redis_cache():
+    keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
     size = 0
-    available = []
-    missing = []
-
-    for resource_request in PRECACHED_RESOURCES:
-        data = redis.get(get_cached_data_key(*resource_request))
+    for key in keys:
+        data = redis.get(key)
+        ttl = redis.ttl(key)
+        key = key.decode()
         if data:
-            available.append(resource_request)
+            click.echo(
+                f"{key:<55s} ttl={ttl:<6} size={_human_readable_bytes(len(data))}"
+            )
             size += len(data)
-        else:
-            missing.append(resource_request)
 
-    if available:
-        click.echo("Stored keys:")
-        for resource_request in available:
-            click.echo("  - {}".format(get_cached_data_key(*resource_request)))
-    if missing:
-        click.echo("Missing keys:")
-        for resource_request in missing:
-            click.echo("  - {}".format(get_cached_data_key(*resource_request)))
-    if available:
-        click.echo("")
-        click.echo("Keys occupy:  {}".format(_human_readable_bytes(size)))
+    click.echo("")
+    click.echo("Cached resources occupy:  {}".format(_human_readable_bytes(size)))
 
 
 def _human_readable_bytes(size):
@@ -126,7 +122,7 @@ def _human_readable_bytes(size):
 def register_cli_commands(app):
     app.cli.add_command(view_jobs)
     app.cli.add_command(clear_cache)
-    app.cli.add_command(queue_queries)
-    app.cli.add_command(queue_query)
-    app.cli.add_command(check_redis)
-    app.cli.add_command(clear_redis)
+    app.cli.add_command(refresh)
+    app.cli.add_command(refresh_resource)
+    app.cli.add_command(view_redis_cache)
+    app.cli.add_command(clear_redis_cache)
