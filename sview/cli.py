@@ -1,10 +1,9 @@
 import click
-import datetime
-
 from flask import current_app
 from flask.cli import with_appcontext
 
 from .resources import try_run_caching_job
+from .job_helpers import inspect_jobs
 from .queries import PRECACHED_RESOURCES
 from .queries import PERIODS
 from .queries import get_cached_data_key
@@ -14,49 +13,13 @@ from .queries import REDIS_JOB_PREFIX
 
 
 from .extensions import redis
-from .extensions import rq
 
 
 @click.command()
 @with_appcontext
 def view_jobs():
-    """Clear Redis cache"""
-    queue = rq.get_queue()
-    job_handler_keys = redis.keys(f"{REDIS_JOB_PREFIX}*")
-    for job_handler_key in job_handler_keys:
-
-        job_id = redis.get(job_handler_key)
-        if not job_id:
-            continue
-
-        # The job was recently deployed. We should try to fetch it.
-        job_id = job_id.decode("UTF-8")
-        job_ttl = redis.ttl(job_handler_key)
-        job = queue.fetch_job(job_id)
-
-        (_, query_name, period_name) = job_handler_key.decode().split(";")
-        if not job:  # The job already finished or was cleared
-            click.echo(
-                f"{query_name:>38s} {period_name:<3s} is removed  "
-                f"(id={job_id}, handler_ttl={job_ttl})"
-            )
-            continue
-
-        # The job was succesfully fetched. We should inspect it's state.
-        job_status = job.get_status()
-        if job.worker_name:  # The job is assigned to a worker
-            execution_time = datetime.datetime.utcnow() - job.started_at
-            click.echo(
-                f"{query_name:>38s} {period_name:<3s} is {job_status:<8s} "
-                f"(id={job_id}, handler_ttl={job_ttl}, worker={job.worker_name}, "
-                f"execution_time={execution_time})"
-            )
-
-        else:
-            click.echo(
-                f"{query_name:>38s} {period_name:<3s} is {job_status:<8s} "
-                f"(id={job_id}, handler_ttl={job_ttl})"
-            )
+    for job_info in inspect_jobs(Resource.REDIS_JOB_PREFIX):
+        click.echo(job_info)
 
 
 @click.command()
