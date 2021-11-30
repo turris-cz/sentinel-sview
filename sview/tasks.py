@@ -29,6 +29,9 @@ class TaskToolbox:
     def get_finish_ts(self):
         return self.get_last_ts_before()
 
+    def get_source_table(self):
+        return f"{self.data_type}_{self.period['source_period']['handle']}".strip("_")
+
     def get_query_params(self):
         query_params = self.params.copy()
         query_params.update(self.query.get("params", {}))

@@ -28,7 +28,10 @@ class ResourceToolbox(TaskToolbox):
         super().__init__()
 
     def get_query(self):
-        return self.query["query"]
+        """Mainly to insert table name"""
+        return self.query["query"].format(
+            source_table=self.get_source_table(),
+        )
 
     def get_available_data(self):
         precached_result = redis.get(self.cached_data_key)

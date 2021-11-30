@@ -35,6 +35,13 @@ from .sql.ports import all_ports_by_scans_graph
 from .sql.ports import top_ports_by_scans_list
 from .sql.ports import top_ports_by_scans_graph
 
+
+class DataTypes:
+    PORTS = "ports"
+    INCIDENTS = "incidents"
+    PASSWORDS = "passwords"
+
+
 KNOWN_PARAMS = {
     "period": "1y",
     "ip": None,
@@ -46,71 +53,89 @@ KNOWN_PARAMS = {
 RESOURCE_QUERIES = {
     "all_incidents_graph": {
         "query": all_incidents_graph,
+        "data_type": DataTypes.INCIDENTS,
     },
     "my_all_incidents_graph": {
         "query": my_all_incidents_graph,
+        "data_type": DataTypes.INCIDENTS,
     },
     "all_ports_by_scans_graph": {
         "query": all_ports_by_scans_graph,
+        "data_type": DataTypes.PORTS,
     },
     "top_passwords_by_usages_list": {
         "query": top_passwords_by_usages_list,
         "params": {"limit": limit_dashboard},
+        "data_type": DataTypes.PASSWORDS,
     },
     "top_passwords_by_usages_list_long": {
         "query": top_passwords_by_usages_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.PASSWORDS,
     },
     "top_usernames_by_usages_list": {
         "query": top_usernames_by_usages_list,
         "params": {"limit": limit_dashboard},
+        "data_type": DataTypes.PASSWORDS,
     },
     "top_usernames_by_usages_list_long": {
         "query": top_usernames_by_usages_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.PASSWORDS,
     },
     "top_ports_by_scans_list_long": {
         "query": top_ports_by_scans_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.PORTS,
     },
     "top_countries_by_incidents_list": {
         "query": top_countries_by_incidents_list,
         "params": {"limit": limit_dashboard},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_countries_by_incidents_list_long": {
         "query": top_countries_by_incidents_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_countries_by_attackers_list": {
         "query": top_countries_by_attackers_list,
         "params": {"limit": limit_dashboard},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_countries_by_attackers_list_long": {
         "query": top_countries_by_attackers_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_attackers_by_incidents_list_long": {
         "query": top_attackers_by_incidents_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_combinations_by_usages_list_long": {
         "query": top_combinations_by_usages_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.PASSWORDS,
     },
     "top_incident_types_by_incidents_list": {
         "query": top_incident_types_by_incidents_list,
         "params": {"limit": limit_dashboard},
+        "data_type": DataTypes.INCIDENTS,
     },
     "all_countries_by_incidents_list": {
         "query": all_countries_by_incidents_list,
         "post_process": lambda d: as_map_data(d, "country", "count"),
+        "data_type": DataTypes.INCIDENTS,
     },
     "all_countries_by_attackers_list": {
         "query": all_countries_by_attackers_list,
         "post_process": lambda d: as_map_data(d, "country", "count"),
+        "data_type": DataTypes.INCIDENTS,
     },
     "all_attackers_graph": {
         "query": all_attackers_graph,
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_countries_by_attackers_graph": {
         "query": top_countries_by_attackers_graph,
@@ -118,6 +143,7 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "country"
         ),
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_countries_by_incidents_graph": {
         "query": top_countries_by_incidents_graph,
@@ -125,6 +151,7 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "country"
         ),
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_traps_by_incidents_graph": {
         "query": top_traps_by_incidents_graph,
@@ -132,6 +159,7 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "source"
         ),
+        "data_type": DataTypes.INCIDENTS,
     },
     "my_top_countries_by_incidents_graph": {
         "query": my_top_countries_by_incidents_graph,
@@ -140,6 +168,7 @@ RESOURCE_QUERIES = {
             d, "bucket", "count", "country"
         ),
         "empty_response": {"data": []},
+        "data_type": DataTypes.INCIDENTS,
     },
     "my_top_traps_by_incidents_graph": {
         "query": my_top_traps_by_incidents_graph,
@@ -148,6 +177,7 @@ RESOURCE_QUERIES = {
             d, "bucket", "count", "source"
         ),
         "empty_response": {"data": []},
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_actions_by_incidents_graph": {
         "query": top_actions_by_incidents_graph,
@@ -155,11 +185,13 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "action"
         ),
+        "data_type": DataTypes.INCIDENTS,
     },
     "top_ports_by_scans_graph": {
         "query": top_ports_by_scans_graph,
         "params": {"limit": limit_plot},
         "post_process": lambda d: as_multiline_graph_data(d, "bucket", "count", "port"),
+        "data_type": DataTypes.PORTS,
     },
     "top_passwords_by_usages_graph": {
         "query": top_passwords_by_usages_graph,
@@ -167,16 +199,20 @@ RESOURCE_QUERIES = {
         "post_process": lambda d: as_multiline_graph_data(
             d, "bucket", "count", "password"
         ),
+        "data_type": DataTypes.PASSWORDS,
     },
     "selected_attacker_incidents_graph": {
         "query": selected_attacker_incidents_graph,
+        "data_type": DataTypes.INCIDENTS,
     },
     "selected_password_by_usages_graph": {
         "query": selected_password_by_usages_graph,
+        "data_type": DataTypes.PASSWORDS,
     },
     "logins_of_password_by_usages_list": {
         "query": logins_of_password_by_usages_list,
         "params": {"limit": limit_long},
+        "data_type": DataTypes.PASSWORDS,
     },
 }
 

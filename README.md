@@ -59,25 +59,31 @@ structure. It's expected structure is described inside
 Generally, it consists of three main tables - one for incidents, one for
 passwords and one for port scans.
 
-## Time scales / buckets
+## Time scales / buckets & aggregation
 
 Using sview, it is possible to display the user data from different time periods.
 Each period displays the data with a different precision and a different max age.
+Therefore, data with different precision may be used for displaying different
+periods.
 The following matrix defines the relations between chosen period (Range),
-aggregation window, TTL used for caching the result and the used bucket. It also
-shows column called Windows Per Range which says how many point there will be in
-the graph. The aggregation can be omitted or modified one day if the plotting
-technology will be more user friendly.
+aggregation window, TTL used for caching the result the used bucket and
+precision. The following precisions are available:
+ - `quarterly`: Incidents summarized by quarters of hour
+ - `hourly`: Incidents summarized by hours
+ - `daily`: Incidents summarized by days
+The table also shows column called Windows Per Range which says how many point there
+will be in the graph. The aggregation can be omitted or modified one day if the
+plotting technology will be more user friendly.
 
-| Range | Window | WPR   | Cache TTL |
-| :---: | :---:  | :---: | :--:      |
-| 1h    | 1m     | 60    | 30s       |
-| 12h   | 15m    | 48    | 7m        |
-| 1d    | 30m    | 48    | 40m       |
-| 1w    | 3h     | 56    | 2h        |
-| 1mo   | 1d     | ~30   | 12h       |
-| 3mo   | 2d     | ~45   | 1d        |
-| 1y    | 1w     | ~52   | 1d        |
+| Range | Window | WPR   | Cache TTL | Source precision |
+| :---: | :---:  | :---: | :--:      | :--:             |
+| 1h    | 1m     | 60    | 30s       | native           |
+| 12h   | 15m    | 48    | 7m        | quarterly        |
+| 1d    | 30m    | 48    | 40m       | quarterly        |
+| 1w    | 3h     | 56    | 2h        | hourly           |
+| 1mo   | 1d     | ~30   | 12h       | daily            |
+| 3mo   | 2d     | ~45   | 1d        | daily            |
+| 1y    | 1w     | ~52   | 1d        | daily            |
 
 ## Flask commands
 

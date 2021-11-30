@@ -7,7 +7,7 @@ all_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
         GROUP BY bucket_inner
@@ -21,7 +21,7 @@ top_incident_types_by_incidents_list = """
         SUM(raw_count) as count,
         trap as source,
         action
-    FROM incidents
+    FROM {source_table}
     WHERE
         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
     GROUP BY trap, action
@@ -40,7 +40,7 @@ top_traps_by_incidents_graph = """
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             trap as source,
             SUM(raw_count) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             trap IN (
                 SELECT
@@ -49,7 +49,7 @@ top_traps_by_incidents_graph = """
                     SELECT
                         trap,
                         SUM(raw_count) AS count_inner
-                    FROM incidents
+                    FROM {source_table}
                     WHERE
                         trap IS NOT NULL
                         AND
@@ -77,7 +77,7 @@ top_actions_by_incidents_graph = """
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             action,
             SUM(raw_count) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             action IN (
                 SELECT
@@ -86,7 +86,7 @@ top_actions_by_incidents_graph = """
                     SELECT
                         action,
                         SUM(raw_count) AS count_inner
-                    FROM incidents
+                    FROM {source_table}
                     WHERE
                         action IS NOT NULL
                         AND
@@ -108,7 +108,7 @@ top_attackers_by_incidents_list = """
     SELECT
         ip,
         SUM(raw_count) AS count
-    FROM incidents
+    FROM {source_table}
     WHERE
         ip IS NOT NULL
         AND
@@ -127,7 +127,7 @@ all_attackers_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             COUNT(DISTINCT ip) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
         GROUP BY bucket_inner
@@ -144,7 +144,7 @@ selected_attacker_incidents_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             ip = :ip
             AND
@@ -159,7 +159,7 @@ top_countries_by_incidents_list = """
     SELECT
         country,
         SUM(raw_count) AS count
-    FROM incidents
+    FROM {source_table}
     WHERE
         country IS NOT NULL
         AND
@@ -174,7 +174,7 @@ top_countries_by_attackers_list = """
     SELECT
         country,
         COUNT(distinct(ip)) AS count
-    FROM incidents
+    FROM {source_table}
     WHERE
         ip IS NOT NULL
         AND
@@ -189,7 +189,7 @@ all_countries_by_incidents_list = """
     SELECT
         country,
         SUM(raw_count) AS count
-    FROM incidents
+    FROM {source_table}
     WHERE
         country IS NOT NULL
         AND
@@ -202,7 +202,7 @@ all_countries_by_attackers_list = """
     SELECT
         country,
         COUNT(distinct(ip)) AS count
-    FROM incidents
+    FROM {source_table}
     WHERE
         country IS NOT NULL
         AND
@@ -223,7 +223,7 @@ top_countries_by_attackers_graph = """
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             country,
             COUNT(DISTINCT ip) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
             AND country IN (
@@ -233,7 +233,7 @@ top_countries_by_attackers_graph = """
                     SELECT
                         country,
                         COUNT(DISTINCT(ip)) AS count_inner
-                    FROM incidents
+                    FROM {source_table}
                     WHERE
                         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
                         AND
@@ -259,7 +259,7 @@ top_countries_by_incidents_graph = """
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             country,
             SUM(raw_count) as count_middle
-        FROM incidents
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
             AND
@@ -270,7 +270,7 @@ top_countries_by_incidents_graph = """
                     SELECT
                         country,
                         SUM(raw_count) AS count_inner
-                    FROM incidents
+                    FROM {source_table}
                     WHERE
                         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
                         AND
@@ -294,30 +294,30 @@ my_top_countries_by_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            incidents.country AS country,
-            SUM(incidents.raw_count) as count_middle
-        FROM incidents, identity
+            {source_table}.country AS country,
+            SUM({source_table}.raw_count) as count_middle
+        FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
             AND
             identity.device_token in :my_device_tokens
             AND
-            incidents.identity_id=identity.id
+            {source_table}.identity_id=identity.id
             AND
-            incidents.country IN (
+            {source_table}.country IN (
                 SELECT
                     country_inner
                 FROM (
                     SELECT
-                        incidents.country as country_inner,
-                        SUM(incidents.raw_count) AS count_inner
-                    FROM incidents, identity
+                        {source_table}.country as country_inner,
+                        SUM({source_table}.raw_count) AS count_inner
+                    FROM {source_table}, identity
                     WHERE
-                        to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
                         AND
-                        incidents.country IS NOT NULL
+                        {source_table}.country IS NOT NULL
                         AND
-                        incidents.identity_id=identity.id
+                        {source_table}.identity_id=identity.id
                         AND
                         identity.device_token in :my_device_tokens
                     GROUP BY country_inner
@@ -339,30 +339,30 @@ my_top_traps_by_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            incidents.trap AS source,
-            SUM(incidents.raw_count) as count_middle
-        FROM incidents, identity
+            {source_table}.trap AS source,
+            SUM({source_table}.raw_count) as count_middle
+        FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
             AND
             identity.device_token in :my_device_tokens
             AND
-            incidents.identity_id=identity.id
+            {source_table}.identity_id=identity.id
             AND
-            incidents.trap IN (
+            {source_table}.trap IN (
                 SELECT
                     trap_inner
                 FROM (
                     SELECT
-                        incidents.trap as trap_inner,
-                        SUM(incidents.raw_count) AS count_inner
-                    FROM incidents, identity
+                        {source_table}.trap as trap_inner,
+                        SUM({source_table}.raw_count) AS count_inner
+                    FROM {source_table}, identity
                     WHERE
-                        to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
                         AND
-                        incidents.trap IS NOT NULL
+                        {source_table}.trap IS NOT NULL
                         AND
-                        incidents.identity_id=identity.id
+                        {source_table}.identity_id=identity.id
                         AND
                         identity.device_token in :my_device_tokens
                     GROUP BY trap_inner
@@ -383,12 +383,12 @@ my_all_incidents_graph = """
     FROM (
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
-            SUM(incidents.raw_count) as count_middle
-        FROM incidents, identity
+            SUM({source_table}.raw_count) as count_middle
+        FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= incidents.time AND incidents.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
             AND
-            incidents.identity_id=identity.id
+            {source_table}.identity_id=identity.id
             AND
             identity.device_token in :my_device_tokens
         GROUP BY bucket_inner

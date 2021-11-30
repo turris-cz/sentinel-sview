@@ -7,7 +7,7 @@ all_ports_by_scans_graph = """
         SELECT
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
-        FROM ports
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
         GROUP BY bucket_inner
@@ -26,7 +26,7 @@ top_ports_by_scans_graph = """
             time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             CONCAT(protocol, '/', port) AS port,
             SUM(raw_count) as count_middle
-        FROM ports
+        FROM {source_table}
         WHERE
             to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
             AND
@@ -39,7 +39,7 @@ top_ports_by_scans_graph = """
                         port,
                         protocol,
                         SUM(raw_count) AS count_inner
-                    FROM ports
+                    FROM {source_table}
                     WHERE
                         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
                     GROUP BY port, protocol
@@ -57,7 +57,7 @@ top_ports_by_scans_list = """
     SELECT
         CONCAT(protocol, '/', port) AS port,
         SUM(raw_count) AS count
-    FROM ports
+    FROM {source_table}
     WHERE
         to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
     GROUP BY port, protocol

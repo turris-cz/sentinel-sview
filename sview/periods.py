@@ -10,6 +10,22 @@ from .queries.time import MONTH
 from .queries.time import MONTH3
 from .queries.time import YEAR
 
+"""Time periods for data aggregation
+"""
+#  Not a real aggregation period. It just marks data with no aggregation
+NATIVE_PERIOD = {
+    "handle": "",
+}
+QUARTERLY_PERIOD = {
+    "handle": "quarterly",
+}
+HOURLY_PERIOD = {
+    "handle": "hourly",
+}
+DAILY_PERIOD = {
+    "handle": "daily",
+}
+
 
 """Time periods of displayed data. If you divide period length by length of
 flux window, you will get the number of displayed data points. Each period has
@@ -23,6 +39,7 @@ PERIOD_HOUR = {
     "bucket": "1 minute",
     "cache_ttl": 5 * 60,
     "user_cache_ttl": 2 * 60,
+    "source_period": NATIVE_PERIOD,
     "refresh_interval": MINUTE,
     "display_interval": HOUR,
     "last_ts_before_function": "ts_last_minute_before",
@@ -33,6 +50,7 @@ PERIOD_12_HOURS = {
     "bucket": "15 minutes",
     "cache_ttl": 20 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": QUARTERLY_PERIOD,
     "refresh_interval": MINUTE15,
     "display_interval": HOUR12,
     "last_ts_before_function": "ts_last_quarter_before",
@@ -43,6 +61,7 @@ PERIOD_DAY = {
     "bucket": "30 minutes",
     "cache_ttl": 25 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": QUARTERLY_PERIOD,
     "refresh_interval": MINUTE30,
     "display_interval": DAY,
     "last_ts_before_function": "ts_last_half_before",
@@ -53,6 +72,7 @@ PERIOD_WEEK = {
     "bucket": "3 hours",
     "cache_ttl": 3 * 60 * 60 + 10 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": HOURLY_PERIOD,
     "refresh_interval": HOUR3,
     "display_interval": WEEK,
     "last_ts_before_function": "ts_last_3hour_before",
@@ -63,6 +83,7 @@ PERIOD_MONTH = {
     "bucket": "1 day",
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": DAILY_PERIOD,
     "refresh_interval": DAY,
     "display_interval": MONTH,
     "last_ts_before_function": "ts_last_midnight_before",
@@ -73,6 +94,7 @@ PERIOD_3_MONTHS = {
     "bucket": "2 days",
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": DAILY_PERIOD,
     "refresh_interval": DAY,
     "display_interval": MONTH3,
     "last_ts_before_function": "ts_last_midnight_before",
@@ -83,6 +105,7 @@ PERIOD_YEAR = {
     "bucket": "14 days",
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
+    "source_period": DAILY_PERIOD,
     "refresh_interval": DAY,
     "display_interval": YEAR,
     "last_ts_before_function": "ts_last_midnight_before",
