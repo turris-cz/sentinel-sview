@@ -85,6 +85,21 @@ plotting technology will be more user friendly.
 | 3mo   | 2d     | ~45   | 1d        | daily            |
 | 1y    | 1w     | ~52   | 1d        | daily            |
 
+### Aggregation tasks
+
+Sview is able to maintain different tables with different data precision. To
+achieve this, sview runs periodic task to aggregate data and move them between
+these tables. Currently, there are 3 main aggregation tasks - each for one
+precision, also called *aggregation period*. The mechanism is very similar to
+caching resources. It means that every aggregation period (e.g. every hour) a
+task is deployed which aggregates the last period (hour) from higher precision
+(quarterly) to lower precision (hourly) and moves it to proper table (one of
+`*_hourly` tables, e.g. `ports_hourly`).
+
+Like in case of resources, *aggragation timeouts* are used to keep knowledge
+whether is is the right time to run an aggregation task. When aggregation
+timeout expires the task is triggered.
+
 ## Flask commands
 
 Flask provides user-friendly command line interface. Using this interface a bunch

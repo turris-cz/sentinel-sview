@@ -1,3 +1,4 @@
+from .aggregation import Aggregation
 from .exceptions import ResourceError
 from .extensions import redis
 from .jobs import cache_resource
@@ -24,6 +25,19 @@ class Resource(Task, ResourceToolbox):
 
         return super()._queue_job()
 
+    def get_aggregation(self):
+        return Aggregation(self.data_type, self.period["source_period"])
+
+    def suggest_recursive_aggregation(self):
+        aggregation = self.get_aggregation()
+        aggregation.suggest_recursive_aggregation()
+
+    def blocked_by_preceding_aggregations(self):
+        aggregation = self.get_aggregation()
+        return (
+            aggregation.is_pending() or aggregation.blocked_by_preceding_aggregations()
+        )
+
     def suggest_caching(self, rlimit=False, dry_run=False):
         """Enqueue a job when refresh is allowed or check its result when it is
         already enqueued.
@@ -31,6 +45,13 @@ class Resource(Task, ResourceToolbox):
         refresh_ttl = redis.ttl(self.refresh_timeout_key)
         is_time_to_refresh = refresh_ttl <= 0  # -1 for no key, -2 for key with no ttl
         cache_ttl = redis.ttl(self.cached_data_key)
+
+        if self.blocked_by_preceding_aggregations():
+            return (
+                f"Skipping cache {self.name:^38s} {self.period['handle']:>3s} "
+                f"(refresh_ttl={refresh_ttl}, cache_ttl={cache_ttl}) "
+                f"(blocked by ongoing aggregations)"
+            )
 
         job_state = self.get_job_state()
         if not job_state.is_alive() and (is_time_to_refresh or job_state.is_failed()):
@@ -81,6 +102,7 @@ def get_resource(resource_name, params):
         params=params,
     )
 
+    resource.suggest_recursive_aggregation()
     resource.suggest_caching(rlimit=True)
 
     return resource.get_available_data()

@@ -32,6 +32,14 @@ def ts_last_3hour_before(before=datetime.timedelta()):
     return int(tr.timestamp())
 
 
+def ts_last_hour_before(before=datetime.timedelta()):
+    dt = datetime.datetime.now(datetime.timezone.utc) - before
+    tr = datetime.datetime(
+        dt.year, dt.month, dt.day, dt.hour, tzinfo=datetime.timezone.utc
+    )
+    return int(tr.timestamp())
+
+
 def ts_last_half_before(before=datetime.timedelta()):
     dt = datetime.datetime.now(datetime.timezone.utc) - before
     minute = dt.minute - dt.minute % 30
@@ -61,6 +69,7 @@ def ts_last_minute_before(before=datetime.timedelta()):
 LAST_TS_BEFORE_FUNCTIONS = {
     "ts_last_midnight_before": ts_last_midnight_before,
     "ts_last_3hour_before": ts_last_3hour_before,
+    "ts_last_hour_before": ts_last_hour_before,
     "ts_last_half_before": ts_last_half_before,
     "ts_last_quarter_before": ts_last_quarter_before,
     "ts_last_minute_before": ts_last_minute_before,

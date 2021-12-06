@@ -50,11 +50,15 @@ def process_query(query, params):
             QueryFiller(query, params),
         )
         data = db.session.execute(query, params)
+        db.session.commit()
     except sqlalchemy.exc.SQLAlchemyError as exc:
         full_query = _fill_query(query, params)
         raise Exception(f"Failed to execute query: {full_query}") from exc
 
-    for row in data:
-        result.append(dict(row))
+    try:
+        for row in data:
+            result.append(dict(row))
+    except sqlalchemy.exc.ResourceClosedError:  # in case of inserting - no rows
+        pass
 
     return result

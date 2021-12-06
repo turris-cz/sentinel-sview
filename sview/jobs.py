@@ -2,6 +2,7 @@ import simplejson
 
 from flask import current_app
 
+from .aggregation_tools import AggregationToolbox
 from .extensions import redis, rq
 from .data_helpers import process_query
 from .resources_tools import ResourceToolbox
@@ -30,3 +31,9 @@ def cache_resource(resource_name, resource_period, params):
         ttl = min(ttl, USER_TTL)  # Do not cache user-specific resources for long
 
     redis.set(resource.cached_data_key, simplejson.dumps(resource_data), ex=ttl)
+
+
+@rq.job(result_ttl=10, timeout=JOB_TIMEOUT)
+def aggregate(data_type, aggregation_period, params):
+    aggregation = AggregationToolbox(data_type, aggregation_period)
+    process_query(aggregation.get_query(), aggregation.get_query_params())

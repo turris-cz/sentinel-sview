@@ -15,15 +15,37 @@ from .queries.time import YEAR
 #  Not a real aggregation period. It just marks data with no aggregation
 NATIVE_PERIOD = {
     "handle": "",
+    "source_period": None,
 }
 QUARTERLY_PERIOD = {
     "handle": "quarterly",
+    "source_period": NATIVE_PERIOD,
+    "bucket": "15 minutes",
+    "refresh_interval": MINUTE15,
+    "display_interval": MINUTE15,
+    "last_ts_before_function": "ts_last_quarter_before",
 }
 HOURLY_PERIOD = {
     "handle": "hourly",
+    "source_period": QUARTERLY_PERIOD,
+    "bucket": "1 hour",
+    "refresh_interval": HOUR,
+    "display_interval": HOUR,
+    "last_ts_before_function": "ts_last_hour_before",
 }
 DAILY_PERIOD = {
     "handle": "daily",
+    "source_period": HOURLY_PERIOD,
+    "bucket": "1 day",
+    "refresh_interval": DAY,
+    "display_interval": DAY,
+    "last_ts_before_function": "ts_last_midnight_before",
+}
+
+AGGREGATION_PERIODS = {
+    "quarterly": QUARTERLY_PERIOD,
+    "hourly": HOURLY_PERIOD,
+    "daily": DAILY_PERIOD,
 }
 
 
