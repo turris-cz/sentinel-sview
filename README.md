@@ -100,6 +100,10 @@ Like in case of resources, *aggragation timeouts* are used to keep knowledge
 whether is is the right time to run an aggregation task. When aggregation
 timeout expires the task is triggered.
 
+The need for aggregation is automatically checked with every resource request
+and with every `flask refresh` command and the aggregation is triggered when
+needed.
+
 ## Flask commands
 
 Flask provides user-friendly command line interface. Using this interface a bunch

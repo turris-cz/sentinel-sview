@@ -2,10 +2,13 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
+from .aggregation import suggest_aggregation
+from .aggregation import Aggregation
 from .job_helpers import inspect_jobs
 from .resources import suggest_caching
 from .resources import suggest_caching_period
 from .resources import Resource
+from .periods import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
 from .extensions import redis
 
 
@@ -13,6 +16,9 @@ from .extensions import redis
 @with_appcontext
 def view_jobs():
     for job_info in inspect_jobs(Resource.REDIS_JOB_PREFIX):
+        click.echo(job_info)
+
+    for job_info in inspect_jobs(Aggregation.REDIS_JOB_PREFIX):
         click.echo(job_info)
 
 
@@ -57,18 +63,28 @@ def clear_redis_cache():
     help="Do not queue anything, just print what would be queued",
 )
 def refresh(dry_run=False):
-    """Suggest refresh of all outdated resources"""
+    """Suggest aggregation and refresh of all outdated resources"""
     for result in suggest_caching_period("1h", dry_run=dry_run):
         click.echo(result)
+
+    click.echo(suggest_aggregation("incidents", QUARTERLY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("passwords", QUARTERLY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("ports", QUARTERLY_PERIOD, dry_run=dry_run))
+
+    click.echo(suggest_aggregation("incidents", HOURLY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("passwords", HOURLY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("ports", HOURLY_PERIOD, dry_run=dry_run))
+
+    click.echo(suggest_aggregation("incidents", DAILY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("passwords", DAILY_PERIOD, dry_run=dry_run))
+    click.echo(suggest_aggregation("ports", DAILY_PERIOD, dry_run=dry_run))
 
     for result in suggest_caching_period("12h", dry_run=dry_run):
         click.echo(result)
     for result in suggest_caching_period("1d", dry_run=dry_run):
         click.echo(result)
-
     for result in suggest_caching_period("1w", dry_run=dry_run):
         click.echo(result)
-
     for result in suggest_caching_period("1m", dry_run=dry_run):
         click.echo(result)
     for result in suggest_caching_period("3m", dry_run=dry_run):
