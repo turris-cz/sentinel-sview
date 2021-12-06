@@ -20,8 +20,21 @@ class TaskToolbox:
                 self.period.get("last_ts_before_function")
             ]
 
+    def get_start_delay(self):
+        period = self.period
+        start_delay = 0
+        while period["source_period"] is not None:
+            start_delay += period["start_delay_bonus"]
+            period = period["source_period"]
+
+        return start_delay
+
     def get_refresh_timeout(self):
-        return self.get_last_ts_before(-self.period["refresh_interval"] - utc_now_ts())
+        return (
+            self.get_last_ts_before(-self.period["refresh_interval"])
+            - utc_now_ts()
+            + self.get_start_delay()
+        )
 
     def get_start_ts(self):
         return self.get_last_ts_before(self.period["display_interval"])

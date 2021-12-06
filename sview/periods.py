@@ -21,6 +21,7 @@ QUARTERLY_PERIOD = {
     "handle": "quarterly",
     "source_period": NATIVE_PERIOD,
     "bucket": "15 minutes",
+    "start_delay_bonus": 3 * 60,  # seconds
     "refresh_interval": MINUTE15,
     "display_interval": MINUTE15,
     "last_ts_before_function": "ts_last_quarter_before",
@@ -29,6 +30,7 @@ HOURLY_PERIOD = {
     "handle": "hourly",
     "source_period": QUARTERLY_PERIOD,
     "bucket": "1 hour",
+    "start_delay_bonus": 10,  # seconds
     "refresh_interval": HOUR,
     "display_interval": HOUR,
     "last_ts_before_function": "ts_last_hour_before",
@@ -37,6 +39,7 @@ DAILY_PERIOD = {
     "handle": "daily",
     "source_period": HOURLY_PERIOD,
     "bucket": "1 day",
+    "start_delay_bonus": 10,  # seconds
     "refresh_interval": DAY,
     "display_interval": DAY,
     "last_ts_before_function": "ts_last_midnight_before",
@@ -59,6 +62,7 @@ PERIOD_HOUR = {
     "handle": "1h",
     "label": "Hour",
     "bucket": "1 minute",
+    "start_delay_bonus": 0,  # seconds
     "cache_ttl": 5 * 60,
     "user_cache_ttl": 2 * 60,
     "source_period": NATIVE_PERIOD,
@@ -70,6 +74,7 @@ PERIOD_12_HOURS = {
     "handle": "12h",
     "label": "12 Hours",
     "bucket": "15 minutes",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 20 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": QUARTERLY_PERIOD,
@@ -81,6 +86,7 @@ PERIOD_DAY = {
     "handle": "1d",
     "label": "Day",
     "bucket": "30 minutes",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 25 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": QUARTERLY_PERIOD,
@@ -92,6 +98,7 @@ PERIOD_WEEK = {
     "handle": "1w",
     "label": "Week",
     "bucket": "3 hours",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 3 * 60 * 60 + 10 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": HOURLY_PERIOD,
@@ -103,6 +110,7 @@ PERIOD_MONTH = {
     "handle": "1m",
     "label": "Month",
     "bucket": "1 day",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
@@ -114,6 +122,7 @@ PERIOD_3_MONTHS = {
     "handle": "3m",
     "label": "3 Months",
     "bucket": "2 days",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
@@ -125,6 +134,7 @@ PERIOD_YEAR = {
     "handle": "1y",
     "label": "Year",
     "bucket": "14 days",
+    "start_delay_bonus": 5,  # seconds
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
