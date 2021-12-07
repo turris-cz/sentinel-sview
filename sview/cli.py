@@ -5,11 +5,40 @@ from flask.cli import with_appcontext
 from .aggregation import suggest_aggregation
 from .aggregation import Aggregation
 from .job_helpers import inspect_jobs
+from .queries.time import DAY
 from .resources import suggest_caching
 from .resources import suggest_caching_period
 from .resources import Resource
 from .periods import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
 from .extensions import redis
+
+
+@click.command()
+@with_appcontext
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not queue anything, just print what would be queued",
+)
+@click.argument("period", nargs=1, required=True)
+def migrate_period(period, dry_run=False):
+    available_periods = {
+        "quarterly": {**QUARTERLY_PERIOD, **{"display_interval": DAY * 9}},
+        "hourly": {**HOURLY_PERIOD, **{"display_interval": DAY * 8}},
+        "daily": {**DAILY_PERIOD, **{"display_interval": DAY * 7}},
+    }
+    if period not in available_periods:
+        click.echo(f"Period must be one of: {[name for name in available_periods]}")
+        return
+
+    click.echo(
+        suggest_aggregation("incidents", available_periods[period], dry_run=dry_run)
+    )
+    click.echo(
+        suggest_aggregation("passwords", available_periods[period], dry_run=dry_run)
+    )
+    click.echo(suggest_aggregation("ports", available_periods[period], dry_run=dry_run))
 
 
 @click.command()
@@ -136,6 +165,7 @@ def _human_readable_bytes(size):
 
 
 def register_cli_commands(app):
+    app.cli.add_command(migrate_period)
     app.cli.add_command(view_jobs)
     app.cli.add_command(clear_cache)
     app.cli.add_command(refresh)

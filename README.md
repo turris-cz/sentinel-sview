@@ -117,6 +117,16 @@ state of jobs, cache and other things. The following commands are implemented:
   - Clear application cache, not the Redis cache
 - `flask clear-redis-cache`
   - Clear Redis cache
+- `flask migrate-period <period name>`
+  - Aggregates last few days from source period to period requested by
+    `period_name`
+  - This could be used as a development tools or during initial migration
+    from non-aggregated DB. In the later case it would be used in three waves:
+    - `flask migrate-period quarterly`
+    - `flask migrate-period hourly`
+    - `flask migrate-period daily`
+    Each command must be executed only when the jobs deployed by the previous
+    command are completed
 - `flask refresh`
   - Suggest caching of all precached resources. Only missing or outdated
     resources are refreshed.
