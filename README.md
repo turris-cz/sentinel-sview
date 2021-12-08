@@ -110,6 +110,9 @@ Flask provides user-friendly command line interface. Using this interface a bunc
 of semi-useful commands was prepared. Using these commands the user can view
 state of jobs, cache and other things. The following commands are implemented:
 
+- `flask aggregate-period <aggregation period name>`
+  - Suggest aggregation of the specified period. The specified period is the
+    destination period.
 - `flask view-redis-cache`
   - Check state of data in redis. Prints list of cached and missing resource
     keys.

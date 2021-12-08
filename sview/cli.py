@@ -10,6 +10,7 @@ from .resources import suggest_caching
 from .resources import suggest_caching_period
 from .resources import Resource
 from .periods import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
+from .periods import AGGREGATION_PERIODS
 from .extensions import redis
 
 
@@ -39,6 +40,31 @@ def migrate_period(period, dry_run=False):
         suggest_aggregation("passwords", available_periods[period], dry_run=dry_run)
     )
     click.echo(suggest_aggregation("ports", available_periods[period], dry_run=dry_run))
+
+
+@click.command()
+@with_appcontext
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not queue anything, just print what would be queued",
+)
+@click.argument("period", nargs=1, required=True)
+def aggregate_period(period, dry_run=False):
+    if period not in AGGREGATION_PERIODS:
+        click.echo(f"Period must be one of: {[name for name in AGGREGATION_PERIODS]}")
+        return
+
+    click.echo(
+        suggest_aggregation("incidents", AGGREGATION_PERIODS[period], dry_run=dry_run)
+    )
+    click.echo(
+        suggest_aggregation("passwords", AGGREGATION_PERIODS[period], dry_run=dry_run)
+    )
+    click.echo(
+        suggest_aggregation("ports", AGGREGATION_PERIODS[period], dry_run=dry_run)
+    )
 
 
 @click.command()
@@ -166,6 +192,7 @@ def _human_readable_bytes(size):
 
 def register_cli_commands(app):
     app.cli.add_command(migrate_period)
+    app.cli.add_command(aggregate_period)
     app.cli.add_command(view_jobs)
     app.cli.add_command(clear_cache)
     app.cli.add_command(refresh)
