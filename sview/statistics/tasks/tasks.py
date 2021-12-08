@@ -6,7 +6,7 @@ from .periods.time import LAST_TS_BEFORE_FUNCTIONS
 from .job_helpers import JobState
 
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true
-JOB_TIMEOUT = 600  # Seconds
+JOB_TIMEOUT = 60 * 60  # Seconds
 
 
 class TaskToolbox:
