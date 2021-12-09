@@ -5,12 +5,13 @@ from flask.cli import with_appcontext
 from .aggregation import suggest_aggregation
 from .aggregation import Aggregation
 from .job_helpers import inspect_jobs
+from .queries import RESOURCE_QUERIES
 from .queries.time import DAY
 from .resources import suggest_caching
 from .resources import suggest_caching_period
 from .resources import Resource
 from .periods import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
-from .periods import AGGREGATION_PERIODS
+from .periods import PERIODS, AGGREGATION_PERIODS
 from .extensions import redis
 
 
@@ -24,6 +25,7 @@ from .extensions import redis
 )
 @click.argument("period", nargs=1, required=True)
 def migrate_period(period, dry_run=False):
+    """Suggest extended aggregation supposed for development"""
     available_periods = {
         "quarterly": {**QUARTERLY_PERIOD, **{"display_interval": DAY * 9}},
         "hourly": {**HOURLY_PERIOD, **{"display_interval": DAY * 8}},
@@ -52,6 +54,7 @@ def migrate_period(period, dry_run=False):
 )
 @click.argument("period", nargs=1, required=True)
 def aggregate_period(period, dry_run=False):
+    """Suggest aggregation of a period"""
     if period not in AGGREGATION_PERIODS:
         click.echo(f"Period must be one of: {[name for name in AGGREGATION_PERIODS]}")
         return
@@ -70,6 +73,7 @@ def aggregate_period(period, dry_run=False):
 @click.command()
 @with_appcontext
 def view_jobs():
+    """View all resource and aggregation jobs"""
     for job_info in inspect_jobs(Resource.REDIS_JOB_PREFIX):
         click.echo(job_info)
 
@@ -95,7 +99,7 @@ def clear_cache():
 @click.command()
 @with_appcontext
 def clear_redis_cache():
-    """Clear Redis cache"""
+    """Clear cached resources and their timeouts from redis"""
     keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
     for key in keys:
         redis.delete(key)
@@ -118,7 +122,7 @@ def clear_redis_cache():
     help="Do not queue anything, just print what would be queued",
 )
 def refresh(dry_run=False):
-    """Suggest aggregation and refresh of all outdated resources"""
+    """Suggest aggregation and refresh of all resources"""
     for result in suggest_caching_period("1h", dry_run=dry_run):
         click.echo(result)
 
@@ -149,6 +153,25 @@ def refresh(dry_run=False):
 
 
 @click.command()
+@click.argument("period", nargs=1, required=True)
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not queue anything, just print what would be queued",
+)
+@with_appcontext
+def cache_period(period, dry_run=False):
+    """Suggest refresh of all cached resources with period"""
+    if period not in PERIODS:
+        click.echo(f"Period must be one of: {[name for name in PERIODS]}")
+        return
+
+    for result in suggest_caching_period(period, dry_run=dry_run):
+        click.echo(result)
+
+
+@click.command()
 @click.argument("resource_name", nargs=1, required=True)
 @click.argument("period", nargs=1, required=True)
 @click.option(
@@ -158,14 +181,21 @@ def refresh(dry_run=False):
     help="Do not queue anything, just print what would be queued",
 )
 @with_appcontext
-def refresh_resource(resource_name, period, dry_run=False):
+def cache_resource(resource_name, period, dry_run=False):
     """Suggest refresh of a resource"""
-    click.echo(suggest_caching(resource_name, {"period": period}, dry_run=dry_run))
+    if resource_name not in RESOURCE_QUERIES:
+        click.echo(f"Resource must be one of: {[name for name in RESOURCE_QUERIES]}")
+        return
+    if period not in PERIODS:
+        click.echo(f"Period must be one of: {[name for name in PERIODS]}")
+        return
+    click.echo(suggest_caching(resource_name, period, dry_run=dry_run))
 
 
 @click.command()
 @with_appcontext
 def view_redis_cache():
+    """View all resource cache keys with cache ttl and size"""
     keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
     size = 0
     for key in keys:
@@ -182,6 +212,102 @@ def view_redis_cache():
     click.echo("Cached resources occupy:  {}".format(_human_readable_bytes(size)))
 
 
+@click.command()
+@with_appcontext
+def view_timeouts():
+    """View resource refresh timeouts and aggregation timeouts"""
+    click.echo("Resource refresh timeouts: (refresh is allowed after timeout expires)")
+    keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX}*")
+    timeout_logs = []
+    for key in keys:
+        ttl = redis.ttl(key)
+        key = key.decode()
+        key_parts = key.split(";")
+        timeout_log = {
+            "ttl": ttl,
+            "name": key_parts[1],
+            "period": key_parts[2],
+            "params": key_parts[3:],  # optional - like ip or device_token
+            "index": PERIODS[key_parts[2]]["index"],  # for sorting
+        }
+        timeout_logs.append(timeout_log)
+
+    for log in sorted(timeout_logs, key=lambda item: item.get("index")):
+        click.echo(
+            f"{log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6} params={log['params']}"
+        )
+
+    click.echo("")
+    click.echo("Aggregation timeouts: (aggregation is triggered after timeout expires)")
+    keys = redis.keys(f"{Aggregation.REDIS_REFRESH_TO_PREFIX}*")
+    timeout_logs = []
+    for key in keys:
+        ttl = redis.ttl(key)
+        key = key.decode()
+        key_parts = key.split(";")
+        timeout_log = {
+            "ttl": ttl,
+            "name": key_parts[1],
+            "period": key_parts[2],
+            "index": AGGREGATION_PERIODS[key_parts[2]]["index"],  # for sorting
+        }
+        timeout_logs.append(timeout_log)
+
+    for log in sorted(timeout_logs, key=lambda item: item.get("index")):
+        click.echo(f"{log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6}")
+
+
+@click.command()
+@click.argument("task", nargs=1, required=True)
+@click.argument("period", nargs=1, required=True)
+@with_appcontext
+def clear_timeouts(task, period):
+    """Clear resource refresh or aggregation timeouts"""
+    if task not in ["aggregation", "resource"]:
+        click.echo(f"Task must be one of 'aggregation', 'resource'")
+        return
+
+    if task == "resource":
+        if period not in PERIODS:
+            click.echo(f"Period must be one of: {[name for name in PERIODS]}")
+            return
+        keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX};*;{period}")
+        for key in keys:
+            ttl = redis.ttl(key)
+            key_parts = key.decode().split(";")
+            log = {
+                "ttl": ttl,
+                "name": key_parts[1],
+                "period": key_parts[2],
+                "params": key_parts[3:],  # optional - like ip or device_token
+            }
+            click.echo(
+                f"Clearing {log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6} params={log['params']}"
+            )
+            redis.delete(key)
+
+    if task == "aggregation":
+        if period not in AGGREGATION_PERIODS:
+            click.echo(
+                f"Period must be one of: {[name for name in AGGREGATION_PERIODS]}"
+            )
+            return
+        keys = redis.keys(f"{Aggregation.REDIS_REFRESH_TO_PREFIX};*;{period}")
+        print(f"{Aggregation.REDIS_REFRESH_TO_PREFIX};*;{period}")
+        for key in keys:
+            ttl = redis.ttl(key)
+            key_parts = key.decode().split(";")
+            log = {
+                "ttl": ttl,
+                "name": key_parts[1],
+                "period": key_parts[2],
+            }
+            click.echo(
+                f"Clearing {log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6}"
+            )
+            redis.delete(key)
+
+
 def _human_readable_bytes(size):
     from math import log2
 
@@ -196,6 +322,9 @@ def register_cli_commands(app):
     app.cli.add_command(view_jobs)
     app.cli.add_command(clear_cache)
     app.cli.add_command(refresh)
-    app.cli.add_command(refresh_resource)
+    app.cli.add_command(cache_resource)
+    app.cli.add_command(cache_period)
     app.cli.add_command(view_redis_cache)
+    app.cli.add_command(view_timeouts)
     app.cli.add_command(clear_redis_cache)
+    app.cli.add_command(clear_timeouts)

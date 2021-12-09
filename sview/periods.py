@@ -25,6 +25,7 @@ QUARTERLY_PERIOD = {
     "refresh_interval": MINUTE15,
     "display_interval": MINUTE15,
     "last_ts_before_function": "ts_last_quarter_before",
+    "index": 1,
 }
 HOURLY_PERIOD = {
     "handle": "hourly",
@@ -34,6 +35,7 @@ HOURLY_PERIOD = {
     "refresh_interval": HOUR,
     "display_interval": HOUR,
     "last_ts_before_function": "ts_last_hour_before",
+    "index": 2,
 }
 DAILY_PERIOD = {
     "handle": "daily",
@@ -43,6 +45,7 @@ DAILY_PERIOD = {
     "refresh_interval": DAY,
     "display_interval": DAY,
     "last_ts_before_function": "ts_last_midnight_before",
+    "index": 3,
 }
 
 AGGREGATION_PERIODS = {
@@ -69,6 +72,7 @@ PERIOD_HOUR = {
     "refresh_interval": MINUTE,
     "display_interval": HOUR,
     "last_ts_before_function": "ts_last_minute_before",
+    "index": 1,
 }
 PERIOD_12_HOURS = {
     "handle": "12h",
@@ -81,6 +85,7 @@ PERIOD_12_HOURS = {
     "refresh_interval": MINUTE15,
     "display_interval": HOUR12,
     "last_ts_before_function": "ts_last_quarter_before",
+    "index": 2,
 }
 PERIOD_DAY = {
     "handle": "1d",
@@ -93,6 +98,7 @@ PERIOD_DAY = {
     "refresh_interval": MINUTE30,
     "display_interval": DAY,
     "last_ts_before_function": "ts_last_half_before",
+    "index": 3,
 }
 PERIOD_WEEK = {
     "handle": "1w",
@@ -105,6 +111,7 @@ PERIOD_WEEK = {
     "refresh_interval": HOUR3,
     "display_interval": WEEK,
     "last_ts_before_function": "ts_last_3hour_before",
+    "index": 4,
 }
 PERIOD_MONTH = {
     "handle": "1m",
@@ -117,6 +124,7 @@ PERIOD_MONTH = {
     "refresh_interval": DAY,
     "display_interval": MONTH,
     "last_ts_before_function": "ts_last_midnight_before",
+    "index": 5,
 }
 PERIOD_3_MONTHS = {
     "handle": "3m",
@@ -129,6 +137,7 @@ PERIOD_3_MONTHS = {
     "refresh_interval": DAY,
     "display_interval": MONTH3,
     "last_ts_before_function": "ts_last_midnight_before",
+    "index": 6,
 }
 PERIOD_YEAR = {
     "handle": "1y",
@@ -141,6 +150,7 @@ PERIOD_YEAR = {
     "refresh_interval": DAY,
     "display_interval": YEAR,
     "last_ts_before_function": "ts_last_midnight_before",
+    "index": 7,
 }
 
 

@@ -113,6 +113,8 @@ state of jobs, cache and other things. The following commands are implemented:
 - `flask aggregate-period <aggregation period name>`
   - Suggest aggregation of the specified period. The specified period is the
     destination period.
+- `flask cache-period <resource period name>`
+  - Suggest refresh of all cached resources with period
 - `flask view-redis-cache`
   - Check state of data in redis. Prints list of cached and missing resource
     keys.
@@ -120,6 +122,10 @@ state of jobs, cache and other things. The following commands are implemented:
   - Clear application cache, not the Redis cache
 - `flask clear-redis-cache`
   - Clear Redis cache
+- `flask clear-timeouts <aggregation/resource> <period name>`
+  - Clear resource refresh or aggregation timeouts from selected period
+    The period then can be freely cached or aggregated. Be sure no period is
+    aggregated twice or more!!!
 - `flask migrate-period <period name>`
   - Aggregates last few days from source period to period requested by
     `period_name`
@@ -136,11 +142,13 @@ state of jobs, cache and other things. The following commands are implemented:
   - Using dry-run mode you can see what resources would be cached:
     `flask refresh -d`. The would-be run jobs would be marked with
     `Queueing` but new job `id` would be `None`.
-- `flask refresh-resource <resource name> <resource period> [-d]`
+- `flask cache-resource <resource name> <resource period> [-d]`
   - Suggest caching of a single resource. Proceed only if the resource is
     missing or outdated.
   - Resource name and period name are required
-  - E.g. `flask refresh-resource all_attackers_graph 1h`
+  - E.g. `flask cache-resource all_attackers_graph 1h`
   - Dry run mode available
 - `flask view-jobs`
   - View running, failed, removed or other jobs.
+- `flask view-timeouts`
+  - View resource refresh timeouts and aggregation timeouts
