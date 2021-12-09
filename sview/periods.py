@@ -64,7 +64,7 @@ PERIOD_HOUR = {
     "bucket": "1 minute",
     "start_delay_bonus": 0,  # seconds
     "cache_ttl": 5 * 60,
-    "user_cache_ttl": 2 * 60,
+    "user_cache_ttl": 30,  # should not be high - user could keep outdated data
     "source_period": NATIVE_PERIOD,
     "refresh_interval": MINUTE,
     "display_interval": HOUR,
@@ -76,7 +76,7 @@ PERIOD_12_HOURS = {
     "bucket": "15 minutes",
     "start_delay_bonus": 5,  # seconds
     "cache_ttl": 20 * 60,
-    "user_cache_ttl": 5 * 60,
+    "user_cache_ttl": 2 * 60,
     "source_period": QUARTERLY_PERIOD,
     "refresh_interval": MINUTE15,
     "display_interval": HOUR12,
