@@ -10,6 +10,13 @@ from .time import MONTH
 from .time import MONTH3
 from .time import YEAR
 
+
+class PriorityQueue:
+    AGGREGATION = "aggregation"
+    QUICK_CACHE = "quick-cache"
+    SLOW_CACHE = "slow-cache"
+
+
 """Time periods for data aggregation
 """
 #  Not a real aggregation period. It just marks data with no aggregation
@@ -20,6 +27,7 @@ NATIVE_PERIOD = {
 QUARTERLY_PERIOD = {
     "handle": "quarterly",
     "source_period": NATIVE_PERIOD,
+    "queue": PriorityQueue.AGGREGATION,
     "bucket": "15 minutes",
     "start_delay_bonus": 3 * 60,  # seconds
     "refresh_interval": MINUTE15,
@@ -30,6 +38,7 @@ QUARTERLY_PERIOD = {
 HOURLY_PERIOD = {
     "handle": "hourly",
     "source_period": QUARTERLY_PERIOD,
+    "queue": PriorityQueue.AGGREGATION,
     "bucket": "1 hour",
     "start_delay_bonus": 10,  # seconds
     "refresh_interval": HOUR,
@@ -40,6 +49,7 @@ HOURLY_PERIOD = {
 DAILY_PERIOD = {
     "handle": "daily",
     "source_period": HOURLY_PERIOD,
+    "queue": PriorityQueue.AGGREGATION,
     "bucket": "1 day",
     "start_delay_bonus": 10,  # seconds
     "refresh_interval": DAY,
@@ -69,6 +79,7 @@ PERIOD_HOUR = {
     "cache_ttl": 5 * 60,
     "user_cache_ttl": 30,  # should not be high - user could keep outdated data
     "source_period": NATIVE_PERIOD,
+    "queue": PriorityQueue.QUICK_CACHE,
     "refresh_interval": MINUTE,
     "display_interval": HOUR,
     "last_ts_before_function": "ts_last_minute_before",
@@ -82,6 +93,7 @@ PERIOD_12_HOURS = {
     "cache_ttl": 20 * 60,
     "user_cache_ttl": 2 * 60,
     "source_period": QUARTERLY_PERIOD,
+    "queue": PriorityQueue.QUICK_CACHE,
     "refresh_interval": MINUTE15,
     "display_interval": HOUR12,
     "last_ts_before_function": "ts_last_quarter_before",
@@ -95,6 +107,7 @@ PERIOD_DAY = {
     "cache_ttl": 25 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": QUARTERLY_PERIOD,
+    "queue": PriorityQueue.QUICK_CACHE,
     "refresh_interval": MINUTE30,
     "display_interval": DAY,
     "last_ts_before_function": "ts_last_half_before",
@@ -108,6 +121,7 @@ PERIOD_WEEK = {
     "cache_ttl": 3 * 60 * 60 + 10 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": HOURLY_PERIOD,
+    "queue": PriorityQueue.SLOW_CACHE,
     "refresh_interval": HOUR3,
     "display_interval": WEEK,
     "last_ts_before_function": "ts_last_3hour_before",
@@ -121,6 +135,7 @@ PERIOD_MONTH = {
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
+    "queue": PriorityQueue.SLOW_CACHE,
     "refresh_interval": DAY,
     "display_interval": MONTH,
     "last_ts_before_function": "ts_last_midnight_before",
@@ -134,6 +149,7 @@ PERIOD_3_MONTHS = {
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
+    "queue": PriorityQueue.SLOW_CACHE,
     "refresh_interval": DAY,
     "display_interval": MONTH3,
     "last_ts_before_function": "ts_last_midnight_before",
@@ -147,6 +163,7 @@ PERIOD_YEAR = {
     "cache_ttl": 25 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": DAILY_PERIOD,
+    "queue": PriorityQueue.SLOW_CACHE,
     "refresh_interval": DAY,
     "display_interval": YEAR,
     "last_ts_before_function": "ts_last_midnight_before",

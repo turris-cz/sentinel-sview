@@ -22,9 +22,33 @@ Python Package Index requirements (including the development ones) are stated in
 - Set the configuration in `instance/local.cfg`. The default configuration
   can be found in `sview/default_settings.py`.
 - Run the application using `flask run` (Use wsgi server for production!)
-- Run some workers using `flask rq worker`. (Using only `rq worker` would lack
+- Run some workers with all queues using `flask rq worker aggregation
+  quick-cache slow-cache`. (Using only `rq worker` would lack
   any configuration and would end up working outside the application context).
 
+## Production notes
+
+There are 3 different job queues (from highest to lowest priority):
+  - `aggregation`: for aggregation tasks, which are usually quick and take
+     around minute
+  - `quick-cache`: for quick caching tasks, which are quick and should take up
+     to ~5 minutes (never more than 10 minutes!!) (so theres space for
+     aggregation tasks to take place before them)
+  - `slow-cache`: for slow caching tasks which may take to much time (more than
+     ~5 minutes and definitely more than quarter of hour) and there's probability
+     they would block quarterly aggregation tasks
+
+The optimal number of workers is 6 for `aggregation` and `quick-cache`, run like
+
+```
+flask rq worker aggregation quick-cache
+```
+
+and 6 workers for `slow-cache`, run like:
+
+```
+flask rq worker slow-cache
+```
 
 ## Data processing
 

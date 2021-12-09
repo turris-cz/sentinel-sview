@@ -3,6 +3,8 @@ import datetime
 from ...extensions import redis
 from ...extensions import rq
 
+from periods import PERIODS
+
 
 class JobStatus:
     """All possible states of sview jobs. A combination of redis queue job
@@ -20,8 +22,9 @@ class JobStatus:
 
 
 class JobState:
-    def __init__(self, job_handler_key):
+    def __init__(self, job_handler_key, queue):
         job_id = redis.get(job_handler_key)
+        self.queue = queue
         self.id = None
 
         if not job_id:  # It seems that there should be no job under processing.
@@ -30,7 +33,7 @@ class JobState:
 
         # The job was recently deployed. We should try to fetch it.
         self.id = job_id.decode("UTF-8")
-        job = rq.get_queue().fetch_job(self.id)
+        job = rq.get_queue(self.queue).fetch_job(self.id)
 
         if not job:  # The job already finished or was cleared
             self.status = JobStatus.NO_JOB
@@ -47,7 +50,6 @@ class JobState:
 
 
 def inspect_jobs(job_prefix):
-    queue = rq.get_queue()
     job_handler_keys = redis.keys(f"{job_prefix}*")
     for job_handler_key in job_handler_keys:
 
@@ -58,12 +60,18 @@ def inspect_jobs(job_prefix):
         # The job was recently deployed. We should try to fetch it.
         job_id = job_id.decode("UTF-8")
         job_ttl = redis.ttl(job_handler_key)
-        job = queue.fetch_job(job_id)
 
         (_, query_name, period_name) = job_handler_key.decode().split(";")[0:3]
         params = (
             job_handler_key.decode().split(";")[3:] or ""
         )  # Empty string if no params
+
+        period = PERIODS.get(period_name)
+        if not period:  # We should probably handle this as an error
+            continue
+        queue = rq.get_queue(period["queue"])
+
+        job = queue.fetch_job(job_id)
         if not job:  # The job already finished or was cleared
             yield (
                 f"{query_name:>38s} {period_name:<3s} {params} is removed  "

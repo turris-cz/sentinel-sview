@@ -62,6 +62,8 @@ class Aggregation(Task, AggregationToolbox):
         )
 
     def is_pending(self):
+        if self.period["source_period"] is None:  # native period
+            return False  # aggregation is never pending for native period
         job_state = self.get_job_state()
         return job_state.is_alive() or job_state.is_failed()
 

@@ -58,7 +58,7 @@ class TaskToolbox:
         return query_params
 
     def get_job_state(self):
-        return JobState(self.job_handler_key)
+        return JobState(self.job_handler_key, self.period["queue"])
 
     def get_job_handler_key(self):
         return "{};{}".format(
@@ -96,6 +96,8 @@ class Task(TaskToolbox):
         )
         if race_condition:
             return
-        job = self.JOB_FUNCTION.queue(self.name, self.period, self.params)
+        job = self.JOB_FUNCTION.queue(
+            self.name, self.period, self.params, queue=self.period["queue"]
+        )
         redis.set(self.job_handler_key, job.id, ex=JOB_TIMEOUT)
         return job.id
