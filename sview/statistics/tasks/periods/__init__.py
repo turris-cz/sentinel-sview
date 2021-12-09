@@ -1,14 +1,14 @@
-from .queries.time import MINUTE
-from .queries.time import MINUTE15
-from .queries.time import MINUTE30
-from .queries.time import HOUR
-from .queries.time import HOUR3
-from .queries.time import HOUR12
-from .queries.time import DAY
-from .queries.time import WEEK
-from .queries.time import MONTH
-from .queries.time import MONTH3
-from .queries.time import YEAR
+from .time import MINUTE
+from .time import MINUTE15
+from .time import MINUTE30
+from .time import HOUR
+from .time import HOUR3
+from .time import HOUR12
+from .time import DAY
+from .time import WEEK
+from .time import MONTH
+from .time import MONTH3
+from .time import YEAR
 
 """Time periods for data aggregation
 """

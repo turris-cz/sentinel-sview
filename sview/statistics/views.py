@@ -11,10 +11,10 @@ from flask import session
 from flask import url_for
 from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
 
-from .exceptions import ResourceError
-from .resources import get_resource
-from .periods import PERIODS, DEFAULT_PERIOD
-from .queries import KNOWN_PARAMS
+from .tasks import ResourceError
+from .tasks import get_resource
+from .tasks import PERIODS, DEFAULT_PERIOD
+from .tasks import KNOWN_PARAMS
 from .view_helpers import get_tokens_hash
 from .view_helpers import endpoint_arguments_constructor
 

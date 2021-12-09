@@ -1,7 +1,7 @@
 import datetime
 
-from .extensions import redis
-from .extensions import rq
+from ...extensions import redis
+from ...extensions import rq
 
 
 class JobStatus:

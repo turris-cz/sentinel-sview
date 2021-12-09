@@ -1,5 +1,6 @@
+from ...extensions import redis
+
 from .aggregation_tools import AggregationToolbox
-from .extensions import redis
 from .jobs import aggregate
 from .tasks import Task
 

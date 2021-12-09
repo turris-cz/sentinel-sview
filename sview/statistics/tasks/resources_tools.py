@@ -1,6 +1,7 @@
 import json
 
-from .extensions import redis
+from ...extensions import redis
+
 from .queries import RESOURCE_QUERIES
 from .queries import KNOWN_PARAMS
 from .tasks import TaskToolbox

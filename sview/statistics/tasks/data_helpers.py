@@ -3,7 +3,7 @@ import re
 
 from flask import current_app
 
-from .extensions import db
+from ...extensions import db
 
 
 class QueryFiller:

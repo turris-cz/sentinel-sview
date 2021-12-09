@@ -1,8 +1,8 @@
-from .extensions import redis
+from ...extensions import redis
 
 from .queries import KNOWN_PARAMS
-from .queries.time import utc_now_ts
-from .queries.time import LAST_TS_BEFORE_FUNCTIONS
+from .periods.time import utc_now_ts
+from .periods.time import LAST_TS_BEFORE_FUNCTIONS
 from .job_helpers import JobState
 
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true

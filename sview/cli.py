@@ -2,17 +2,17 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .aggregation import suggest_aggregation
-from .aggregation import Aggregation
-from .job_helpers import inspect_jobs
-from .queries import RESOURCE_QUERIES
-from .queries.time import DAY
-from .resources import suggest_caching
-from .resources import suggest_caching_period
-from .resources import Resource
-from .periods import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
-from .periods import PERIODS, AGGREGATION_PERIODS
 from .extensions import redis
+from .statistics import suggest_aggregation
+from .statistics import Aggregation
+from .statistics import inspect_jobs
+from .statistics import RESOURCE_QUERIES
+from .statistics import suggest_caching
+from .statistics import suggest_caching_period
+from .statistics import Resource
+from .statistics import QUARTERLY_PERIOD, HOURLY_PERIOD, DAILY_PERIOD
+from .statistics import PERIODS, AGGREGATION_PERIODS
+from .statistics.tasks.periods.time import DAY
 
 
 @click.command()

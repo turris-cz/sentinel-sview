@@ -1,12 +1,13 @@
+from ...extensions import redis
+from ...rlimit import rate_limit_reached
+
 from .aggregation import Aggregation
 from .exceptions import ResourceError
-from .extensions import redis
 from .jobs import cache_resource
 from .periods import PERIODS
 from .queries import RESOURCE_QUERIES
 from .queries import PRECACHED_RESOURCES
 from .resources_tools import ResourceToolbox
-from .rlimit import rate_limit_reached
 from .tasks import Task
 
 USER_SPECIFIC_RESOURCES = (

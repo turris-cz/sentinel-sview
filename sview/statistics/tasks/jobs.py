@@ -2,8 +2,9 @@ import simplejson
 
 from flask import current_app
 
+from ...extensions import redis, rq
+
 from .aggregation_tools import AggregationToolbox
-from .extensions import redis, rq
 from .data_helpers import process_query
 from .resources_tools import ResourceToolbox
 from .tasks import JOB_TIMEOUT
