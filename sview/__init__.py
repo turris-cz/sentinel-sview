@@ -31,12 +31,10 @@ def create_app(additional_config=None):
     setup_logging()
 
     from .statistics import statistics
-    from .api import api
     from .opendata import opendata
     from .web import web
 
     app.register_blueprint(statistics)
-    app.register_blueprint(api, url_prefix="/api")
     app.register_blueprint(opendata, url_prefix="/opendata")
     app.register_blueprint(web)
 

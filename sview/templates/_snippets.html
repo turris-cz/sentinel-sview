@@ -198,7 +198,7 @@
 							checked
 {%					endif %}
 						onclick='process_new_settings(
-							"{{ url_for("api.get_resource_view") }}",
+							"{{ url_for("statistics.get_resource_view") }}",
 							{{ resource_names|tojson }},
 							Object.assign(
 								{{ active_params|tojson }},
@@ -234,7 +234,7 @@
 										checked
 {%								endif %}
 									onclick='process_new_settings(
-										"{{ url_for("api.get_resource_view") }}",
+										"{{ url_for("statistics.get_resource_view") }}",
 										["{{ resource_name }}"],
 										Object.assign(
 											{{ active_params|tojson }},
@@ -255,7 +255,7 @@
 		request_missing_resources(
 			{{ resource_names|tojson }},
 			{{resources|tojson}},
-			"{{ url_for("api.get_resource_view") }}",
+			"{{ url_for("statistics.get_resource_view") }}",
 			{{params|tojson}}
 		)
 	</script>
