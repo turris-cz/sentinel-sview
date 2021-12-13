@@ -3,8 +3,6 @@ import datetime
 from ...extensions import redis
 from ...extensions import rq
 
-from periods import PERIODS
-
 
 class JobStatus:
     """All possible states of sview jobs. A combination of redis queue job
@@ -23,6 +21,7 @@ class JobStatus:
 
 class JobState:
     def __init__(self, job_handler_key, queue):
+        self.handler = job_handler_key
         job_id = redis.get(job_handler_key)
         self.queue = queue
         self.id = None
@@ -40,7 +39,8 @@ class JobState:
             return
 
         # The job was succesfully fetched. We should inspect it's state.
-        self.status = job.get_status()
+        self.job = job
+        self.status = self.job.get_status()
 
     def is_alive(self):
         return self.status in [JobStatus.STARTED, JobStatus.QUEUED]
@@ -48,49 +48,21 @@ class JobState:
     def is_failed(self):
         return self.status == JobStatus.FAILED
 
+    def get_info(self):
+        if self.status == JobStatus.NO_HANDLER:
+            return "handler key just expired"
 
-def inspect_jobs(job_prefix):
-    job_handler_keys = redis.keys(f"{job_prefix}*")
-    for job_handler_key in job_handler_keys:
-
-        job_id = redis.get(job_handler_key)
-        if not job_id:
-            continue
-
-        # The job was recently deployed. We should try to fetch it.
-        job_id = job_id.decode("UTF-8")
-        job_ttl = redis.ttl(job_handler_key)
-
-        (_, query_name, period_name) = job_handler_key.decode().split(";")[0:3]
-        params = (
-            job_handler_key.decode().split(";")[3:] or ""
-        )  # Empty string if no params
-
-        period = PERIODS.get(period_name)
-        if not period:  # We should probably handle this as an error
-            continue
-        queue = rq.get_queue(period["queue"])
-
-        job = queue.fetch_job(job_id)
-        if not job:  # The job already finished or was cleared
-            yield (
-                f"{query_name:>38s} {period_name:<3s} {params} is removed  "
-                f"(id={job_id}, handler_ttl={job_ttl})"
-            )
-            continue
+        handler_ttl = redis.ttl(self.handler)
+        if self.status == JobStatus.NO_JOB:
+            return f"is removed  (id={self.id}, handler_ttl={handler_ttl})"
 
         # The job was succesfully fetched. We should inspect it's state.
-        job_status = job.get_status()
-        if job.worker_name:  # The job is assigned to a worker
-            execution_time = datetime.datetime.utcnow() - job.started_at
-            yield (
-                f"{query_name:>38s} {period_name:<3s} is {job_status:<8s} "
-                f"(id={job_id}, handler_ttl={job_ttl}, worker={job.worker_name}, "
-                f"execution_time={execution_time})"
+        if self.job.worker_name:  # The job is assigned to a worker
+            execution_time = datetime.datetime.utcnow() - self.job.started_at
+            return (
+                f"is {self.status:<8s} (id={self.id}, handler_ttl={handler_ttl}, "
+                f"worker={self.job.worker_name}, execution_time={execution_time})"
             )
 
         else:
-            yield (
-                f"{query_name:>38s} {period_name:<3s} is {job_status:<8s} "
-                f"(id={job_id}, handler_ttl={job_ttl})"
-            )
+            return f"is {self.status:<8s} (id={self.id}, handler_ttl={handler_ttl})"

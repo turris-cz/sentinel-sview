@@ -1,3 +1,4 @@
+from .periods import AGGREGATION_PERIODS
 from .queries.sql.aggregation import aggregation_queries
 from .tasks import TaskToolbox
 
@@ -5,6 +6,8 @@ from .tasks import TaskToolbox
 class AggregationToolbox(TaskToolbox):
     REDIS_JOB_PREFIX = "sview_job_id_aggr"
     REDIS_REFRESH_TO_PREFIX = "sview_aggregation_timeout"
+    AVAILABLE_QUERIES = aggregation_queries
+    AVAILABLE_PERIODS = AGGREGATION_PERIODS
 
     def __init__(self, data_type, period, params={}):
         self.name = data_type

@@ -1,7 +1,6 @@
 from .aggregation import suggest_aggregation  # noqa: F401
 from .aggregation import Aggregation  # noqa: F401
 from .exceptions import ResourceError  # noqa: F401
-from .job_helpers import inspect_jobs  # noqa: F401
 from .queries import RESOURCE_QUERIES  # noqa: F401
 from .queries import KNOWN_PARAMS  # noqa: F401
 from .periods import PERIODS, DEFAULT_PERIOD, AGGREGATION_PERIODS  # noqa: F401

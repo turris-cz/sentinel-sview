@@ -1,3 +1,5 @@
+import re
+
 from ...extensions import redis
 
 from .queries import KNOWN_PARAMS
@@ -8,8 +10,55 @@ from .job_helpers import JobState
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true
 JOB_TIMEOUT = 60 * 60  # Seconds
 
+IP_REGEX = re.compile(
+    "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}"
+    "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$"
+)
+TOKEN_HASH_REGEX = re.compile("^[a-z0-9]*$")
+TOKEN_HASH_LENGTH = 10
+
+
+def is_token_hash(string):
+    return len(string) == TOKEN_HASH_LENGTH and TOKEN_HASH_REGEX.match(string)
+
+
+def is_ip(string):
+    return bool(IP_REGEX.match(string))
+
+
+def guess_params_from_job_handler(job_handler):
+    handler_parts = job_handler.split(";")
+
+    query_name = handler_parts[1]
+    period_name = handler_parts[2]
+    params_list = handler_parts[3:]  # optional - like ip, password or device token hash
+    params = {}
+    for param in params_list:
+        if is_ip(param):
+            params["ip"] = param
+        elif is_token_hash(param):
+            params["token"] = param
+        else:
+            params["password"] = param
+
+    return query_name, period_name, params
+
 
 class TaskToolbox:
+    @classmethod
+    def from_job_handler(cls, job_handler):
+        query_name, period_name, params = guess_params_from_job_handler(job_handler)
+        if query_name in cls.AVAILABLE_QUERIES and period_name in cls.AVAILABLE_PERIODS:
+            return cls(query_name, cls.AVAILABLE_PERIODS[period_name], params)
+
+    @classmethod
+    def inspect_jobs(cls):
+        job_handler_keys = redis.keys(f"{cls.REDIS_JOB_PREFIX}*")
+        for job_handler_key in job_handler_keys:
+            job_handler = job_handler_key.decode()
+            task = cls.from_job_handler(job_handler)
+            yield task.get_job_info()
+
     def __init__(self):
         self.job_handler_key = self.get_job_handler_key()
         self.refresh_timeout_key = self.get_refresh_timeout_key()
@@ -19,6 +68,13 @@ class TaskToolbox:
             self.get_last_ts_before = LAST_TS_BEFORE_FUNCTIONS[
                 self.period.get("last_ts_before_function")
             ]
+
+    def get_job_info(self):
+        job_state = self.get_job_state()
+        return (
+            f"{self.name:>38s} {self.period['handle']:<3s} "
+            f"{self.params or ''} {job_state.get_info()}"
+        )
 
     def get_start_delay(self):
         period = self.period

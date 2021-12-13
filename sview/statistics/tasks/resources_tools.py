@@ -2,6 +2,7 @@ import json
 
 from ...extensions import redis
 
+from .periods import PERIODS
 from .queries import RESOURCE_QUERIES
 from .queries import KNOWN_PARAMS
 from .tasks import TaskToolbox
@@ -17,10 +18,12 @@ class ResourceToolbox(TaskToolbox):
     REDIS_JOB_PREFIX = "sview_job_id_caching"
     REDIS_CACHE_PREFIX = "sview_cached"
     REDIS_REFRESH_TO_PREFIX = "sview_refresh_timeout"
+    AVAILABLE_QUERIES = RESOURCE_QUERIES
+    AVAILABLE_PERIODS = PERIODS
 
     def __init__(self, name, period, params={}):
         self.name = name
-        self.query = RESOURCE_QUERIES[name]
+        self.query = self.AVAILABLE_QUERIES[name]
         self.data_type = self.query["data_type"]
         self.period = period
         self.params = params

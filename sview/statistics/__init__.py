@@ -1,7 +1,6 @@
 from .views import statistics
 from .tasks import suggest_aggregation  # noqa: F401
 from .tasks import Aggregation  # noqa: F401
-from .tasks import inspect_jobs  # noqa: F401
 from .tasks import RESOURCE_QUERIES  # noqa: F401
 from .tasks import suggest_caching  # noqa: F401
 from .tasks import suggest_caching_period  # noqa: F401

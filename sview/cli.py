@@ -5,7 +5,6 @@ from flask.cli import with_appcontext
 from .extensions import redis
 from .statistics import suggest_aggregation
 from .statistics import Aggregation
-from .statistics import inspect_jobs
 from .statistics import RESOURCE_QUERIES
 from .statistics import suggest_caching
 from .statistics import suggest_caching_period
@@ -74,10 +73,10 @@ def aggregate_period(period, dry_run=False):
 @with_appcontext
 def view_jobs():
     """View all resource and aggregation jobs"""
-    for job_info in inspect_jobs(Resource.REDIS_JOB_PREFIX):
+    for job_info in Resource.inspect_jobs():
         click.echo(job_info)
 
-    for job_info in inspect_jobs(Aggregation.REDIS_JOB_PREFIX):
+    for job_info in Aggregation.inspect_jobs():
         click.echo(job_info)
 
 
