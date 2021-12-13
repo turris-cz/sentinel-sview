@@ -99,15 +99,18 @@ The table also shows column called Windows Per Range which says how many point t
 will be in the graph. The aggregation can be omitted or modified one day if the
 plotting technology will be more user friendly.
 
-| Range | Window | WPR   | Cache TTL | Source precision |
-| :---: | :---:  | :---: | :--:      | :--:             |
-| 1h    | 1m     | 60    | 30s       | native           |
-| 12h   | 15m    | 48    | 7m        | quarterly        |
-| 1d    | 30m    | 48    | 40m       | quarterly        |
-| 1w    | 3h     | 56    | 2h        | hourly           |
-| 1mo   | 1d     | ~30   | 12h       | daily            |
-| 3mo   | 2d     | ~45   | 1d        | daily            |
-| 1y    | 1w     | ~52   | 1d        | daily            |
+| Period | Range    | Window  | WPR   | Cache TTL | Source precision |
+| :---:  | :---:    | :---:   | :---: | :--:      | :--:             |
+| `1h`   | 1 hour   | 1 min   | 60    | 5 mins    | native           |
+| `12h`  | 12 hours | 15 mins | 48    | 25 mins   | quarterly        |
+| `1d`   | 1 day    | 30 mins | 48    | 50 mins   | quarterly        |
+| `1w`   | 1 week   | 3 hours | 56    | 4 hours   | hourly           |
+| `1m`   | 1 month  | 1 day   | ~30   | 25 hours  | daily            |
+| `3m`   | 3 months | 2 days  | ~45   | 25 hours  | daily            |
+| `1y`   | 1 year   | 2 weeks | ~26   | 25 hours  | daily            |
+
+For more details (and possibly more up-to-date values), see the
+[source file](sview/statistics/tasks/periods/__init__.py).
 
 ### Aggregation tasks
 

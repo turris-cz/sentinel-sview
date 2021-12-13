@@ -90,7 +90,7 @@ PERIOD_12_HOURS = {
     "label": "12 Hours",
     "bucket": "15 minutes",
     "start_delay_bonus": 5,  # seconds
-    "cache_ttl": 20 * 60,
+    "cache_ttl": 25 * 60,
     "user_cache_ttl": 2 * 60,
     "source_period": QUARTERLY_PERIOD,
     "queue": PriorityQueue.QUICK_CACHE,
@@ -104,7 +104,7 @@ PERIOD_DAY = {
     "label": "Day",
     "bucket": "30 minutes",
     "start_delay_bonus": 5,  # seconds
-    "cache_ttl": 25 * 60,
+    "cache_ttl": 50 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": QUARTERLY_PERIOD,
     "queue": PriorityQueue.QUICK_CACHE,
@@ -118,7 +118,7 @@ PERIOD_WEEK = {
     "label": "Week",
     "bucket": "3 hours",
     "start_delay_bonus": 5,  # seconds
-    "cache_ttl": 3 * 60 * 60 + 10 * 60,
+    "cache_ttl": 4 * 60 * 60,
     "user_cache_ttl": 5 * 60,
     "source_period": HOURLY_PERIOD,
     "queue": PriorityQueue.SLOW_CACHE,
