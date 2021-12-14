@@ -1,5 +1,3 @@
-import base64
-import binascii
 import re
 
 from flask import jsonify
@@ -15,6 +13,8 @@ from .tasks import ResourceError
 from .tasks import get_resource
 from .tasks import PERIODS, DEFAULT_PERIOD
 from .tasks import KNOWN_PARAMS
+from .tasks.task_helpers import base64_decode
+from .tasks.task_helpers import is_ip
 from .view_helpers import get_tokens_hash
 from .view_helpers import endpoint_arguments_constructor
 
@@ -115,6 +115,9 @@ def attacker_details(ip):
     if period not in PERIODS:
         return redirect(url_for(request.endpoint, ip=ip, period=DEFAULT_PERIOD))
 
+    if not is_ip(ip):
+        return "Not a valid IPv4 address", 400
+
     params = {
         "period": period,
         "ip": ip,
@@ -171,13 +174,6 @@ def passwords():
     )
 
 
-def _decode_password(encoded_password):
-    try:
-        return str(base64.b64decode(encoded_password), "UTF-8")
-    except (binascii.Error, UnicodeDecodeError):
-        return None
-
-
 @statistics.route("/passwords/details/<string:encoded_password>")
 @register_breadcrumb(
     statistics,
@@ -187,7 +183,7 @@ def _decode_password(encoded_password):
 )
 def password_details(encoded_password):
     page_title = "Password Details"
-    password = _decode_password(encoded_password)
+    password = base64_decode(encoded_password)
     if not password:
         return "Unable to decode password", 400
 

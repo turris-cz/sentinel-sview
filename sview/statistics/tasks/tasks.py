@@ -4,27 +4,37 @@ from .queries import KNOWN_PARAMS
 from .periods.time import utc_now_ts
 from .periods.time import LAST_TS_BEFORE_FUNCTIONS
 from .job_helpers import JobState
-from .task_helpers import is_ip, is_token_hash
+from .task_helpers import base64_encode, base64_decode
 
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true
+REDIS_KEY_SEPARATOR = ";"
+REDIS_PARAM_SEPARATOR = "#"
 JOB_TIMEOUT = 60 * 60  # Seconds
 
 
-def guess_params_from_redis_handler(job_handler):
-    """All the redis handlers have the same format prefix;query_name;period;params"""
-    handler_parts = job_handler.split(";")
+def get_params_from_redis_key(key):
+    """All the redis handlers have the same format:
+        prefix;query_name;period;params1name#param1value;param2name#param2value
+    This function is almost inverse to Task.get_redis_key_suffix()
+    """
+    key_parts = key.split(REDIS_KEY_SEPARATOR)
 
-    query_name = handler_parts[1]
-    period_name = handler_parts[2]
-    params_list = handler_parts[3:]  # optional - like ip, password or device token hash
+    query_name = key_parts[1]
+    period_name = key_parts[2]
+    params_list = key_parts[3:]  # optional - like ip, password or device token hash
+
     params = {}
     for param in params_list:
-        if is_ip(param):
-            params["ip"] = param
-        elif is_token_hash(param):
-            params["token"] = param
-        else:
-            params["password"] = param
+        if REDIS_PARAM_SEPARATOR not in param:
+            continue  # for backward compatibility - should be considered as an error
+        key, value = param.split(REDIS_PARAM_SEPARATOR)
+        if key not in KNOWN_PARAMS:
+            continue
+        if key == "password":
+            value = base64_decode(value)
+            if not value:
+                continue
+        params[key] = value
 
     return query_name, period_name, params
 
@@ -32,7 +42,7 @@ def guess_params_from_redis_handler(job_handler):
 class TaskToolbox:
     @classmethod
     def from_job_handler(cls, job_handler):
-        query_name, period_name, params = guess_params_from_redis_handler(job_handler)
+        query_name, period_name, params = get_params_from_redis_key(job_handler)
         if query_name in cls.AVAILABLE_QUERIES and period_name in cls.AVAILABLE_PERIODS:
             return cls(query_name, cls.AVAILABLE_PERIODS[period_name], params)
 
@@ -62,9 +72,7 @@ class TaskToolbox:
         timeout_logs = []
         for key in keys:
             ttl = redis.ttl(key)
-            query_name, period_name, params = guess_params_from_redis_handler(
-                key.decode()
-            )
+            query_name, period_name, params = get_params_from_redis_key(key.decode())
             timeout_log = {
                 "key": key,
                 "ttl": ttl,
@@ -149,30 +157,25 @@ class TaskToolbox:
         return JobState(self.job_handler_key, self.period["queue"])
 
     def get_job_handler_key(self):
-        return "{};{}".format(
-            self.REDIS_JOB_PREFIX,
-            ";".join(
-                [self.name, self.period["handle"]]
-                + [
-                    v
-                    for k, v in self.params.items()
-                    if k in KNOWN_PARAMS and v is not None
-                ]
-            ),
-        )
+        return self.REDIS_JOB_PREFIX + REDIS_KEY_SEPARATOR + self.get_redis_key_suffix()
 
     def get_refresh_timeout_key(self):
-        return "{};{}".format(
-            self.REDIS_REFRESH_TO_PREFIX,
-            ";".join(
-                [self.name, self.period["handle"]]
-                + [
-                    v
-                    for k, v in self.params.items()
-                    if k in KNOWN_PARAMS and v is not None
-                ]
-            ),
+        return (
+            self.REDIS_REFRESH_TO_PREFIX
+            + REDIS_KEY_SEPARATOR
+            + self.get_redis_key_suffix()
         )
+
+    def get_redis_key_suffix(self):
+        """Almost an inverse method to get_params_from_redis_key(key)"""
+        params = []
+        for k, v in self.params.items():
+            if k in KNOWN_PARAMS and v is not None:
+                if k == "password":
+                    params.append(k + REDIS_PARAM_SEPARATOR + base64_encode(v))
+                else:
+                    params.append(k + REDIS_PARAM_SEPARATOR + v)
+        return REDIS_KEY_SEPARATOR.join([self.name, self.period["handle"]] + params)
 
 
 class Task(TaskToolbox):

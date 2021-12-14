@@ -5,6 +5,8 @@ import pycountry
 
 from flask import current_app
 
+from .statistics.tasks.task_helpers import base64_encode
+
 
 def autoversion_filter(filename):
     if not current_app.debug:
@@ -22,10 +24,6 @@ def autoversion_filter(filename):
 def country_code_to_name(cc):
     c = pycountry.countries.get(alpha_2=cc)
     return c.common_name if hasattr(c, "common_name") else c.name
-
-
-def base64_encode(s):
-    return base64.b64encode(bytes(s, "UTF-8"))
 
 
 def register_filters(app):

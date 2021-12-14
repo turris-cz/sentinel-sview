@@ -6,6 +6,7 @@ from .periods import PERIODS
 from .queries import RESOURCE_QUERIES
 from .queries import KNOWN_PARAMS
 from .tasks import TaskToolbox
+from .tasks import REDIS_KEY_SEPARATOR
 from .task_helpers import human_readable_bytes
 
 USER_SPECIFIC_RESOURCES = (
@@ -67,14 +68,6 @@ class ResourceToolbox(TaskToolbox):
             return json.loads(precached_result.decode("utf-8"))
 
     def get_cached_data_key(self):
-        return "{};{}".format(
-            self.REDIS_CACHE_PREFIX,
-            ";".join(
-                [self.name, self.period["handle"]]
-                + [
-                    v
-                    for k, v in self.params.items()
-                    if k in KNOWN_PARAMS and v is not None
-                ]
-            ),
+        return (
+            self.REDIS_CACHE_PREFIX + REDIS_KEY_SEPARATOR + self.get_redis_key_suffix()
         )
