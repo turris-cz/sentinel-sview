@@ -9,8 +9,6 @@ from .data_helpers import process_query
 from .resources_tools import ResourceToolbox
 from .tasks import JOB_TIMEOUT
 
-USER_TTL = 120  # Seconds
-
 
 @rq.job(result_ttl=10, timeout=JOB_TIMEOUT)
 def cache_resource(resource_name, resource_period, params):
@@ -27,11 +25,11 @@ def cache_resource(resource_name, resource_period, params):
         if returned:
             resource_data = returned
 
-    ttl = resource_period["cache_ttl"]
-    if "token" in resource.params:
-        ttl = min(ttl, USER_TTL)  # Do not cache user-specific resources for long
-
-    redis.set(resource.cached_data_key, simplejson.dumps(resource_data), ex=ttl)
+    redis.set(
+        resource.cached_data_key,
+        simplejson.dumps(resource_data),
+        ex=resource.get_cache_ttl(),
+    )
 
 
 @rq.job(result_ttl=10, timeout=JOB_TIMEOUT)

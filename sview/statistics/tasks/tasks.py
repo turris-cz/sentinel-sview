@@ -10,6 +10,7 @@ REDIS_PLACEHOLDER = "1"  # Shall only return logical true
 REDIS_KEY_SEPARATOR = ";"
 REDIS_PARAM_SEPARATOR = "#"
 JOB_TIMEOUT = 60 * 60  # Seconds
+USER_TTL = 10 * 60  # Seconds
 
 
 def get_params_from_redis_key(key):
@@ -126,11 +127,23 @@ class TaskToolbox:
         return start_delay
 
     def get_refresh_timeout(self):
-        return (
+        timeout = (
             self.get_last_ts_before(-self.period["refresh_interval"])
             - utc_now_ts()
             + self.get_start_delay()
         )
+        if "token" in self.params:
+            # User-specific resources are cached for short time, they need to refresh sooner
+            timeout = min(timeout, USER_TTL)
+
+        return timeout
+
+    def get_cache_ttl(self):
+        ttl = self.period["cache_ttl"]
+        if "token" in self.params:
+            ttl = min(ttl, USER_TTL)  # Do not cache user-specific resources for long
+
+        return ttl
 
     def get_start_ts(self):
         return self.get_last_ts_before(self.period["display_interval"])
