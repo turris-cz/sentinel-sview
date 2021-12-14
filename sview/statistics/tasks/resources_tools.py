@@ -6,6 +6,7 @@ from .periods import PERIODS
 from .queries import RESOURCE_QUERIES
 from .queries import KNOWN_PARAMS
 from .tasks import TaskToolbox
+from .task_helpers import human_readable_bytes
 
 USER_SPECIFIC_RESOURCES = (
     "my_all_incidents_graph",
@@ -20,6 +21,29 @@ class ResourceToolbox(TaskToolbox):
     REDIS_REFRESH_TO_PREFIX = "sview_refresh_timeout"
     AVAILABLE_QUERIES = RESOURCE_QUERIES
     AVAILABLE_PERIODS = PERIODS
+
+    @classmethod
+    def inspect_cache(cls, clear=False, dry_run=False):
+        """View all resource cache keys with cache ttl and size"""
+        keys = redis.keys(f"{cls.REDIS_CACHE_PREFIX}*")
+        size = 0
+        for key in keys:
+            data = redis.get(key)
+            ttl = redis.ttl(key)
+            key = key.decode()
+            if data:
+                yield f"{'Clearing ' if clear else ''}{key:<55s} ttl={ttl:<6} size={human_readable_bytes(len(data))}"
+                if clear and not dry_run:
+                    redis.delete(key)
+                size += len(data)
+
+        yield ""
+        if clear:
+            yield "Cleared {} keys, total size: {}".format(
+                len(keys), human_readable_bytes(size)
+            )
+        else:
+            yield "Cached resources occupy:  {}".format(human_readable_bytes(size))
 
     def __init__(self, name, period, params={}):
         self.name = name

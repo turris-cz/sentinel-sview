@@ -2,7 +2,6 @@ import click
 from flask import current_app
 from flask.cli import with_appcontext
 
-from .extensions import redis
 from .statistics import suggest_aggregation
 from .statistics import Aggregation
 from .statistics import RESOURCE_QUERIES
@@ -73,9 +72,12 @@ def aggregate_period(period, dry_run=False):
 @with_appcontext
 def view_jobs():
     """View all resource and aggregation jobs"""
+    click.echo("Resource caching jobs:")
     for job_info in Resource.inspect_jobs():
         click.echo(job_info)
 
+    click.echo("")
+    click.echo("Aggregation jobs:")
     for job_info in Aggregation.inspect_jobs():
         click.echo(job_info)
 
@@ -97,19 +99,20 @@ def clear_cache():
 
 @click.command()
 @with_appcontext
-def clear_redis_cache():
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not clear anything, just print what would be cleared",
+)
+def clear_redis_cache(dry_run=False):
     """Clear cached resources and their timeouts from redis"""
-    keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
-    for key in keys:
-        redis.delete(key)
+    for info in Resource.inspect_cache(clear=True, dry_run=dry_run):
+        click.echo(info)
 
-    click.echo(f"Cleared {len(keys)} keys")
-
-    keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX}*")
-    for key in keys:
-        redis.delete(key)
-
-    click.echo(f"Cleared {len(keys)} refresh timeouts")
+    click.echo("")
+    for info in Resource.inspect_timeouts(clear=True, dry_run=dry_run):
+        click.echo(info)
 
 
 @click.command()
@@ -195,20 +198,8 @@ def cache_resource(resource_name, period, dry_run=False):
 @with_appcontext
 def view_redis_cache():
     """View all resource cache keys with cache ttl and size"""
-    keys = redis.keys(f"{Resource.REDIS_CACHE_PREFIX}*")
-    size = 0
-    for key in keys:
-        data = redis.get(key)
-        ttl = redis.ttl(key)
-        key = key.decode()
-        if data:
-            click.echo(
-                f"{key:<55s} ttl={ttl:<6} size={_human_readable_bytes(len(data))}"
-            )
-            size += len(data)
-
-    click.echo("")
-    click.echo("Cached resources occupy:  {}".format(_human_readable_bytes(size)))
+    for info in Resource.inspect_cache():
+        click.echo(info)
 
 
 @click.command()
@@ -216,103 +207,44 @@ def view_redis_cache():
 def view_timeouts():
     """View resource refresh timeouts and aggregation timeouts"""
     click.echo("Resource refresh timeouts: (refresh is allowed after timeout expires)")
-    keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX}*")
-    timeout_logs = []
-    for key in keys:
-        ttl = redis.ttl(key)
-        key = key.decode()
-        key_parts = key.split(";")
-        timeout_log = {
-            "ttl": ttl,
-            "name": key_parts[1],
-            "period": key_parts[2],
-            "params": key_parts[3:],  # optional - like ip or device_token
-            "index": PERIODS[key_parts[2]]["index"],  # for sorting
-        }
-        timeout_logs.append(timeout_log)
-
-    for log in sorted(timeout_logs, key=lambda item: item.get("index")):
-        click.echo(
-            f"{log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6} params={log['params']}"
-        )
+    for timeout_info in Resource.inspect_timeouts():
+        click.echo(timeout_info)
 
     click.echo("")
-    click.echo("Aggregation timeouts: (aggregation is triggered after timeout expires)")
-    keys = redis.keys(f"{Aggregation.REDIS_REFRESH_TO_PREFIX}*")
-    timeout_logs = []
-    for key in keys:
-        ttl = redis.ttl(key)
-        key = key.decode()
-        key_parts = key.split(";")
-        timeout_log = {
-            "ttl": ttl,
-            "name": key_parts[1],
-            "period": key_parts[2],
-            "index": AGGREGATION_PERIODS[key_parts[2]]["index"],  # for sorting
-        }
-        timeout_logs.append(timeout_log)
-
-    for log in sorted(timeout_logs, key=lambda item: item.get("index")):
-        click.echo(f"{log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6}")
+    click.echo("Aggregation timeouts: (aggregation is allowed after timeout expires)")
+    for timeout_info in Aggregation.inspect_timeouts():
+        click.echo(timeout_info)
 
 
 @click.command()
 @click.argument("task", nargs=1, required=True)
 @click.argument("period", nargs=1, required=True)
+@click.option(
+    "-d",
+    "--dry-run",
+    is_flag=True,
+    help="Do not clear anything, just print what would be cleared",
+)
 @with_appcontext
-def clear_timeouts(task, period):
+def clear_timeouts(task, period, dry_run=False):
     """Clear resource refresh or aggregation timeouts"""
-    if task not in ["aggregation", "resource"]:
-        click.echo(f"Task must be one of 'aggregation', 'resource'")
+    available_tasks = {
+        "aggregation": Aggregation,
+        "resource": Resource,
+    }
+    task = available_tasks.get(task)
+    if task is None:
+        click.echo(f"Task must be one of {[name for name in available_tasks]}")
         return
 
-    if task == "resource":
-        if period not in PERIODS:
-            click.echo(f"Period must be one of: {[name for name in PERIODS]}")
-            return
-        keys = redis.keys(f"{Resource.REDIS_REFRESH_TO_PREFIX};*;{period}")
-        for key in keys:
-            ttl = redis.ttl(key)
-            key_parts = key.decode().split(";")
-            log = {
-                "ttl": ttl,
-                "name": key_parts[1],
-                "period": key_parts[2],
-                "params": key_parts[3:],  # optional - like ip or device_token
-            }
-            click.echo(
-                f"Clearing {log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6} params={log['params']}"
-            )
-            redis.delete(key)
+    if period not in task.AVAILABLE_PERIODS:
+        click.echo(
+            f"Period must be one of: {[name for name in task.AVAILABLE_PERIODS]}"
+        )
+        return
 
-    if task == "aggregation":
-        if period not in AGGREGATION_PERIODS:
-            click.echo(
-                f"Period must be one of: {[name for name in AGGREGATION_PERIODS]}"
-            )
-            return
-        keys = redis.keys(f"{Aggregation.REDIS_REFRESH_TO_PREFIX};*;{period}")
-        print(f"{Aggregation.REDIS_REFRESH_TO_PREFIX};*;{period}")
-        for key in keys:
-            ttl = redis.ttl(key)
-            key_parts = key.decode().split(";")
-            log = {
-                "ttl": ttl,
-                "name": key_parts[1],
-                "period": key_parts[2],
-            }
-            click.echo(
-                f"Clearing {log['name']:<40s} {log['period']:<9s} ttl={log['ttl']:<6}"
-            )
-            redis.delete(key)
-
-
-def _human_readable_bytes(size):
-    from math import log2
-
-    _suffixes = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
-    order = int(log2(size) / 10) if size else 0
-    return "{:.4g} {}".format(size / (1 << (order * 10)), _suffixes[order])
+    for timeout_info in Resource.inspect_timeouts(period_name=period, clear=True, dry_run=dry_run):
+        click.echo(timeout_info)
 
 
 def register_cli_commands(app):

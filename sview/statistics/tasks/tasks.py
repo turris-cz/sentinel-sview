@@ -1,32 +1,17 @@
-import re
-
 from ...extensions import redis
 
 from .queries import KNOWN_PARAMS
 from .periods.time import utc_now_ts
 from .periods.time import LAST_TS_BEFORE_FUNCTIONS
 from .job_helpers import JobState
+from .task_helpers import is_ip, is_token_hash
 
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true
 JOB_TIMEOUT = 60 * 60  # Seconds
 
-IP_REGEX = re.compile(
-    "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}"
-    "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$"
-)
-TOKEN_HASH_REGEX = re.compile("^[a-z0-9]*$")
-TOKEN_HASH_LENGTH = 10
 
-
-def is_token_hash(string):
-    return len(string) == TOKEN_HASH_LENGTH and TOKEN_HASH_REGEX.match(string)
-
-
-def is_ip(string):
-    return bool(IP_REGEX.match(string))
-
-
-def guess_params_from_job_handler(job_handler):
+def guess_params_from_redis_handler(job_handler):
+    """All the redis handlers have the same format prefix;query_name;period;params"""
     handler_parts = job_handler.split(";")
 
     query_name = handler_parts[1]
@@ -47,17 +32,60 @@ def guess_params_from_job_handler(job_handler):
 class TaskToolbox:
     @classmethod
     def from_job_handler(cls, job_handler):
-        query_name, period_name, params = guess_params_from_job_handler(job_handler)
+        query_name, period_name, params = guess_params_from_redis_handler(job_handler)
         if query_name in cls.AVAILABLE_QUERIES and period_name in cls.AVAILABLE_PERIODS:
             return cls(query_name, cls.AVAILABLE_PERIODS[period_name], params)
 
     @classmethod
     def inspect_jobs(cls):
         job_handler_keys = redis.keys(f"{cls.REDIS_JOB_PREFIX}*")
+        info_logs = []
         for job_handler_key in job_handler_keys:
             job_handler = job_handler_key.decode()
             task = cls.from_job_handler(job_handler)
-            yield task.get_job_info()
+            info_logs.append(task.get_job_info())
+
+        for log in sorted(info_logs, key=lambda item: item.get("index")):
+            yield (
+                f"{log['name']:<38s} {log['period']:<9s} "
+                f"{log['params'] or ''} {log['info']}"
+            )
+
+    @classmethod
+    def inspect_timeouts(cls, period_name=None, clear=False, dry_run=False):
+        """Inspect refresh timeouts assigned to all tasks. Timeouts could be also
+        cleared or restricted to selected period. If dry run is enabled, nothing
+        is cleared."""
+        if period_name is None:
+            period_name = "*"
+        keys = redis.keys(f"{cls.REDIS_REFRESH_TO_PREFIX};*;{period_name}")
+        timeout_logs = []
+        for key in keys:
+            ttl = redis.ttl(key)
+            query_name, period_name, params = guess_params_from_redis_handler(
+                key.decode()
+            )
+            timeout_log = {
+                "key": key,
+                "ttl": ttl,
+                "name": query_name,
+                "period": period_name,
+                "params": params,
+                "index": cls.AVAILABLE_PERIODS[period_name]["index"],  # for sorting
+            }
+            timeout_logs.append(timeout_log)
+
+        for log in sorted(timeout_logs, key=lambda item: item.get("index")):
+            yield (
+                f"{'Clearing ' if clear else ''}{log['name']:<38s} "
+                f"{log['period']:<9s} ttl={log['ttl']:<6} params={log['params']}"
+            )
+            if clear and not dry_run:
+                redis.delete(log["key"])
+
+        if clear:
+            yield ""
+            yield f"Cleared {len(timeout_logs)} refresh timeouts"
 
     def __init__(self):
         self.job_handler_key = self.get_job_handler_key()
@@ -71,10 +99,14 @@ class TaskToolbox:
 
     def get_job_info(self):
         job_state = self.get_job_state()
-        return (
-            f"{self.name:>38s} {self.period['handle']:<3s} "
-            f"{self.params or ''} {job_state.get_info()}"
-        )
+        info = {
+            "name": self.name,
+            "period": self.period["handle"],
+            "params": self.params,
+            "index": self.period["index"],  # for sorting
+            "info": job_state.get_info(),
+        }
+        return info
 
     def get_start_delay(self):
         period = self.period
