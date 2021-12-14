@@ -1,6 +1,10 @@
 # Sentinel View
 
-A component visualising data gathered by **Sentinel**.
+A component visualising reports gathered by **Sentinel**. It consists of several
+smaller components, or blueprints, like
+ - *statistics*: for statistics of raw reports sent by all the Sentinel probes
+ - *greylist*: for current greylist data in CSV
+
 
 ## Python requirements
 
@@ -26,70 +30,45 @@ Python Package Index requirements (including the development ones) are stated in
   quick-cache slow-cache`. (Using only `rq worker` would lack
   any configuration and would end up working outside the application context).
 
-## Production notes
 
-There are 3 different job queues (from highest to lowest priority):
-  - `aggregation`: for aggregation tasks, which are usually quick and take
-     around minute
-  - `quick-cache`: for quick caching tasks, which are quick and should take up
-     to ~5 minutes (never more than 10 minutes!!) (so theres space for
-     aggregation tasks to take place before them)
-  - `slow-cache`: for slow caching tasks which may take to much time (more than
-     ~5 minutes and definitely more than quarter of hour) and there's probability
-     they would block quarterly aggregation tasks
+## Statistics component
 
-The optimal number of workers is 6 for `aggregation` and `quick-cache`, run like
+Statistics component - or *blueprint* - aggregates, caches and visualizes
+reports sent by Sentinel probes in raw form. It gives the users the opportunity
+to see the exact data the network sends and also the exact data they own probe
+sends. The data are shown in several time scales - or *periods*.
 
-```
-flask rq worker aggregation quick-cache
-```
+### Database
 
-and 6 workers for `slow-cache`, run like:
-
-```
-flask rq worker slow-cache
-```
-
-## Data processing
-
-To see up-to-date data, one should execute:
-
-```
-flask refresh
-```
-
-In production, this command should be executed every minute by cron.
-
-In application context (`dotenv` or `FLASK_APP=sview`).
-
-On production, this should be run via cron.
-
-
-Data about attackers, passwords and other details are queued on-demand, when a
-user attempt to access them via web.
-
-All the data diplayed on web are dated in UTC.
-
-In graphs, the values assigned to each date refers to time period between this
-data (excuding) and the same date one period ago (including). See commit message
-for more details.
-
-## Database
-
-TimescaleDB is used as the main storage. This section describes it's expected
-structure. It's expected structure is described inside
+TimescaleDB is used as the main storage for Sentinel statistics. This section
+describes it's expected structure. It's expected structure is described inside
 [scheme.sql](sview/scheme.sql).
 
 Generally, it consists of three main tables - one for incidents, one for
-passwords and one for port scans.
+passwords and one for port scans. These tables are used to store raw reports as
+they are only roughly processed by the Sentinel pipelines and stored by
+[dumper](https://gitlab.nic.cz/turris/sentinel/dumper).
 
-## Time scales / buckets & aggregation
+Due to aggregation (more about aggregation later in this document),
+the mentioned tables are also present in their aggregated form with aggregated
+data. The aggregation is carried out by Sview statistics itself.
 
-Using sview, it is possible to display the user data from different time periods.
-Each period displays the data with a different precision and a different max age.
-Therefore, data with different precision may be used for displaying different
-periods.
-The following matrix defines the relations between chosen period (Range),
+For caching, Redis DB is used. It used to keep precached data for the most
+queried resources and for all the recently queried resources. No resource
+data could be provided to the user without being previously cached in redis.
+
+Therefore, a resource caching task is suggested to run whenever a resource is
+needed. During such a suggestion, resource refresh timeout is checked. When it's
+pending, the resource is up to date or already being refreshed and no caching
+task is deployed. Meanwhile, the user is served data from the cache.
+
+### Time scales / buckets & aggregation
+
+Using sview statistics, it is possible to display the user data from different
+time periods. Each period displays the data with a different precision and a
+different max age. Therefore, data with different precision may be used for
+displaying different periods.
+The following matrix defines the relations between chosen period,
 aggregation window, TTL used for caching the result the used bucket and
 precision. The following precisions are available:
  - `quarterly`: Incidents summarized by quarters of hour
@@ -114,14 +93,15 @@ For more details (and possibly more up-to-date values), see the
 
 ### Aggregation tasks
 
-Sview is able to maintain different tables with different data precision. To
-achieve this, sview runs periodic task to aggregate data and move them between
-these tables. Currently, there are 3 main aggregation tasks - each for one
-precision, also called *aggregation period*. The mechanism is very similar to
-caching resources. It means that every aggregation period (e.g. every hour) a
-task is deployed which aggregates the last period (hour) from higher precision
-(quarterly) to lower precision (hourly) and moves it to proper table (one of
-`*_hourly` tables, e.g. `ports_hourly`).
+Sview statistics is able to maintain different tables with different data
+precision. To achieve this, sview runs periodic task to aggregate data and move
+them between these tables.
+Currently, there are 3 main aggregation tasks - each for one precision, also
+called *aggregation period*. The mechanism is very similar to caching resources.
+It means that every aggregation period (e.g. every hour) a task is deployed
+which aggregates the last period (hour) from higher precision (quarterly) to
+lower precision (hourly) and moves it to proper table (one of `*_hourly` tables,
+e.g. `ports_hourly`).
 
 Like in case of resources, *aggragation timeouts* are used to keep knowledge
 whether is is the right time to run an aggregation task. When aggregation
@@ -130,6 +110,55 @@ timeout expires the task is triggered.
 The need for aggregation is automatically checked with every resource request
 and with every `flask refresh` command and the aggregation is triggered when
 needed.
+
+### Production notes
+
+There are 3 different job queues (from highest to lowest priority):
+  - `aggregation`: for aggregation tasks, which are usually quick and take
+     around minute
+  - `quick-cache`: for quick caching tasks, which are quick and should take up
+     to ~5 minutes (never more than 10 minutes!!) (so theres space for
+     aggregation tasks to take place before them)
+  - `slow-cache`: for slow caching tasks which may take to much time (more than
+     ~5 minutes and definitely more than quarter of hour) and there's probability
+     they would block quarterly aggregation tasks
+
+The optimal number of workers is 6 for `aggregation` and `quick-cache`, run like
+
+```
+flask rq worker aggregation quick-cache
+```
+
+and 6 workers for `slow-cache`, run like:
+
+```
+flask rq worker slow-cache
+```
+
+### Data processing
+
+To see up-to-date data, one should execute:
+
+```
+flask refresh
+```
+
+In production, this command should be executed every minute by cron.
+
+In application context (`dotenv` or `FLASK_APP=sview`).
+
+On production, this should be run via cron.
+
+
+Data about attackers, passwords and other details are queued on-demand, when a
+user attempt to access them via web.
+
+All the data diplayed on web are dated in UTC.
+
+In graphs, the values assigned to each date refers to time period between this
+data (excuding) and the same date one period ago (including). See commit message
+for more details.
+
 
 ## Flask commands
 
