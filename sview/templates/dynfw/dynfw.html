@@ -9,57 +9,57 @@
 </script>
 <script type="text/javascript" src="{{ url_for("static", filename="js/dynfwviz.js") | autoversion }}"></script>
 {% endif %}
-<table class="table table-striped">
-	<tr>
-		<th>Status</th>
-		<td id="status_status">Waiting for connection...</td>
-	</tr>
-	<tr>
-		<th>Updated</th>
-		<td id="status_updated">Waiting for data...</td>
-	</tr>
-	<tr>
-		<th>Current list version / Serial</th>
-		<td>
-			<span id="status_list_version">Waiting for data...</span> /
-			<span id="status_serial">Waiting for data...</span>
-		</td>
-	</tr>
-</table>
 
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
-		<div id="world_map" style="position: relative; width: 900; height: 300px;"></div>
+		<div id="world_map" class="world-map" style="position: relative; width: 900; height: 300px;"></div>
 	</div>
+</div>
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover table-borderless mb-0">
+            <tr>
+                <th>Status</th>
+                <td id="status_status">Waiting for connection...</td>
+            </tr>
+            <tr>
+                <th>Updated</th>
+                <td id="status_updated">Waiting for data...</td>
+            </tr>
+            <tr>
+                <th>Current list version / Serial</th>
+                <td>
+                    <span id="status_list_version">Waiting for data...</span> /
+                    <span id="status_serial">Waiting for data...</span>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 <div class="row">
 	<div class="col-lg-4">
-		<div class="card mb-3 border">
-			<div class="card-header">
-				<h5 class="card-title mb-0">
-					Current list
-					<span id="list_cnt" class="badge badge-secondary ml-2"></span>
-				</h5>
+		<div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-0">
+                    Current list
+                    <span id="list_cnt" class="badge badge-secondary ml-2"></span>
+                </h5>
 			</div>
 			<ul id="latest_list" class="list-group list-group-flush"></ul>
 		</div>
 	</div>
 	<div class="col-lg-4">
-		<div class="card mb-3 border">
-			<div class="card-header">
-				<h5 class="card-title mb-0">
-					Updates
-				</h5>
+		<div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-0">Updates</h5>
 			</div>
 			<ul id="latest_data" class="list-group list-group-flush"></ul>
 		</div>
 	</div>
 	<div class="col-lg-4">
-		<div class="card mb-3 border">
-			<div class="card-header">
-				<h5 class="card-title mb-0">
-					Events
-				</h5>
+		<div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-0">Events</h5>
 			</div>
 			<ul id="latest_event" class="list-group list-group-flush"></ul>
 		</div>
