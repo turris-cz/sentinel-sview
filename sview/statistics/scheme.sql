@@ -68,3 +68,13 @@ SELECT create_hypertable('ports_hourly', 'time');
 
 CREATE TABLE IF NOT EXISTS ports_daily (LIKE ports INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
 SELECT create_hypertable('ports_daily', 'time');
+
+
+-- A schema for Sentinel's You Have Been Pwned
+CREATE TYPE data_source AS ENUM ('telnet', 'smtp', 'ftp', 'http', 'haas');
+CREATE TABLE IF NOT EXISTS passwords_pwned(
+    id BIGSERIAL PRIMARY KEY,
+    password_hash TEXT NOT NULL,
+    count BIGINT CHECK (count > 0),
+    password_source data_source[]
+);
