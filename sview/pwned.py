@@ -1,12 +1,13 @@
 from flask import render_template
-from flask import Blueprint, current_app, request, jsonify
+from flask import Blueprint, current_app, request, jsonify, url_for
+from sview.api import pwned_api as _pwnd
 
 pwned = Blueprint("pwned", __name__)
 
 
 @pwned.route("/index/",methods=["POST","GET"])
 def index():
-    params = {"server": current_app.config['PWNED_ADDRESS'], "port": current_app.config['PWNED_PORT']}
+    params = {"path": request.host + "/api/pwned/"}
     return render_template("pwned/pwned.html", conn_params=params)
 
 
