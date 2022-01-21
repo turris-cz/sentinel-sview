@@ -123,11 +123,11 @@ $(document).ready(function () {
 function handle_delta(msg) {
     if (msg.delta == "positive") {
         $("#latest_data").prepend(
-            `<li class="list-group-item list-group-item-success"><span class="oi oi-plus mr-1"></span> ${msg.ip}</li>`
+            `<li class="list-group-item list-group-item-action list-group-item-success"><i class="fas fa-plus mr-1"></i>${msg.ip}</li>`
         );
     } else {
         $("#latest_data").prepend(
-            `<li class="list-group-item list-group-item-danger"><span class="oi oi-minus mr-1"></span> ${msg.ip}</li>`
+            `<li class="list-group-item list-group-item-action list-group-item-danger"><i class="fas fa-minus mr-1"></i>${msg.ip}</li>`
         );
     }
     if ($("#latest_data li").length >= 30) {
@@ -138,7 +138,7 @@ function handle_delta(msg) {
 function handle_list(msg) {
     let items = "";
     for (let i in msg.list) {
-        items = items + `<li class="list-group-item">${msg.list[i]}</li>`;
+        items += `<li class="list-group-item list-group-item-action list-group-item-light">${msg.list[i]}</li>`;
     }
     let d = new Date(msg.ts * 1000);
     $("#latest_list").html(items);
@@ -149,7 +149,7 @@ function handle_list(msg) {
 }
 
 function handle_event(msg) {
-    let item = `<li class="list-group-item list-group-item-warning"> `;
+    let item = `<li class="list-group-item list-group-item-action list-group-item-warning"> `;
     if (msg.geo) {
         item += `<span class="badge badge-primary"><samp>${msg.geo}</samp></span> `;
     } else {
