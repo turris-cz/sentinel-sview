@@ -188,7 +188,7 @@ function get_period_specific_process_function(period) {
 function createCountryRow(row, period) {
     td = document.createElement("td");
     let span = document.createElement("span");
-    span.className = "flag-icon flag-icon-" + row["country"].toLowerCase();
+    span.className = "fi fi-" + row["country"].toLowerCase();
     span.style.paddingRight = "40px";
     td.appendChild(span);
     let strong = document.createElement("strong");
@@ -202,7 +202,10 @@ function createPasswordRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     let a = document.createElement("a");
-    a.setAttribute("href", "/passwords/details/" + btoa(row["password"]) + "?period=" + period);
+    a.setAttribute(
+        "href",
+        "/passwords/details/" + btoa(row["password"]) + "?period=" + period
+    );
     a.innerHTML = row["password"];
     strong.appendChild(a);
     td.appendChild(strong);
@@ -241,7 +244,10 @@ function createIPRow(row, period) {
     td = document.createElement("td");
     let strong = document.createElement("strong");
     let a = document.createElement("a");
-    a.setAttribute("href", "/attackers/details/ip/" + row["ip"] + "?period=" + period);
+    a.setAttribute(
+        "href",
+        "/attackers/details/ip/" + row["ip"] + "?period=" + period
+    );
     a.innerHTML = row["ip"];
     strong.appendChild(a);
     td.appendChild(strong);
@@ -250,7 +256,9 @@ function createIPRow(row, period) {
 }
 
 function createCombinedRow(row, period) {
-    return createUsernameRow(row, period).concat(createPasswordRow(row, period));
+    return createUsernameRow(row, period).concat(
+        createPasswordRow(row, period)
+    );
 }
 
 function create_table(rows, period, createRow) {
