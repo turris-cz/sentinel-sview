@@ -151,9 +151,9 @@ function handle_list(msg) {
 function handle_event(msg) {
     let item = `<li class="list-group-item list-group-item-action list-group-item-warning"> `;
     if (msg.geo) {
-        item += `<span class="badge badge-primary"><samp>${msg.geo}</samp></span> `;
+        item += `<span class="fi fi-${msg.geo.toLowerCase()}"></span> `;
     } else {
-        item += `<span class="badge badge-primary"><samp>??</samp></span> `;
+        item += `<span class="fi fi-xx"></span> `;
     }
     item += `${msg.ip} `;
     item += `<span class="badge badge-secondary">${msg.event}</span> `;
