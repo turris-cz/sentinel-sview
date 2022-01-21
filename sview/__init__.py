@@ -34,8 +34,6 @@ def create_app(additional_config=None):
 
     setup_logging()
 
-    db_settings = filter_dictionary(app.config, "POSTGRES")
-    load_postgres(**db_settings)
 
     from .api import api
     from .statistics import statistics
