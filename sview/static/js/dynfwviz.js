@@ -25,6 +25,8 @@ function draw_map() {
                     values: scores,
                     scale: ["#C8EEFF", "#0071A4"],
                     normalizeFunction: "polynomial",
+                    min: 0,
+                    max: 0,
                 },
             ],
         },
