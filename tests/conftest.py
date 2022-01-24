@@ -7,6 +7,8 @@ from pg_manager import reset_passwords_table, insert_password
 from pwned_backend.utils import filter_dictionary
 
 
+# TODO: Iterativly redo the tests, sql does not work
+
 @pytest.fixture
 def extra_passwords(client, request):
     """insert extra password with the same start hash as first item"""

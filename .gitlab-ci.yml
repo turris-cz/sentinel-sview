@@ -1,7 +1,7 @@
 image: python:3.7-slim-buster
 
 services:
-  - postgres:12.2-alpine
+  - timescale/timescaledb:latest-pg12
 
 variables:
   POSTGRES_DB: sentient
