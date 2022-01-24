@@ -21,8 +21,6 @@ def pwned_api():
         args = json.loads(request.get_data())
     else:
         args = request.json
-    try:
-        data, code = proc_leaked(**args)
-        return data, code, _HEADERS
-    except Exception as e:
-        pass  # handle exception
+
+    data, code = proc_leaked(**args)
+    return data, code, _HEADERS

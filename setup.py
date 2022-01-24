@@ -30,8 +30,7 @@ setup(
         "geoip2",
         "sn@git+https://gitlab.nic.cz/turris/sentinel/sn.git",
         "websockets",
-        "jsonschema",
-        "peewee",
+        "jsonschema"
     ],
     extras_require={
         "tests": [
