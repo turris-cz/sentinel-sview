@@ -1,15 +1,5 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} 
 {% block body %}
-{# we don't need below garbage if we use preprocessor for javascript #}
-{% if dynfwhost %}
-<script type="text/javascript">
-	let connection = {{ dynfwhost | safe }};
-	let server = connection.server;
-	let ws_port = connection.port;
-</script>
-<script type="text/javascript" src="{{ url_for("static", filename="js/dynfwviz.js") | autoversion }}"></script>
-{% endif %}
-
 <div class="row">
 	<div class="col-lg-12 pb-3" align="center">
 		<div id="world_map" class="world-map" style="position: relative; width: 900; height: 300px;"></div>

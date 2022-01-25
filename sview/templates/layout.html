@@ -3,8 +3,8 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>{% if page_title %}{{ page_title }} &verbar; {% endif %}Sentinel View</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{% if page_title %}{{ page_title }} &verbar; {% endif %}Sentinel View</title>
 		<link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename="favicon.svg") }}">
 		<link rel="icon" type="image/png" href="{{ url_for("static", filename="favicon.png") }}">
 		<link type="text/css" rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.min.css") }}" />
@@ -22,6 +22,14 @@
 		<script type="text/javascript" src="{{ url_for("static", filename="js/raphael.min.js") }}"></script>
 		<script type="text/javascript" src="{{ url_for("static", filename="js/morris.min.js") }}"></script>
 		<script type="text/javascript" src="{{ url_for("static", filename="js/sview.js") | autoversion }}"></script>
+        {% if dynfwhost %}
+            <script type="text/javascript">
+                let connection = {{ dynfwhost | safe }};
+                let server = connection.server;
+                let ws_port = connection.port;
+            </script>
+            <script type="text/javascript" src="{{ url_for("static", filename="js/dynfwviz.js") | autoversion }}"></script>
+        {% endif %}
 		<noscript>
 			<style type="text/css">
 				.js-required {display:none;}
@@ -61,8 +69,8 @@
 						{{ nav_link("statistics.passwords", _("Passwords")) }}
 						{{ nav_link("statistics.ports", _("Ports")) }}
 						{{ nav_link("statistics.devices", _("My Devices")) }}
-						{{ nav_link("web.greylist", _("Greylist"), target_blank=True, period_dependant=False) }}
 						{{ nav_link("dynfw.index", _("Dynamic Firewall"), period_dependant=False) }}
+						{{ nav_link("web.greylist", _("Greylist"), target_blank=True, period_dependant=False) }}
 					</ul>
 					<div class="custom-control custom-switch ml-auto">
 						<input type="checkbox" class="custom-control-input" id="darkSwitch" />
