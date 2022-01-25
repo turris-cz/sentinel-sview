@@ -1,5 +1,5 @@
 from distutils import ccompiler
-from .database.models import Password
+# from .database.models import Password
 from .utils import unfold_pg_array, validate_decor, compose_message, Status
 
 
@@ -15,7 +15,7 @@ def deserialize(row):
     }
 
 _SELECT = """SELECT * FROM passwords_pwned
-    WHERE password_hash LIKE %(hs)s;
+    WHERE password_hash LIKE :hs;
 """
 
 

@@ -1,5 +1,7 @@
 import pytest
-from pwned.database.models import Password
+
+from sview.extensions import db
+# from pwned.database.models import Password
 from functools import partial
 
 from utils import hash_it, message_it
@@ -13,7 +15,7 @@ def test_unsafe_password(client):
 
     pword = "hikvision"
     stub, full_hash = hash_it(pword)
-    res = client.post("/api/leaked/", json=message_it(stub))
+    res = client.post("/api/pwned/", json=message_it(stub))
     assert res.json["status"] == "SUCCESS"
     data = res.json["data"]
     result = list(filter(_f, data))
@@ -37,7 +39,7 @@ def test_safe_password(client):
 
     pword = "safe"
     stub, full_hash = hash_it(pword)
-    res = client.post("/api/leaked/", json=message_it(stub))
+    res = client.post("/api/pwned/", json=message_it(stub))
     assert res.json["status"] == "NO_QUERY"
 
 
@@ -45,10 +47,10 @@ def test_safe_password(client):
     "extra_passwords",
     [
         [
-            (1, "morris", ["ftp", "http", "smtp"]),
-            (25, "korys", ["haas", "telnet"]),
-            (30, "sumys", ["smtp", "ftp"]),
-            (50, "dennis", ["smtp", "haas"]),
+            (16, "morris", 5, ["ftp", "http", "smtp"]),
+            (17, "korys", 6, ["haas" , "telnet"]),
+            (18, "sumys", 12, ["smtp", "ftp"]),
+            (19, "dennis", 3, ["smtp", "haas"]),
         ]
     ],
     indirect=True,
@@ -58,7 +60,7 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     _, db_hashes = extra_passwords
     pword = "morris"
     stub, _ = hash_it(pword)
-    res = client.post("/api/leaked/", json=message_it(stub))
+    res = client.post("/api/pwned/", json=message_it(stub))
     assert res.json["status"] == "SUCCESS"
     data = res.json["data"]
     received_hashes = [i["hash"] for i in data]
@@ -67,10 +69,10 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     # we did not save the hashes, but we know the counts
     # of passwords usage
 
-    morris = filter_on_count(1, data)
-    korys = filter_on_count(25, data)
-    sumys = filter_on_count(30, data)
-    dennis = filter_on_count(50, data)
+    morris = filter_on_count(5, data)
+    korys = filter_on_count(6, data)
+    sumys = filter_on_count(12, data)
+    dennis = filter_on_count(3, data)
 
     assert morris["sources"] == ["ftp", "http", "smtp"]
     assert korys["sources"] == ["haas", "telnet"]
@@ -82,7 +84,7 @@ def test_validation_on_request(client):
     """Test message sent by client"""
     stub, _ = hash_it("secret")
     stub = stub[:-1]
-    res = client.post("/api/leaked/", json=message_it(stub))
+    res = client.post("/api/pwned/", json=message_it(stub))
     assert res.json["status"] == "VALIDATION_ERROR"
     error = res.json["error"]
-    assert "does not match '^[a-z0-9]{6}$'" in error
+   

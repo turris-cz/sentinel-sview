@@ -1,13 +1,10 @@
+from distutils.command.clean import clean
 import pytest
-import os
-
 from sview import create_app
+
 from utils import hash_it
-from pg_manager import reset_passwords_table, insert_password
-from pwned_backend.utils import filter_dictionary
+from tests.utils.pg_manager import insert_password, cleanup
 
-
-# TODO: Iterativly redo the tests, sql does not work
 
 @pytest.fixture
 def extra_passwords(client, request):
@@ -19,23 +16,40 @@ def extra_passwords(client, request):
 
     hashes = [first_hash]  # save the hash for later check
 
-    for count, password, sources in items:
+    ids = []
+
+    for idn, password, count, sources in items:
+        ids.append(idn)
         _, _hash = hash_it(password)
         # switch first 6 characters to be the same as for `ruris`
         _hash = stub + _hash[6:]
-        insert_password(count, _hash, sources, override_hash=True)
+        insert_password(idn, _hash, count, sources, override_hash=True)
         hashes.append(_hash)
-    return stub, hashes
+    yield stub, hashes
+
+    cleanup(tuple(ids))
+
+
+# @pytest.fixture
+# def client():
+#     reset_passwords_table()
+#     """Flask client fixture."""
+    
+#     pg_settings = filter_dictionary(os.environ, "POSTGRES")
+#     pg_settings.update({"FLASK_ENV": os.environ.get["FLASK_ENV"]})
+
+#     app = create_app(**pg_settings)
+#     with app.test_client() as client:
+#         yield client
+
 
 
 @pytest.fixture
 def client():
-    reset_passwords_table()
-    """Flask client fixture."""
-    
-    pg_settings = filter_dictionary(os.environ, "POSTGRES")
-    pg_settings.update({"FLASK_ENV": os.environ.get["FLASK_ENV"]})
-
-    app = create_app(**pg_settings)
+    additional_config = {
+        "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:secret@localhost/sentinel"
+    }
+    app = create_app(additional_config=additional_config)
     with app.test_client() as client:
-        yield client
+        with app.app_context() as ctx:
+            yield client
