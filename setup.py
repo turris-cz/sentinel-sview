@@ -38,6 +38,7 @@ setup(
             "coverage",
             "pytest-cov",
             "flake8",
+            "black"
         ],
     },
     zip_safe=False,

@@ -1,4 +1,5 @@
 from distutils.command.clean import clean
+import logging
 import pytest
 from sview import create_app
 
@@ -14,7 +15,7 @@ def extra_passwords(request):
     items = request.param
     first_password = items.pop(0)
 
-    ids = [first_password[0]] # save ids to cleanthem up later
+    ids = [first_password[0]]  # save ids to cleanthem up later
 
     stub, first_hash = insert_password(*first_password)
 
@@ -39,3 +40,13 @@ def client():
     with app.test_client() as client:
         with app.app_context() as ctx:
             yield client
+
+
+@pytest.fixture
+def bad_hash(client, request):
+
+    idn, _hash, count, sources = request.param
+    insert_password(idn, _hash, count, sources, override_hash=True)
+    yield
+
+    cleanup((idn,))

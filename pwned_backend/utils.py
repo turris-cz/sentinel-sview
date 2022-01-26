@@ -1,12 +1,10 @@
 from enum import Enum
+from http.client import TEMPORARY_REDIRECT
+
 import json
-import re
 from jsonschema import validate, ValidationError
-from flask import make_response, jsonify
 
-from logging import Logger
-
-logger = Logger(__name__)
+import logging
 
 
 def _load_schema(msg_type):  # load json schema for validation
@@ -27,7 +25,7 @@ class Status(str, Enum):
 
 def compose_message(status, data=None, error=None, status_code=200):
     """Compose response message
-    :status: status of the result action, enumerator _STATUS
+    :status: status of the result action, enumerator Status
     :retval: tuple with load and response code"""
     response_load = {
         "msg_type": "response",
@@ -38,9 +36,12 @@ def compose_message(status, data=None, error=None, status_code=200):
     if error:
         response_load.update({"error": error})
     try:
-        validate(response_load, _load_schema("response"))
+        schema = _load_schema("response")
+        validate(response_load, schema)
     except ValidationError as e:
-        logger.warning(f"message {response_load} failed to validate, Error:{e}")
+        logging.warning(
+            f"Validation error for outgoing message {response_load}; failed validation against schema {schema}, Error:{e}"
+        )
     return response_load, status_code
 
 

@@ -1,7 +1,16 @@
+import logging
 import pytest
 from functools import partial
 
 from utils import hash_it, message_it
+
+
+def _filter_on_count(val, data):
+    return list(filter(partial(_fltr, "count", val), data))[0]
+
+
+def _fltr(on, val, item):
+    return item[on] == val
 
 
 def test_unsafe_password(client):
@@ -18,14 +27,6 @@ def test_unsafe_password(client):
     result = list(filter(_f, data))
     assert len(result) == 1
     assert result[0]["hash"] == full_hash
-
-
-def filter_on_count(val, data):
-    return list(filter(partial(_fltr, "count", val), data))[0]
-
-
-def _fltr(on, val, item):
-    return item[on] == val
 
 
 def test_safe_password(client):
@@ -45,7 +46,7 @@ def test_safe_password(client):
     [
         [
             (16, "morris", 5, ["ftp", "http", "smtp"]),
-            (17, "korys", 6, ["haas" , "telnet"]),
+            (17, "korys", 6, ["haas", "telnet"]),
             (18, "sumys", 12, ["smtp", "ftp"]),
             (19, "dennis", 3, ["smtp", "haas"]),
         ]
@@ -64,12 +65,12 @@ def test_multiple_passwords_common_hash(client, extra_passwords):
     assert set(db_hashes) == set(received_hashes)
 
     # we did not save the hashes, but we know the counts
-    # of passwords usage
+    # of passwords usage, so we filter on how many counts there are
 
-    morris = filter_on_count(5, data)
-    korys = filter_on_count(6, data)
-    sumys = filter_on_count(12, data)
-    dennis = filter_on_count(3, data)
+    morris = _filter_on_count(5, data)
+    korys = _filter_on_count(6, data)
+    sumys = _filter_on_count(12, data)
+    dennis = _filter_on_count(3, data)
 
     assert morris["sources"] == ["ftp", "http", "smtp"]
     assert korys["sources"] == ["haas", "telnet"]
@@ -84,4 +85,13 @@ def test_validation_on_request(client):
     res = client.post("/api/pwned/", json=message_it(stub))
     assert res.json["status"] == "VALIDATION_ERROR"
     error = res.json["error"]
-   
+    assert "'e5e9f' does not match '^[a-z0-9]{6}$'" in error
+
+
+@pytest.mark.parametrize(
+    "bad_hash", [(50, "abcdef123456", 4, ["ftp", "http", "haas"])], indirect=True
+)
+def test_validate_outgoing(client, bad_hash, caplog):
+    res = client.post("/api/pwned/", json=message_it("abcdef"))
+    assert res.json["status"] == "SUCCESS"
+    assert "Validation error for outgoing message" in caplog.messages[0]

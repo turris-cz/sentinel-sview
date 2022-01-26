@@ -10,6 +10,7 @@ _INSERT_STATEMENT = (
     "values (%s, %s, %s, %s::data_source[]);"
 )
 
+
 def _parse_sources(ls: list) -> str:
     """Returns string of list encapsulated in {}
     helper function to conform data to what pg.ARRAY expects"""
@@ -24,7 +25,7 @@ def _insert(cur, *args) -> int:
 
 
 def insert_password(
-    idn:int, password: str, count: int, sources: list, override_hash=False
+    idn: int, password: str, count: int, sources: list, override_hash=False
 ) -> Tuple[str, str]:
     """Helper function to insert data in database."""
     if override_hash:  # we need to 'hardcode' hash on some occasions
@@ -33,7 +34,6 @@ def insert_password(
     else:  # sometimes we don't
         _stub, _hash = hash_it(password)
     _sources = _parse_sources(sources)
-
 
     con = db.engine.raw_connection()
     with con.cursor() as cur:
@@ -45,6 +45,9 @@ def insert_password(
 
 def cleanup(ids: tuple):
     db.session.execute(
-            """delete from passwords_pwned where id in :ids;""", {"ids":ids,}
-        )
+        """delete from passwords_pwned where id in :ids;""",
+        {
+            "ids": ids,
+        },
+    )
     db.session.commit()

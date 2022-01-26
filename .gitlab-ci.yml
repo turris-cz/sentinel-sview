@@ -19,6 +19,6 @@ before_script:
   - psql -h "timescale-timescaledb" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < sview/statistics/testdata.sql
 
 test:
-  script: pytest --verbose --pdb
+  script: pytest --verbose
 
 after_script:
