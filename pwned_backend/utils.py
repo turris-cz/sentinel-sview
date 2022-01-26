@@ -9,20 +9,6 @@ from logging import Logger
 logger = Logger(__name__)
 
 
-
-_SOURCES_RE = re.compile(
-    r"telnet|smtp|ftp|http|haas"
-)  # split sources "{ftp,http}" etc.
-
-# we need to map envvars to key names that are suitable for psycopg2 `connect` method
-_ARG_MAP = {
-    "POSTGRES_HOSTNAME": "host",
-    "POSTGRES_DB": "database",
-    "POSTGRES_USER": "user",
-    "POSTGRES_PASSWORD": "password",
-}
-
-
 def _load_schema(msg_type):  # load json schema for validation
     """Helper function to load given `msg_type` schema"""
     rv = {}
@@ -32,7 +18,7 @@ def _load_schema(msg_type):  # load json schema for validation
 
 
 class Status(str, Enum):
-    """Enumerator to make better control of the response status"""
+    """Enumerator to define the response status"""
 
     success = "SUCCESS"
     no_query = "NO_QUERY"
@@ -69,18 +55,3 @@ def validate_decor(func):
             return compose_message(Status.validation_err, error=f"{e}", status_code=400)
 
     return wrapper
-
-
-def filter_dictionary(source: dict, startstring: str):
-    """Filter dictionary, or any object that have `items()` method"""
-    return {k: v for k, v in source.items() if k.startswith(startstring)}
-
-
-def conform_arguments(dict, _map=_ARG_MAP):
-    """By default conform `pg` arguments. Else remap keys based on provided ``_map``"""
-    return {_map[k]: v for k, v in dict.items() if k in _map.keys()}
-
-
-def unfold_pg_array(sources: str) -> list:
-    """Unfold value in format of pg.ARRAY `'{value,value,value}'` to list"""
-    return _SOURCES_RE.findall(sources)

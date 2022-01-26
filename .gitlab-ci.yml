@@ -7,7 +7,6 @@ variables:
   POSTGRES_DB: sentient
   POSTGRES_USER: sview-user
   POSTGRES_PASSWORD: p4wn3d
-  FLASK_ENV: testing
 
 before_script:
   - apt update
@@ -15,10 +14,11 @@ before_script:
   - pip install .
   - pip install pytest
   - export PGPASSWORD=$POSTGRES_PASSWORD
-  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < sview/statistics/scheme.sql
-  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < sview/statistics/testdata.sql
+  - export FLASK_APP_SETTINGS=$CI_PROJECT_DIR/tests/testconfig.cfg
+  - psql -h "timescale-timescaledb" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < sview/statistics/scheme.sql
+  - psql -h "timescale-timescaledb" -U "$POSTGRES_USER" -d "$POSTGRES_DB" < sview/statistics/testdata.sql
 
 test:
-  script: pytest --verbose
+  script: pytest --verbose --pdb
 
 after_script:

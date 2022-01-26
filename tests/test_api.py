@@ -1,7 +1,4 @@
 import pytest
-
-from sview.extensions import db
-# from pwned.database.models import Password
 from functools import partial
 
 from utils import hash_it, message_it

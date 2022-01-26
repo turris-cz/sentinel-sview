@@ -3,9 +3,6 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_breadcrumbs import Breadcrumbs
 
-from pwned_backend.database import load_postgres
-from pwned_backend.utils import filter_dictionary
-
 
 def setup_logging():
     dictConfig(
