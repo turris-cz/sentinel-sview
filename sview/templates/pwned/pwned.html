@@ -26,37 +26,73 @@
 		<button type="submit">Submit!</button>
 	</form>
 </div>
+<div>
+	<label>Your passwords had been used</label><span id="times"></span><label>times</label>
+	<label>With services</label><p id="sources"></p>
+</div>
 <script>
 	const conn = {{ conn_params | safe }};
 	const url = 'http://' + conn.path;
 	console.log(conn)
+
+	const times = document.getElementById("times");
+	const sources = document.getElementById("sources");
+
+	function alertUser(item) {
+		times.textContent = item.count
+		sources.textContent = item.sources
+	}
+
 	formElem.onsubmit = async (e) => {
 		e.preventDefault();
 
 		const enteredPassword =
 			document.getElementById("myPassword").value;
-
-
+		
 		const msgUint8 = new TextEncoder().encode(enteredPassword);
 		const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
 		const hashArray = Array.from(new Uint8Array(hashBuffer));
-		const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toString().slice(0,6);
+		const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toString();
+		const hashSlice = hashHex.slice(0,6);
 
-		const response = await fetch(url, {
+		fetch(url, {
 			mode: 'no-cors',
 			method: 'post',
 			headers: {
 				'Accept': 'application/json, text/json',
 				'Content-Type': 'application/json'
 				},
-			body: JSON.stringify({"msg_type": "request", "hash": hashHex.slice(0,6)}),
+			body: JSON.stringify({"msg_type": "request", "hash": hashSlice}),
+		}).then((resp) => {
+			resp.json().then(
+				(j) => {
+					if (j.status == "SUCCESS") {
+						var res = j.data.filter(e => {return e.hash == hashHex});
+						if (res.length == 1) {
+							console.log(res);
+							alertUser(res[0]);
+						}
+					}
+				}
+			)
 		});
+		// const result = await response.json();
+		// alert(JSON.stringify(result));
 
-		const result = await response.json();
-
-		alert(JSON.stringify(result)); // transform to text, otherwise will print [Object][object]
-		// or
-		console.log(result);
 	};
+	// document.forms['myFormId'].addEventListener('submit', (event) => {
+    // event.preventDefault();
+    // // TODO do something here to show user that form is being submitted
+    // fetch(event.target.action, {
+    //     method: 'POST',
+    //     body: new URLSearchParams(new FormData(event.target)) // event.target is the form
+    // }).then((resp) => {
+    //     return resp.json(); // or resp.text() or whatever the server sends
+    // }).then((body) => {
+    //     // TODO handle body
+    // }).catch((error) => {
+    //     // TODO handle error
+    // });
+	// });
 </script>
 {% endblock %}
