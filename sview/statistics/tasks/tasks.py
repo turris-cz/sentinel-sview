@@ -9,7 +9,7 @@ from .task_helpers import base64_encode, base64_decode
 REDIS_PLACEHOLDER = "1"  # Shall only return logical true
 REDIS_KEY_SEPARATOR = ";"
 REDIS_PARAM_SEPARATOR = "#"
-JOB_TIMEOUT = 60 * 60  # Seconds
+JOB_TIMEOUT = 2 * 60 * 60  # Seconds
 USER_TTL = 10 * 60  # Seconds
 
 
