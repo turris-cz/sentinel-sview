@@ -22,8 +22,11 @@ def autoversion_filter(filename):
 
 
 def country_code_to_name(cc):
-    c = pycountry.countries.get(alpha_2=cc)
-    return c.common_name if hasattr(c, "common_name") else c.name
+    try:
+        c = pycountry.countries.get(alpha_2=cc)
+        return c.common_name if hasattr(c, "common_name") else c.name
+    except LookupError:
+        return 'N/A'
 
 
 def register_filters(app):
