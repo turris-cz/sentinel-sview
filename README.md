@@ -208,3 +208,11 @@ state of jobs, cache and other things. The following commands are implemented:
   - View running, failed, removed or other jobs.
 - `flask view-timeouts`
   - View resource refresh timeouts and aggregation timeouts
+
+## Dynfw backend
+
+Run the following
+
+```sh
+dynfw-backend --server --port --cert-file --geoip-db
+```
