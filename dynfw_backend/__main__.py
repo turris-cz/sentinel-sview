@@ -40,6 +40,13 @@ def get_arg_parser():
         help="URL of Sentinel DynFW publisher",
     )
     parser.add_argument(
+        "--listen-addr",
+        "-l",
+        required=False,
+        default = "127.0.0.1",
+        help="vizapp listen address"
+    )
+    parser.add_argument(
         "--port",
         "-p",
         required=False,
@@ -91,7 +98,7 @@ def main():
 
     reader = geoip2.database.Reader(args.geoip_db)
 
-    server = websockets.serve(vizapp_server, "127.0.0.1", 9000)
+    server = websockets.serve(vizapp_server, args.listen_addr, 9000)
 
     asyncio.ensure_future(server)
     asyncio.ensure_future(dynfw_reader(reader, sub))
