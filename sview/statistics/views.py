@@ -376,40 +376,51 @@ def get_resource_view():
     return response
 
 
-@statistics.route("/api/device/<action>", methods=["POST"])
+@statistics.route("/api/device/<action>", methods=["GET", "POST"])
 def device_view(action):
+    """POST method is used with form on the `view.sentinel` web,
+    GET on the other hand when accessing pages from router."""
+
     if action not in ("add", "delete"):
         return "Unknown operation", 500
-
-    if "device_token" not in request.form:
-        return "Device token not provided", 400
 
     period = request.form.get("period", DEFAULT_PERIOD)
     if period not in PERIODS:
         period = DEFAULT_PERIOD
 
+    # if `GET` method, take the token from `args`
+    device_token = (
+        request.form["device_token"]
+        if request.method == "POST"
+        else request.args.get("token")
+    )
+
+    if not device_token:
+        return "Device token not provided", 400
+
     if (
-        not re.match(DEVICE_TOKEN_CHARS, request.form["device_token"])
-        or len(request.form["device_token"]) != DEVICE_TOKEN_LENGTH
+        not re.match(DEVICE_TOKEN_CHARS, device_token)
+        or len(device_token) != DEVICE_TOKEN_LENGTH
     ):
         return "Bad format of device token", 400
 
     if "devices" not in session:
         session["devices"] = []
 
-    if action == "add":
-        if request.form["device_token"] not in session["devices"]:
-            session["devices"].append(request.form["device_token"])
+    if action == "add":  # with both methods you may add `device_token``
+        if device_token not in session["devices"]:
+            session["devices"].append(device_token)
             session.modified = True
 
-    elif action == "delete":
-        if request.form["device_token"] in session["devices"]:
-            session["devices"].remove(request.form["device_token"])
+    elif action == "delete" and request.method == "POST":
+        if device_token in session["devices"]:
+            session["devices"].remove(device_token)
             session.modified = True
 
-    token = get_tokens_hash(session.get("devices"))
-    if token:
-        return redirect(url_for("statistics.devices", period=period, token=token))
+    sess_token = get_tokens_hash(session.get("devices"))
+
+    if sess_token:
+        return redirect(url_for("statistics.devices", period=period, token=sess_token))
 
     else:
         return redirect(url_for("statistics.devices", period=period))
