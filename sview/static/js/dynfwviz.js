@@ -123,11 +123,11 @@ $(document).ready(function () {
 function handle_delta(msg) {
     if (msg.delta == "positive") {
         $("#latest_data").prepend(
-            `<li class="list-group-item list-group-item-action list-group-item-success"><i class="fas fa-plus mr-1"></i>${msg.ip}</li>`
+            `<li class="list-group-item list-group-item-action list-group-item-danger"><i class="fas fa-plus mr-1"></i>${msg.ip}</li>`
         );
     } else {
         $("#latest_data").prepend(
-            `<li class="list-group-item list-group-item-action list-group-item-danger"><i class="fas fa-minus mr-1"></i>${msg.ip}</li>`
+            `<li class="list-group-item list-group-item-action list-group-item-success"><i class="fas fa-minus mr-1"></i>${msg.ip}</li>`
         );
     }
     if ($("#latest_data li").length >= 30) {
