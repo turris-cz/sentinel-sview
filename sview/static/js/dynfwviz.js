@@ -61,10 +61,9 @@ function get_ws_url() {
     let port = "";
     if (host != window.location.host) {
         // the application uses a custom port
-        let port = ":" + ws_port;
+        port = ":" + ws_port;
     }
     let path = "/ws";
-
     return proto + server + port + path;
 }
 

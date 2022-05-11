@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from logging import getLogger, DEBUG
+from geoip2.errors import AddressNotFoundError
 
 import os
 import tempfile
@@ -20,6 +22,7 @@ DOWNLOADED_SERVER_KEY_PATH = os.path.join(
     tempfile.gettempdir(), "vizapp_certificates", "server.pub"
 )
 
+_LOGGER = getLogger("dynfw")
 
 USERS = set()
 
@@ -43,8 +46,8 @@ def get_arg_parser():
         "--listen-addr",
         "-l",
         required=False,
-        default = "127.0.0.1",
-        help="vizapp listen address"
+        default="127.0.0.1",
+        help="vizapp listen address",
     )
     parser.add_argument(
         "--port",
@@ -78,12 +81,22 @@ def get_arg_parser():
         type=readable_file,
         help="Path to geoip database",
     )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="provide debug INFO to logger destination",
+        default=False,
+    )
 
     return parser
 
 
 def main():
     args = get_arg_parser().parse_args()
+
+    if args.verbose:
+        _LOGGER.setLevel(DEBUG)
 
     prepare_tmp_dir()
 
@@ -109,12 +122,14 @@ def main():
 def prepare_tmp_dir():
     if not os.path.exists(TMP_CERT_LOCATION):
         os.mkdir(TMP_CERT_LOCATION, mode=0o700)
+        _LOGGER.info(f"created temporary file {TMP_CERT_LOCATION}")
 
 
 def download_certificate(url):
     response = urllib.request.urlopen(url)
     with open(DOWNLOADED_SERVER_KEY_PATH, "wb") as f:
         f.write(response.read())
+        _LOGGER.info(f"downloaded server key {DOWNLOADED_SERVER_KEY_PATH}")
 
 
 def prepare_socket(ctx, addr, port, keyfile):
@@ -154,9 +169,12 @@ def load_server_key(keyfile):
 
 
 def enrich_message(reader, payload):
-    res = reader.country(payload["ip"])
-    if res and res.country:
-        payload["geo"] = res.country.iso_code
+    try:
+        res = reader.country(payload["ip"])
+        if res and res.country:
+            payload["geo"] = res.country.iso_code
+    except AddressNotFoundError:
+        _LOGGER.info(f"Encountered `ip` that does not translate '{payload['ip']}'")
 
 
 # ######################
@@ -179,26 +197,36 @@ async def vizapp_server(websocket, path):
 
 async def dynfw_reader(reader, socket):
     while True:
+        _LOGGER.debug("awaiting mesage from dynfw..")
         msg = await socket.recv_multipart()
+        _LOGGER.debug("message received!")
+
         mtype, payload = sn.parse_msg(msg)
+
+        _LOGGER.debug(f'mtype="{mtype}", contents=""{payload}')
 
         if mtype == "dynfw/delta":
             await notify_users("dynfw delta", payload)
+            _LOGGER.debug(f"users notified: `{mtype}` with payload: {payload}")
 
         elif mtype == "dynfw/list":
             await notify_users("dynfw list", payload)
+            _LOGGER.debug(f"users notified with greylist ip addresses")
 
         elif mtype == "dynfw/event":
             enrich_message(reader, payload)
             await notify_users("dynfw event", payload)
+            _LOGGER.debug(f"users notified: `{mtype}` with payload: {payload}")
 
 
 def register_user(websocket):
     USERS.add(websocket)
+    _LOGGER.info(f"added user {websocket.id}")
 
 
 def unregister_user(websocket):
     USERS.remove(websocket)
+    _LOGGER.info(f"removed user {websocket.id}")
 
 
 async def welcome_user(websocket):
@@ -221,6 +249,9 @@ async def notify_user(user, msg_type, payload):
     }
     if user:
         await user.send(json.dumps(message))
+        _LOGGER.info(
+            f"user notified with message `{msg_type}` having payload: {payload}"
+        )
 
 
 if __name__ == "__main__":
