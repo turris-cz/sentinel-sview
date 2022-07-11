@@ -5,7 +5,7 @@ all_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE
@@ -37,7 +37,7 @@ top_traps_by_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             trap as source,
             SUM(raw_count) as count_middle
         FROM {source_table}
@@ -74,7 +74,7 @@ top_actions_by_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             action,
             SUM(raw_count) as count_middle
         FROM {source_table}
@@ -125,7 +125,7 @@ all_attackers_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             COUNT(DISTINCT ip) as count_middle
         FROM {source_table}
         WHERE
@@ -142,7 +142,7 @@ selected_attacker_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE
@@ -220,7 +220,7 @@ top_countries_by_attackers_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             country,
             COUNT(DISTINCT ip) as count_middle
         FROM {source_table}
@@ -256,7 +256,7 @@ top_countries_by_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             country,
             SUM(raw_count) as count_middle
         FROM {source_table}
@@ -293,7 +293,7 @@ my_top_countries_by_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             {source_table}.country AS country,
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
@@ -338,7 +338,7 @@ my_top_traps_by_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             {source_table}.trap AS source,
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
@@ -382,7 +382,7 @@ my_all_incidents_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
         WHERE

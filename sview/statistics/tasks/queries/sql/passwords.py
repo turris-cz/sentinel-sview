@@ -70,7 +70,7 @@ top_passwords_by_usages_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             password,
             SUM(raw_count) as count_middle
         FROM {source_table}
@@ -110,7 +110,7 @@ selected_password_by_usages_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE

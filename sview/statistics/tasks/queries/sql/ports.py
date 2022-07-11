@@ -5,7 +5,7 @@ all_ports_by_scans_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE
@@ -23,7 +23,7 @@ top_ports_by_scans_graph = """
         (CASE WHEN count_middle IS NULL THEN 0 ELSE count_middle END) AS count
     FROM (
         SELECT
-            time_bucket(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
+            time_bucket_gapfill(:bucket, time, to_timestamp(:start_ts)) AS bucket_inner,
             CONCAT(protocol, '/', port) AS port,
             SUM(raw_count) as count_middle
         FROM {source_table}
