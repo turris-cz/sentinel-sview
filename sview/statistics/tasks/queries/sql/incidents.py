@@ -9,7 +9,7 @@ all_incidents_graph = """
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -53,14 +53,14 @@ top_traps_by_incidents_graph = """
                     WHERE
                         trap IS NOT NULL
                         AND
-                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                     GROUP BY trap
                     ORDER BY count_inner DESC
                     LIMIT :limit
                 ) AS foo
             )
             AND
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner, trap
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -90,14 +90,14 @@ top_actions_by_incidents_graph = """
                     WHERE
                         action IS NOT NULL
                         AND
-                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                     GROUP BY action
                     ORDER BY count_inner DESC
                     LIMIT :limit
                 ) AS foo
             )
             AND
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner, action
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -129,7 +129,7 @@ all_attackers_graph = """
             COUNT(DISTINCT ip) as count_middle
         FROM {source_table}
         WHERE
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -148,7 +148,7 @@ selected_attacker_incidents_graph = """
         WHERE
             ip = :ip
             AND
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -206,7 +206,7 @@ all_countries_by_attackers_list = """
     WHERE
         country IS NOT NULL
         AND
-        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         AND
         ip is not null
     GROUP BY country
@@ -225,7 +225,7 @@ top_countries_by_attackers_graph = """
             COUNT(DISTINCT ip) as count_middle
         FROM {source_table}
         WHERE
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
             AND country IN (
                 SELECT
                     country
@@ -235,7 +235,7 @@ top_countries_by_attackers_graph = """
                         COUNT(DISTINCT(ip)) AS count_inner
                     FROM {source_table}
                     WHERE
-                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                         AND
                         country IS NOT NULL
                     GROUP BY country
@@ -261,7 +261,7 @@ top_countries_by_incidents_graph = """
             SUM(raw_count) as count_middle
         FROM {source_table}
         WHERE
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
             AND
             country IN (
                 SELECT
@@ -272,7 +272,7 @@ top_countries_by_incidents_graph = """
                         SUM(raw_count) AS count_inner
                     FROM {source_table}
                     WHERE
-                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                         AND
                         country IS NOT NULL
                     GROUP BY country
@@ -298,7 +298,7 @@ my_top_countries_by_incidents_graph = """
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
             AND
             identity.device_token in :my_device_tokens
             AND
@@ -313,7 +313,7 @@ my_top_countries_by_incidents_graph = """
                         SUM({source_table}.raw_count) AS count_inner
                     FROM {source_table}, identity
                     WHERE
-                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                         AND
                         {source_table}.country IS NOT NULL
                         AND
@@ -343,7 +343,7 @@ my_top_traps_by_incidents_graph = """
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
             AND
             identity.device_token in :my_device_tokens
             AND
@@ -358,7 +358,7 @@ my_top_traps_by_incidents_graph = """
                         SUM({source_table}.raw_count) AS count_inner
                     FROM {source_table}, identity
                     WHERE
-                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                         AND
                         {source_table}.trap IS NOT NULL
                         AND
@@ -386,7 +386,7 @@ my_all_incidents_graph = """
             SUM({source_table}.raw_count) as count_middle
         FROM {source_table}, identity
         WHERE
-            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= {source_table}.time AND {source_table}.time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
             AND
             {source_table}.identity_id=identity.id
             AND

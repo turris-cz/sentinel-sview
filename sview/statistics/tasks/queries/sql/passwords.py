@@ -90,14 +90,14 @@ top_passwords_by_usages_graph = """
                         AND
                         password <> '\n'
                         AND
-                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+                        to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
                     GROUP BY password
                     ORDER BY count_inner DESC
                     LIMIT :limit
                 ) AS foo
             )
             AND
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner, password
         ORDER BY bucket_inner
     ) as "raw_timing"
@@ -116,7 +116,7 @@ selected_password_by_usages_graph = """
         WHERE
             password = :password
             AND
-            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts)
+            to_timestamp(:start_ts) <= time AND time < to_timestamp(:finish_ts) - INTERVAL '5 minute'
         GROUP BY bucket_inner
         ORDER BY bucket_inner
     ) as "raw_timing"
