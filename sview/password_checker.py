@@ -1,15 +1,11 @@
 import json
 
-from flask import render_template
-from flask import Blueprint
+from flask import render_template, Blueprint, request, jsonify
 
-from flask import request
-from password_checker import proc_leaked
+from password_checker import process_request
 
 pass_check = Blueprint("pcheck", __name__)
 apiv1 = Blueprint("apiv1", __name__)
-
-_HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
 
 @pass_check.route("/", methods=["POST", "GET"])
@@ -20,16 +16,19 @@ def index_pwned():
     )
 
 
-@apiv1.route("/", methods=["POST"])
+@apiv1.route("/", methods=["POST", "GET"])
 def endpoint():
     """Route for accessing database"""
-    if not request.json:
-        args = json.loads(request.get_data())
+    if request.is_json:
+        data, code = process_request(**request.json)
+        return jsonify(data), code
     else:
-        args = request.json
-
-    data, code = proc_leaked(**args)
-    return data, code, _HEADERS
+        return (
+            jsonify(
+                {"API error": "Invalid HTTP method for URL Please use the POST method."}
+            ),
+            400,
+        )
 
 
 @apiv1.route("/doc", methods=["GET"])

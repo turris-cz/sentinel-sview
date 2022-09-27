@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 
 import json
 from jsonschema import validate, ValidationError
@@ -22,7 +23,7 @@ class Status(str, Enum):
     validation_err = "VALIDATION_ERROR"
 
 
-def compose_message(status, data=None, error=None, status_code=200):
+def compose_message(status, data=None, error=None, status_code=200) -> Tuple[dict, int]:
     """Compose response message
     :status: status of the result action, enumerator Status
     :retval: tuple with load and response code"""
