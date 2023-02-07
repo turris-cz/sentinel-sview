@@ -35,12 +35,14 @@ def create_app(additional_config=None):
     from .web import web
     from .dynfw import dynfw
     from .password_checker import pass_check
+    from .report import report
 
     app.register_blueprint(statistics)
     app.register_blueprint(opendata, url_prefix="/opendata")
     app.register_blueprint(web)
     app.register_blueprint(dynfw)
     app.register_blueprint(pass_check, url_prefix="/passcheck")
+    app.register_blueprint(report)
 
     from .extensions import babel
     from .extensions import cache

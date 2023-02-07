@@ -57,3 +57,20 @@
 	</div>
 </li>
 {%- endmacro -%}
+
+{%- macro accordion_item(heading, content, meta_name, data_parent, collapsed=True) -%}
+<div class="card">
+	<div class="card-header" id="heading{{ meta_name }}">
+		<h2 class="mb-0">
+		<button class="btn btn-link btn-block text-left{% if collapsed %} collapsed{% endif %}" type="button" data-toggle="collapse" data-target="#collapse{{ meta_name }}" aria-expanded="true" aria-controls="collapseOne">
+			{{ heading }}
+		</button>
+		</h2>
+	</div>
+	<div id="collapse{{ meta_name }}" class="collapse show" aria-labelledby="heading{{ meta_name}}" data-parent="#{{ data_parent }}">
+		<div class="card-body">
+		{{ content|safe }}
+		</div>
+	</div>
+</div>
+{%- endmacro -%}
