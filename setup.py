@@ -28,7 +28,7 @@ setup(
         "python-dotenv",
         "simplejson",
         "geoip2",
-        "turris-sentinel-network@git+https://gitlab.nic.cz/turris/sentinel/sn.git#egg=sn",
+        "sn@git+https://gitlab.nic.cz/turris/sentinel/sn.git@v0.1.1#egg=sn",
         "websockets",
         "jsonschema",
     ],
