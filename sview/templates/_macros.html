@@ -63,11 +63,11 @@
 	<div class="card-header" id="heading{{ meta_name }}">
 		<h2 class="mb-0">
 		<button class="btn btn-link btn-block text-left{% if collapsed %} collapsed{% endif %}" type="button" data-toggle="collapse" data-target="#collapse{{ meta_name }}" aria-expanded="true" aria-controls="collapseOne">
-			{{ heading }}
+			{{ heading|safe }}
 		</button>
 		</h2>
 	</div>
-	<div id="collapse{{ meta_name }}" class="collapse show" aria-labelledby="heading{{ meta_name}}" data-parent="#{{ data_parent }}">
+	<div id="collapse{{ meta_name }}" class="collapse{% if not collapsed %} show{% endif %}" aria-labelledby="heading{{ meta_name}}" data-parent="#{{ data_parent }}">
 		<div class="card-body">
 		{{ content|safe }}
 		</div>
