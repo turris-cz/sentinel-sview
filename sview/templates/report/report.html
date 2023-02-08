@@ -2,27 +2,26 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="jumbotron">
-  <h1 class="display-4">Sentinel Report</h1>
+  <h1 class="display-4">Sentinel Reports</h1>
   <p class="lead">Some data that we show on Sentinel View pages are constrained to narrow results fixed on short time perspective.</p>
   <hr class="my-4">
-  <p>In order to bring data to more broad perspective and context we release Sentinel Report in PDF form on monthly basis.</p>
-    <a class="btn btn-primary btn-lg" href="/reports" target="_blank" role="button">Sentinel Report repository</a>
+  <p>In order to give data a broader perspective, more context and to include even more complex statistics we release Sentinel Reports in PDF form on monthly basis.</p>
+    <a class="btn btn-primary btn-lg" href="/reports" target="_blank" role="button">List of Sentinel Reports</a>
 </div>
 <div>
-    <h3>How the reports are composed</h2>
-        <p>For the tables like <b>Password deltas</b> and <b>Port trends</b> comparing old and new results we start with
-        data gathered on a topic for passed month and compare them with same samples in the month before. For other type
-        of data, we run queries to find outmean or median for the month.</p>
-        <p>We gather our data from internal and also public sources.</p>
+    <h3>How are the reports prepared</h2>
+        <p>For the tables like <em>Password deltas</em> and <em>Port trends</em> we are comparing
+        data we gathered on the topic for the past month with the same samples in the month before. For other types
+        of data, we run more complex queries over the raw anonymized data to find the relevant statistics for the month.</p>
 </div>
-
+<h4>Data sources</h4>
 {%- set accordion="accordionReportDetails" -%}
 <div class="accordion" id="{{ accordion }}">
 {{ accordion_item(
         "Sentinel Greylist",
-        "For the tables like <b>Password deltas</b> and <b>Port trends</b> comparing old and new results we start with "
-        "data gathered on a topic for passed month and compare them with same samples in the month before. For other type "
-        "of data, we run queries to find out mean or median for the month. ",
+        "is a snapshot of our Dynamic firewall. It contains only IP addresses that were really suspicious "
+        "and earned themself their spot on the blacklist. It is interesting to analyze those data and try to summarize activity of the attackers over the whole month. "
+        "This can serve as a simple indicator of how active was the attackers community in a specific month. ",
         "One",
     accordion,
     False
@@ -30,10 +29,10 @@
 {{
     accordion_item(
         "Sentinel Database",
-        "is source for report on monthly trends in port scans for port-protocol combinations. Compared to what we publish "
+        "is source for report about monthly trends in port scans for port-protocol combinations. Compared to what we publish "
         "on Sentinel View pages, this list is based on the number of attackers targeting the port. The description serves as "
-        "a reminder of the services that the attacker may be interested in. This information can help "
-        "security researchers spot new trends and give sysadmins an indication of which services need to be more carefully watched.",
+        "a hint of the services that the attacker may be interested in. This information can help "
+        "security researchers spot new trends and give sysadmins an indication which services need to be more carefully watched.",
         "Two",
         accordion
     )
@@ -41,7 +40,7 @@
 {{
     accordion_item(
         "Timescale Sentinel Database",
-        "is source for Sentinel View data and also help us with this very Reports. The diagram shows how many times we've seen "
+        "is a data source primarily used by Sentinel View but it can also help us with the Reports. The table shows how many times we've seen "
         "individual passwords being used in attack attempts last month in comparison to the month before. The data are ordered by "
         "count last month. This allows you to spot passwords that just became popular. This information may point out "
         "some new vulnerable devices or new malware spreading through the Internet.",
@@ -51,7 +50,7 @@
 }}
 </div>
 <div class="pt-5">
-<h3>Subscribe to Sentinel Report</h3>
-<p>It is possible to subscribe to Sentinel Report newsletter <a href="https://mailing-turris.nic.cz/?p=subscribe&id=1">Here</a>.</p>
+<h3>Subscribe</h3>
+<p>You can get the latest reports directly to your mailbox if you subscribe to the <a href="https://mailing-turris.nic.cz/?p=subscribe&id=1">Sentinel Report newsletter</a>.</p>
 </div>
 {% endblock %}
