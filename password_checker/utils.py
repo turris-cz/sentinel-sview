@@ -1,3 +1,4 @@
+import pathlib
 from enum import Enum
 from typing import Tuple
 
@@ -10,7 +11,8 @@ import logging
 def _load_schema(msg_type):  # load json schema for validation
     """Helper function to load given `msg_type` schema"""
     rv = {}
-    with open(f"schema/{msg_type}.json", "r") as f:
+    path = pathlib.Path(__file__).parent.resolve()
+    with (path / f"schema/{msg_type}.json").open("r") as f:
         rv = json.load(f)
     return rv
 
