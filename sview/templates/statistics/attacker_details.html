@@ -7,6 +7,11 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1 class="mb-3">{{ active_params["ip"] }}</h1>
+<p>
+    <a href="https://client.rdap.org/?type=ip&object={{ active_params["ip"] }}" target="rdap" rel="nofollow noreferrer">
+        Lookup for IP address details<sup><i class="fas fa-external-link-alt fa-xs ml-1"></i></sup>
+    </a>
+</p>
 <div class="row">
     <div class="col">
         {{ button_line_box("selected_attacker_incidents_graph", "Attacker activity", periods,
