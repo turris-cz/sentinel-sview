@@ -81,7 +81,7 @@ plotting technology will be more user friendly.
 | Period | Range    | Window  | WPR   | Cache TTL | Source precision |
 | :---:  | :---:    | :---:   | :---: | :--:      | :--:             |
 | `1h`   | 1 hour   | 1 min   | 60    | 5 mins    | native           |
-| `12h`  | 12 hours | 15 mins | 48    | 25 mins   | quarterly        |
+| `6h`   | 6 hours  | 15 mins | 48    | 25 mins   | quarterly        |
 | `1d`   | 1 day    | 30 mins | 48    | 50 mins   | quarterly        |
 | `1w`   | 1 week   | 3 hours | 56    | 4 hours   | hourly           |
 | `1m`   | 1 month  | 1 day   | ~30   | 25 hours  | daily            |

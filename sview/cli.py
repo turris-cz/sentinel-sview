@@ -140,7 +140,7 @@ def refresh(dry_run=False):
     click.echo(suggest_aggregation("passwords", DAILY_PERIOD, dry_run=dry_run))
     click.echo(suggest_aggregation("ports", DAILY_PERIOD, dry_run=dry_run))
 
-    for result in suggest_caching_period("12h", dry_run=dry_run):
+    for result in suggest_caching_period("6h", dry_run=dry_run):
         click.echo(result)
     for result in suggest_caching_period("1d", dry_run=dry_run):
         click.echo(result)

@@ -3,7 +3,7 @@ from .time import MINUTE15
 from .time import MINUTE30
 from .time import HOUR
 from .time import HOUR3
-from .time import HOUR12
+from .time import HOUR6
 from .time import DAY
 from .time import WEEK
 from .time import MONTH
@@ -85,9 +85,9 @@ PERIOD_HOUR = {
     "last_ts_before_function": "ts_last_minute_before",
     "index": 1,
 }
-PERIOD_12_HOURS = {
-    "handle": "12h",
-    "label": "12 Hours",
+PERIOD_6_HOURS = {
+    "handle": "6h",
+    "label": "6 Hours",
     "bucket": "15 minutes",
     "start_delay_bonus": 5,  # seconds
     "cache_ttl": 25 * 60,
@@ -95,7 +95,7 @@ PERIOD_12_HOURS = {
     "source_period": QUARTERLY_PERIOD,
     "queue": PriorityQueue.QUICK_CACHE,
     "refresh_interval": MINUTE15,
-    "display_interval": HOUR12,
+    "display_interval": HOUR6,
     "last_ts_before_function": "ts_last_quarter_before",
     "index": 2,
 }
@@ -175,7 +175,7 @@ DEFAULT_PERIOD = "1w"
 
 PERIODS = {
     "1h": PERIOD_HOUR,
-    "12h": PERIOD_12_HOURS,
+    "6h": PERIOD_6_HOURS,
     "1d": PERIOD_DAY,
     "1w": PERIOD_WEEK,
     "1m": PERIOD_MONTH,
