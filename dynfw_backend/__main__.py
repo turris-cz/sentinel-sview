@@ -239,7 +239,7 @@ async def notify_users(msg_type, payload):
             "msgtype": msg_type,
             "payload": payload,
         }
-        await asyncio.wait([user.send(json.dumps(message)) for user in USERS if user])
+        await asyncio.wait([asyncio.create_task(user.send(json.dumps(message))) for user in USERS if user])
 
 
 async def notify_user(user, msg_type, payload):
