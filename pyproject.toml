@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sview"
-version = "1.4.2"
+version = "1.4.3"
 description = "Turris:Sentinel - visualization app for Sentinel data"
 authors = ["CZ.NIC, z.s.p.o. <packaging@turris.cz>"]
 readme = "README.md"
